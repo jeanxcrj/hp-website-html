@@ -72,7 +72,6 @@
        fraction of its projected length. A canvas gradient holds its end colour
        FLAT beyond its endpoints, and a face polygon reaches past both ends — so
        at 0 that clamp lands as a hard band straight across the face. */
-    gradExtend: 0.45,
     gradStops: 22,
     /* Perspective pushes a bar off the side of the frame long before its depth
        ever reaches zNear, so it leaves at full strength and the edge simply
@@ -404,17 +403,18 @@
           if (a2 * 0.5 < minA) continue;
 
           var base = this.faceCol[k];
+          var poly4 = [q0, q1, q2, q3];
           ctx.beginPath();
           ctx.moveTo(q0.px, q0.py); ctx.lineTo(q1.px, q1.py);
           ctx.lineTo(q2.px, q2.py); ctx.lineTo(q3.px, q3.py);
           ctx.closePath();
           ctx.fillStyle = P.grad > 0
-            ? this._grad(nx, ny, fx, fy, base, behindN, behindF, aNear, aFar)
+            ? this._grad(nx, ny, fx, fy, base, behindN, behindF, aNear, aFar, poly4)
             : css(mix(base, behindN, 1 - aNear));
           ctx.fill();
           if (P.edge > 0) {
             ctx.strokeStyle = P.edgeFade
-              ? this._grad(nx, ny, fx, fy, EDGE, behindN, behindF, aNear, aFar)
+              ? this._grad(nx, ny, fx, fy, EDGE, behindN, behindF, aNear, aFar, poly4)
               : P.edgeCol;
             ctx.lineWidth = P.edge;
             ctx.stroke();
@@ -429,7 +429,7 @@
           for (var j = 1; j < h2.length; j++) ctx.lineTo(h2[j].px, h2[j].py);
           ctx.closePath();
           ctx.fillStyle = P.grad > 0
-            ? this._grad(nx, ny, fx, fy, this.COL, behindN, behindF, aNear, aFar)
+            ? this._grad(nx, ny, fx, fy, this.COL, behindN, behindF, aNear, aFar, h2)
             : css(mix(this.COL, behindN, 1 - aNear));
           ctx.fill();
           if (P.edge > 0) {
@@ -444,31 +444,51 @@
     this.drawn = drawn;
   };
 
-  ExtrusionField.prototype._grad = function (x0, y0, x1, y1, base, behindN, behindF, aN, aF) {
-    var P = this.P;
+  /* The ramp is laid across THE FACE, not across the bar's end-to-end line.
+     Those two are not the same thing: when a bar's near and far ends project
+     close together but its face is large, a gradient built on that short line
+     squeezes the whole transition into a narrow band and holds flat colour
+     either side of it — which is exactly the hard diagonal edge. Projecting the
+     face's own corners onto the gradient axis and spanning that instead means
+     the transition always uses the full width of the shape, and nothing clamps
+     inside it. */
+  ExtrusionField.prototype._grad = function (x0, y0, x1, y1, base, behindN, behindF, aN, aF, pts) {
     var dx = x1 - x0, dy = y1 - y0;
-    // degenerate line (bar pointing straight at the camera) → flat fill
-    if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) return css(mix(base, behindN, 1 - aN));
-
-    // Run the ramp well past both ends so the gradient's flat clamp regions
-    // fall outside the polygon instead of banding across it.
-    var e = P.gradExtend, k = 1 + 2 * e;
-    var g = this.ctx.createLinearGradient(x0 - dx * e, y0 - dy * e, x1 + dx * e, y1 + dy * e);
-
+    var L = Math.hypot(dx, dy);
     var cN = mix(base, behindN, 1 - aN), cF = mix(base, behindF, 1 - aF);
-    var n = Math.max(2, P.gradStops);
-    for (var i = 0; i <= n; i++) {
-      var u = i / n;
-      // back into the bar's own 0..1 span, then smoothstepped — a perfectly
-      // linear ramp is what the eye catches as a hard edge
-      var t = clamp(u * k - e, 0, 1);
+    // bar pointing straight at the camera — no axis to ramp along
+    if (L < 0.01) return css(cN);
+
+    var ux = dx / L, uy = dy / L;
+    var smin = Infinity, smax = -Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      var sp = (pts[i].px - x0) * ux + (pts[i].py - y0) * uy;
+      if (sp < smin) smin = sp;
+      if (sp > smax) smax = sp;
+    }
+
+    // face is edge-on to the axis: one flat tone at its own position on the bar
+    if (smax - smin < 0.5) {
+      return css(mix(cN, cF, clamp((smin + smax) * 0.5 / L, 0, 1)));
+    }
+
+    var g = this.ctx.createLinearGradient(
+      x0 + ux * smin, y0 + uy * smin,
+      x0 + ux * smax, y0 + uy * smax);
+
+    var n = Math.max(2, this.P.gradStops), sp2 = smax - smin;
+    for (var k = 0; k <= n; k++) {
+      var u = k / n;
+      // back into the bar's own 0..1 span, then eased — a straight linear ramp
+      // is what the eye catches as an edge
+      var t = clamp((smin + sp2 * u) / L, 0, 1);
       t = t * t * (3 - 2 * t);
       g.addColorStop(u, css(mix(cN, cF, t)));
     }
     return g;
   };
 
-  ExtrusionField.prototype._hull = function (C) {
+ExtrusionField.prototype._hull = function (C) {
     var p = C.slice().sort(function (a, b) { return a.px - b.px || a.py - b.py; });
     function cr(o, a, b) { return (a.px - o.px) * (b.py - o.py) - (a.py - o.py) * (b.px - o.px); }
     var lo = [], up = [], i, q;
