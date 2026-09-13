@@ -50,11 +50,61 @@
     // render
     faces: true, faceShade: 0.34,
     fade: 0.85, fadePow: 1.5, grad: 0.75, gradPow: 1, minPx: 1.2,
-    edge: 0, edgeCol: '#ffffff',
+    // a hairline edge on every visible face: it separates overlapping bars AND
+    // draws the crease between front and side faces, which is what makes a bar
+    // read as a solid rather than a flat chevron. edgeFade keeps it on the same
+    // depth ramp as the fill, or distant bars turn to white mush.
+    edge: 0, edgeCol: '#ffffff', edgeFade: true,
+    /* Bars wrap from the near plane back to the far one. At the moment of the
+       wrap a bar is at its largest and usually still on screen, so it pops out
+       of existence in a single frame. wrapFade ramps a bar's opacity down as
+       z0 approaches zNear and back up after it respawns at zFar, so the loop
+       dissolves at both ends instead of cutting. Fraction of the depth span. */
+    /* Applied at BOTH ends of the loop, so it is capped below 0.5 in draw():
+       at 0.5 the two ramps meet and no bar ever reaches full opacity, and past
+       it the whole field sits permanently dimmed. */
+    wrapFade: 0,
+    /* Shapes the wrap fade. >1 pulls the whole ramp down early, so a bar is
+       already dim while it is still small — which is what stops a near slab
+       from vanishing at the moment it is largest and growing fastest. */
+    wrapFadePow: 1,
+    /* How far past the bar's own two ends the per-face gradient ramp runs, as a
+       fraction of its projected length. A canvas gradient holds its end colour
+       FLAT beyond its endpoints, and a face polygon reaches past both ends — so
+       at 0 that clamp lands as a hard band straight across the face. */
+    gradExtend: 0.45,
+    gradStops: 22,
+    /* Perspective pushes a bar off the side of the frame long before its depth
+       ever reaches zNear, so it leaves at full strength and the edge simply
+       clips it — that is the hard "gone" moment. This fades a bar by how far
+       past the frame it has travelled, as a fraction of the viewport. It is
+       applied per END, not per bar: the outer end dissolves as it swings out
+       while the end pointing at the vanishing knot stays put. 0 disables.
+       NOTE: deliberately not called edgeFade — that name is already taken above
+       for the hairline's depth ramp, and two keys of the same name in one
+       options object silently overwrite each other. */
+    borderFade: 0,
+    /* Chips: flat accent rectangles in a darker ink, living entirely in SCREEN
+       space. They have no depth at all — no projection, no perspective scaling,
+       no depth fade, and they do not ride the field's travel. But they are NOT
+       a layer on top: each one is spliced into the bar draw order at its own
+       fixed depth, so slabs pass in front of some and behind others. Flat in
+       shape, interleaved in stacking. They drift on their own slow clock.
+       Sizes are fractions of the viewport so they hold across a resize. */
+    chips: 0, chipCol: '#17287F',
+    chipMinW: 0.035, chipMaxW: 0.22,   // width, as a fraction of viewport width
+    chipMinH: 5, chipMaxH: 26,         // height in CSS px
+    chipDrift: 0.012,                  // viewport widths per second
+    // 0 = behind every bar, 1 = in front of every bar
+    chipDepthMin: 0.12, chipDepthMax: 0.95,
     // view
     fov: 62, vpX: 0.86, vpY: 0.52,
     // style
     col: '#1E44D6', bg: '#ffffff', wash: 0.34, washCol: '#5C7BE6', washR: 0.55,
+    /* Falloff of the bloom. A plain 2-stop gradient has a flat core and a hard
+       shoulder; this is a gaussian normalised to reach exactly zero at washR,
+       so the light disperses instead of stopping. Lower = softer and wider. */
+    washSoft: 3,
     // motion
     speed: 900,          // world units per second toward the camera
     parallax: 0.05,      // how far the vanishing point chases the pointer
@@ -77,6 +127,7 @@
     this.ctx = canvas.getContext('2d', { alpha: true });
     this.P = {};
     this.travel = 0;
+    this.clock = 0;          // chips drift on this, not on travel
     this.running = false;
     this.t0 = 0;
     this.pointer = { x: 0.5, y: 0.5 };
@@ -95,7 +146,10 @@
       next.aspectXY != null || next.clump != null || next.hole != null || next.cone != null ||
       next.zNear != null || next.zFar != null || next.zPow != null ||
       next.lenMin != null || next.lenMax != null || next.lenDepth != null ||
-      next.thick != null || next.thickVar != null || next.flat != null || next.flatVar != null)) {
+      next.thick != null || next.thickVar != null || next.flat != null || next.flatVar != null ||
+      next.chips != null || next.chipMinW != null || next.chipMaxW != null ||
+      next.chipMinH != null || next.chipMaxH != null ||
+      next.chipDepthMin != null || next.chipDepthMax != null)) {
       this.bars = null;
     }
     return this;
@@ -106,6 +160,8 @@
     this.COL = hex(P.col);
     this.BG = hex(P.bg);
     this.WASH = hex(P.washCol);
+    this.EDGE = hex(P.edgeCol);
+    this.CHIP = hex(P.chipCol);
     // one base tone per face step, precomputed so the hot loop only lerps toward bg
     this.faceCol = FACE.map(function (F) {
       return mix(this.COL, this.BG, (1 - F.s) * P.faceShade);
@@ -136,6 +192,26 @@
       });
     }
     this.bars = out;
+
+    /* Their own stream from the same generator, so a seed reproduces both. */
+    var chips = [];
+    for (var c = 0; c < Math.round(P.chips); c++) {
+      var ang = r() * TAU;
+      chips.push({
+        // start positions span a margin past each edge so a chip is already
+        // off-screen by the time its drift wraps it — no pop at the border
+        nx: r(), ny: r(),
+        // width biased small, so most are stubs and a few run long
+        w: lerp(P.chipMinW, P.chipMaxW, Math.pow(r(), 1.7)),
+        // height picked independently of width — that is what makes the set
+        // read as varied rather than as one shape at several scales
+        h: lerp(P.chipMinH, P.chipMaxH, Math.pow(r(), 1.4)),
+        vx: Math.cos(ang) * lerp(0.35, 1, r()),
+        vy: Math.sin(ang) * lerp(0.35, 1, r()) * 0.45,
+        layer: lerp(P.chipDepthMin, P.chipDepthMax, r())
+      });
+    }
+    this.chips = chips;
     return out;
   };
 
@@ -168,19 +244,33 @@
     var washR = Math.hypot(W, H) * P.washR;
     var BG = this.BG, WASH = this.WASH, wash = P.wash;
 
+    /* One falloff curve, used by BOTH the painted gradient and bgAt below. If
+       they ever disagree, every bar is mixed toward a background colour that
+       is not the one actually behind it, and the field separates from its own
+       wash. */
+    var K = Math.max(0.2, P.washSoft), E = Math.exp(-K), N = 1 - E;
+    function fall(u) {
+      if (u >= 1) return 0;
+      if (u <= 0) return 1;
+      return (Math.exp(-K * u * u) - E) / N;
+    }
+
     // the colour actually sitting behind a point on the canvas — bg plus wash
     function bgAt(x, y) {
       if (wash <= 0) return BG;
-      var t = wash * clamp(1 - Math.hypot(x - px, y - py) / washR, 0, 1);
-      return mix(BG, WASH, t);
+      return mix(BG, WASH, wash * fall(Math.hypot(x - px, y - py) / washR));
     }
 
     ctx.clearRect(0, 0, W, H);
     if (!P.transparent) { ctx.fillStyle = css(BG); ctx.fillRect(0, 0, W, H); }
     if (wash > 0) {
       var g = ctx.createRadialGradient(px, py, 0, px, py, washR);
-      g.addColorStop(0, 'rgba(' + WASH[0] + ',' + WASH[1] + ',' + WASH[2] + ',' + wash + ')');
-      g.addColorStop(1, 'rgba(' + WASH[0] + ',' + WASH[1] + ',' + WASH[2] + ',0)');
+      // sampled rather than 2-stop, so the curve above is what actually paints
+      for (var gs = 0; gs <= 16; gs++) {
+        var gu = gs / 16;
+        g.addColorStop(gu, 'rgba(' + WASH[0] + ',' + WASH[1] + ',' + WASH[2] + ',' +
+          (wash * fall(gu)).toFixed(4) + ')');
+      }
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
     }
@@ -198,10 +288,57 @@
     }
     bars.sort(function (a, c) { return c.z - a.z; });
 
-    var C = new Array(8), minA = P.minPx * P.minPx;
+    /* Bucket each chip against the bar it should appear directly in front of.
+       Drawing is otherwise strictly far-to-near, so this is all the ordering
+       control a flat mark needs. */
+    var self = this, chipAt = null;
+    if (this.chips && this.chips.length && bars.length) {
+      chipAt = {};
+      var ct = this.clock * P.chipDrift, CSPAN = 1.4, COFF = -0.2;
+      for (var ci = 0; ci < this.chips.length; ci++) {
+        var cch = this.chips[ci];
+        var slot = clamp(Math.floor(cch.layer * bars.length), 0, bars.length - 1);
+        (chipAt[slot] || (chipAt[slot] = [])).push(cch);
+      }
+    }
+    function paintChips(list) {
+      ctx.fillStyle = css(self.CHIP);
+      for (var q = 0; q < list.length; q++) {
+        var ch = list[q];
+        var cw = ch.w * W;
+        var ux = COFF + (((ch.nx + ch.vx * ct) % CSPAN) + CSPAN) % CSPAN;
+        var uy = COFF + (((ch.ny + ch.vy * ct) % CSPAN) + CSPAN) % CSPAN;
+        var rx = ux * W - cw / 2, ry = uy * H - ch.h / 2;
+        ctx.fillRect(rx, ry, cw, ch.h);
+        if (P.edge > 0) {
+          // the same hairline the bars carry, so the marks belong to the set
+          ctx.strokeStyle = P.edgeCol;
+          ctx.lineWidth = P.edge;
+          ctx.strokeRect(rx, ry, cw, ch.h);
+        }
+      }
+    }
+
+    var C = new Array(8), minA = P.minPx * P.minPx, EDGE = this.EDGE;
+    // capped: the two ramps must not overlap, or every bar is permanently faded
+    var wf = Math.min(P.wrapFade, 0.45) * span;
+
+    /* How far outside the frame a point has drifted, 1 inside → 0 a full margin
+       out. Smoothstepped so there is no moment the dissolve starts or stops. */
+    var ef = P.borderFade, efx = W * ef, efy = H * ef;
+    function edgeAt(x, y) {
+      var ox = Math.max(0, -x, x - W) / efx;
+      var oy = Math.max(0, -y, y - H) / efy;
+      var t = 1 - Math.max(ox, oy);
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      return t * t * (3 - 2 * t);
+    }
+    ctx.lineJoin = 'round';
     var drawn = 0;
 
     for (i = 0; i < bars.length; i++) {
+      if (chipAt && chipAt[i]) paintChips(chipAt[i]);
       b = bars[i];
       if (b.z0 < 24) continue;
 
@@ -225,9 +362,29 @@
       var aFarRaw = clamp(1 - P.fade * Math.pow(clamp((zf - P.zNear) / span, 0, 1), pw), 0, 1);
       var aFar = clamp(lerp(aNear, aFarRaw * (1 - P.gradPow * 0.35), P.grad), 0, 1);
 
+      /* One factor for the whole bar, driven by z0 — the coordinate that
+         actually wraps — so a bar dissolves as a unit rather than shearing. */
+      if (wf > 0) {
+        var w = Math.min((b.z0 - P.zNear) / wf, (P.zFar - b.z0) / wf);
+        if (w <= 0) continue;
+        if (w < 1) {
+          // smoothstep, so the dissolve has no visible start or end
+          w = w * w * (3 - 2 * w);
+          if (P.wrapFadePow !== 1) w = Math.pow(w, P.wrapFadePow);
+          aNear *= w; aFar *= w;
+        }
+      }
+
       var nf = f / b.z0, ff = f / zf;
       var nx = px + b.x * nf, ny = py + b.y * nf;
       var fx = px + b.x * ff, fy = py + b.y * ff;
+
+      if (ef > 0) {
+        aNear *= edgeAt(nx, ny);
+        aFar *= edgeAt(fx, fy);
+        if (aNear <= 0.002 && aFar <= 0.002) continue;
+      }
+
       var behindN = bgAt(nx, ny), behindF = bgAt(fx, fy);
 
       if (P.faces) {
@@ -255,6 +412,13 @@
             ? this._grad(nx, ny, fx, fy, base, behindN, behindF, aNear, aFar)
             : css(mix(base, behindN, 1 - aNear));
           ctx.fill();
+          if (P.edge > 0) {
+            ctx.strokeStyle = P.edgeFade
+              ? this._grad(nx, ny, fx, fy, EDGE, behindN, behindF, aNear, aFar)
+              : P.edgeCol;
+            ctx.lineWidth = P.edge;
+            ctx.stroke();
+          }
           drawn++;
         }
       } else {
@@ -281,11 +445,26 @@
   };
 
   ExtrusionField.prototype._grad = function (x0, y0, x1, y1, base, behindN, behindF, aN, aF) {
+    var P = this.P;
+    var dx = x1 - x0, dy = y1 - y0;
     // degenerate line (bar pointing straight at the camera) → flat fill
-    if (Math.abs(x1 - x0) < 0.01 && Math.abs(y1 - y0) < 0.01) return css(mix(base, behindN, 1 - aN));
-    var g = this.ctx.createLinearGradient(x0, y0, x1, y1);
-    g.addColorStop(0, css(mix(base, behindN, 1 - aN)));
-    g.addColorStop(1, css(mix(base, behindF, 1 - aF)));
+    if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) return css(mix(base, behindN, 1 - aN));
+
+    // Run the ramp well past both ends so the gradient's flat clamp regions
+    // fall outside the polygon instead of banding across it.
+    var e = P.gradExtend, k = 1 + 2 * e;
+    var g = this.ctx.createLinearGradient(x0 - dx * e, y0 - dy * e, x1 + dx * e, y1 + dy * e);
+
+    var cN = mix(base, behindN, 1 - aN), cF = mix(base, behindF, 1 - aF);
+    var n = Math.max(2, P.gradStops);
+    for (var i = 0; i <= n; i++) {
+      var u = i / n;
+      // back into the bar's own 0..1 span, then smoothstepped — a perfectly
+      // linear ramp is what the eye catches as a hard edge
+      var t = clamp(u * k - e, 0, 1);
+      t = t * t * (3 - 2 * t);
+      g.addColorStop(u, css(mix(cN, cF, t)));
+    }
     return g;
   };
 
@@ -313,6 +492,7 @@
     var dt = this.t0 ? Math.min((t - this.t0) / 1000, 0.05) : 0.016;
     this.t0 = t;
     this.travel += this.P.speed * dt * (this.speedScale == null ? 1 : this.speedScale);
+    this.clock += dt;
     this.draw();
     this.raf = global.requestAnimationFrame(this._loop);
   };

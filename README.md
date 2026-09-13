@@ -18,10 +18,26 @@ Two rules carried over from the tool, both learned the hard way:
 - `cone` < 1 pulls the far end of the cloud toward the view axis, which is what
   tightens the vanishing knot.
 
-`index.html` tunes it off the reference rather than off the tool's presets: the
-knot sits left of centre and low, the cloud is wider than it is tall so the
-corridor reads as a road rather than a tunnel, and the ground is a pale blue that
-the wash bleaches to white at the vanishing point.
+`index.html` tunes it off the poster rather than off the tool's presets: the knot
+stays left and low so the field streams out from the left, but `aspectXY` comes
+well down from a flat band so structure surrounds the knot instead of fanning
+sideways, `hole` holds a void open on the view axis so a near slab cannot plug
+the centre, and the ground is a pale blue that the wash bleaches to white at the
+vanishing point. The zoomed-in read comes from `thick` — massive, fewer slabs at
+the same camera distance — not from moving the camera in.
+
+`chips` are the flat dark rectangles drifting through the field, currently set
+to 0 in `index.html` — the tuning is kept there so they can be switched back on. They are flat in
+shape but interleaved in stacking: no projection, no perspective scaling, no depth
+fade and no ride on the field's travel, yet each is spliced into the bar draw
+order at its own fixed `layer`, so slabs pass in front of some and behind others.
+They carry the same white hairline as the bars and drift on their own slow clock,
+independent of flight speed, so the wheel throttle never drags them along.
+
+The bloom at the knot is a gaussian normalised to reach zero at `washR`, sampled
+into the gradient. `bgAt()` uses the identical curve — if the two ever disagree,
+every bar is mixed toward a background colour that is not the one behind it and
+the field visibly separates from its own wash.
 
 ## Interaction
 
