@@ -408,11 +408,20 @@ h1{
       // the tonal steps between faces go with the fill; only the outline is left
       faceShade: lerp(0.36, 0, e),
       grad: lerp(0.55, 0, e),
-      fade: lerp(0.76, 0.42, e),
-      // the ground picks up a faint blue and the knot keeps a white bloom, so a
-      // white slab still reads against what is behind it
-      bg: mixHex('#ffffff', '#e9eefb', e),
-      wash: lerp(0, 0.85, e)
+      /* Depth fade has to reach 0, not just get small. Any residual fade mixes a
+         white fill toward the pale ground, and that is what reads as the grey,
+         half-dissolved slabs — in the wireframe every fill is pure white and
+         depth is carried by the hairlines and by occlusion alone. */
+      fade: lerp(0.76, 0, e),
+      /* The ground stays pure white. A slab's fill is mixed toward whatever is
+         behind it by however much it has been faded — by depth, by the wrap
+         ramp, by the frame-border ramp — so any ground that is NOT white leaves
+         the faded ones grey and half-dissolved. White into white is white at
+         every fade amount, which is what makes the set read as one material.
+         Depth still reads: the hairline is mixed the same way, so distant
+         outlines fade out while their fills stay solid. */
+      bg: '#ffffff',
+      wash: 0
     });
 
     drive();
