@@ -99,11 +99,16 @@ h1{
 .register:hover{transform:translateX(5px)}
 
 /* ---------- sponsors ----------
-   A second plate under the card, same width and same border, so the two read
-   as one stack. The logos keep their own brand colours — the white plate is
-   what makes that safe over a field this saturated. */
+   Pinned to the bottom-right corner, diagonally opposite the card, so the two
+   plates bracket the corridor rather than stacking on one side. Fixed rather
+   than in flow: the page never scrolls, and the plate belongs to the frame.
+   z-index sits above the field but under the header band.
+   The logos keep their own brand colours — the white plate is what makes that
+   safe over a field this saturated. */
 .spon{
-  position:relative;width:var(--card-w);min-width:290px;margin-top:10px;
+  position:fixed;z-index:2;
+  right:var(--edge);bottom:clamp(20px,3.6vh,36px);
+  width:var(--card-w);min-width:290px;
   background:var(--paper);border:1px solid var(--blue);
   overflow:hidden;opacity:0;
 }
@@ -143,9 +148,15 @@ h1{
 @media (max-width:720px){
   :root{--bar-h:68px}
   .brand span{font-size:10px}
-  .card{width:min(100%,420px)}
+  /* the register button sits inside the card on this breakpoint; the tagline
+     added below the h1 needs the floor raised or the two collide */
+  .card{width:min(100%,420px);padding-bottom:92px}
   main{padding-left:var(--edge)}
   .register{right:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
+  /* a 40vw plate is a sliver on a phone — span the gutters instead, and clear
+     the register button, which has moved to the bottom-left on this breakpoint */
+  .spon{left:var(--edge);right:var(--edge);width:auto;min-width:0;bottom:14px}
+  .spon__track{gap:26px;padding:12px 0 12px 26px}
 }
 @media (prefers-reduced-motion:reduce){
   .bar,.card,.register,.spon{animation-duration:.01ms;animation-delay:0ms}
@@ -174,22 +185,23 @@ h1{
     <a class="register" href="#"><span>REGISTER</span></a>
   </div>
 
-  <div class="spon">
-    <div class="spon__track">
-      <img src="logos/solidworks.png" alt="SOLIDWORKS">
-      <img src="logos/intel.svg" class="md" alt="Intel">
-      <img src="logos/bentley.png" alt="Bentley Systems">
-      <img src="logos/d5.png" class="sq" alt="D5 Render">
-      <img src="logos/amd.png" alt="AMD">
-      <img src="logos/solidworks.png" alt="" aria-hidden="true">
-      <img src="logos/intel.svg" class="md" alt="" aria-hidden="true">
-      <img src="logos/bentley.png" alt="" aria-hidden="true">
-      <img src="logos/d5.png" class="sq" alt="" aria-hidden="true">
-      <img src="logos/amd.png" alt="" aria-hidden="true">
-    </div>
-    <div class="spon__mask"></div>
-  </div>
 </main>
+
+<div class="spon">
+  <div class="spon__track">
+    <img src="logos/solidworks.png" alt="SOLIDWORKS">
+    <img src="logos/intel.svg" class="md" alt="Intel">
+    <img src="logos/bentley.png" alt="Bentley Systems">
+    <img src="logos/d5.png" class="sq" alt="D5 Render">
+    <img src="logos/amd.png" alt="AMD">
+    <img src="logos/solidworks.png" alt="" aria-hidden="true">
+    <img src="logos/intel.svg" class="md" alt="" aria-hidden="true">
+    <img src="logos/bentley.png" alt="" aria-hidden="true">
+    <img src="logos/d5.png" class="sq" alt="" aria-hidden="true">
+    <img src="logos/amd.png" alt="" aria-hidden="true">
+  </div>
+  <div class="spon__mask"></div>
+</div>
 
 <script src="field.js"></script>
 <script src="xbox.js"></script>
