@@ -103,15 +103,12 @@ h1{
 .register:hover{transform:translateX(5px)}
 
 /* ---------- sponsors ----------
-   Pinned to the bottom-right corner, diagonally opposite the card, so the two
-   plates bracket the corridor rather than stacking on one side. Fixed rather
-   than in flow: the page never scrolls, and the plate belongs to the frame.
-   z-index sits above the field but under the header band.
+   A second plate under the card, same width and same border, so the two read
+   as one stack. In flow rather than fixed, so it scrolls away with the hero.
    The logos keep their own brand colours — the white plate is what makes that
    safe over a field this saturated. */
 .spon{
-  position:fixed;z-index:2;
-  right:var(--edge);bottom:clamp(20px,3.6vh,36px);
+  position:relative;z-index:2;margin-top:10px;
   width:var(--card-w);min-width:290px;
   background:var(--paper);border:1px solid var(--blue);
   overflow:hidden;opacity:0;
@@ -192,11 +189,12 @@ h1{
   /* the register button sits inside the card on this breakpoint; the tagline
      added below the h1 needs the floor raised or the two collide */
   .card{width:min(100%,420px);padding-bottom:92px}
-  main{padding-left:var(--edge)}
+  /* must be .hero, not main: the base rule is a class, and a class outranks an
+     element selector, so `main{...}` here silently lost and never applied */
+  .hero{padding-left:var(--edge)}
   .register{right:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
-  /* a 40vw plate is a sliver on a phone — span the gutters instead, and clear
-     the register button, which has moved to the bottom-left on this breakpoint */
-  .spon{left:var(--edge);right:var(--edge);width:auto;min-width:0;bottom:14px}
+  /* var(--card-w) is 40vw here, a sliver — track the card's own width instead */
+  .spon{width:min(100%,420px);min-width:0}
   .spon__track{gap:26px;padding:12px 0 12px 26px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -224,6 +222,22 @@ h1{
     <h1>HP COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
     <p class="tagline">Exploring Tomorrow.<br>Empowering Today.</p>
     <a class="register" href="#"><span>REGISTER</span></a>
+  </div>
+
+  <div class="spon">
+    <div class="spon__track">
+      <img src="logos/solidworks.png" alt="SOLIDWORKS">
+      <img src="logos/intel.svg" class="md" alt="Intel">
+      <img src="logos/bentley.png" alt="Bentley Systems">
+      <img src="logos/d5.png" class="sq" alt="D5 Render">
+      <img src="logos/amd.png" alt="AMD">
+      <img src="logos/solidworks.png" alt="" aria-hidden="true">
+      <img src="logos/intel.svg" class="md" alt="" aria-hidden="true">
+      <img src="logos/bentley.png" alt="" aria-hidden="true">
+      <img src="logos/d5.png" class="sq" alt="" aria-hidden="true">
+      <img src="logos/amd.png" alt="" aria-hidden="true">
+    </div>
+    <div class="spon__mask"></div>
   </div>
 
 </main>
@@ -266,21 +280,6 @@ h1{
   </div>
 </section>
 
-<div class="spon">
-  <div class="spon__track">
-    <img src="logos/solidworks.png" alt="SOLIDWORKS">
-    <img src="logos/intel.svg" class="md" alt="Intel">
-    <img src="logos/bentley.png" alt="Bentley Systems">
-    <img src="logos/d5.png" class="sq" alt="D5 Render">
-    <img src="logos/amd.png" alt="AMD">
-    <img src="logos/solidworks.png" alt="" aria-hidden="true">
-    <img src="logos/intel.svg" class="md" alt="" aria-hidden="true">
-    <img src="logos/bentley.png" alt="" aria-hidden="true">
-    <img src="logos/d5.png" class="sq" alt="" aria-hidden="true">
-    <img src="logos/amd.png" alt="" aria-hidden="true">
-  </div>
-  <div class="spon__mask"></div>
-</div>
 
 <script src="field.js"></script>
 <script src="xbox.js"></script>
@@ -388,22 +387,7 @@ h1{
     return o;
   }
 
-  var spon = document.querySelector('.spon');
   var morph = -1;
-
-  /* The entrance animation runs with fill-mode: forwards, and a running or
-     filled animation outranks an inline style — so spon.style.opacity is simply
-     ignored until the animation is taken off the element. Drop it once it has
-     played (or the moment a scroll needs the plate to fade, whichever is
-     first) and pin the value it left behind. */
-  var sponFree = false;
-  function freeSpon() {
-    if (sponFree || !spon) return;
-    sponFree = true;
-    spon.style.animation = 'none';
-    spon.style.opacity = '1';
-  }
-  if (spon) spon.addEventListener('animationend', freeSpon);
 
   function applyMorph(m) {
     if (Math.abs(m - morph) < 0.002) return;
@@ -416,6 +400,11 @@ h1{
       // the wireframe is nothing but its lines, so they must stay hairlines —
       // thickening them on the way in is what made it read as heavy
       edge: lerp(0.5, 0.52, e),
+      /* Narrowing the field of view magnifies everything about the vanishing
+         point, which is the actual zoom. Pushing `travel` instead would only
+         cycle the field — bars wrap, so advancing time brings new bars at the
+         same apparent scale rather than bringing these ones closer. */
+      fov: lerp(70, 36, e),
       // the tonal steps between faces go with the fill; only the outline is left
       faceShade: lerp(0.36, 0, e),
       grad: lerp(0.55, 0, e),
@@ -431,12 +420,6 @@ h1{
     // canvas — the corridor would stay solid blue the whole way down the page
     if (reduced) field.draw();
 
-    // the corner plate belongs to the hero, not to the sheets it would sit over
-    if (spon) {
-      if (e > 0) freeSpon();
-      if (sponFree) spon.style.opacity = String(Math.max(0, 1 - e * 1.6));
-      spon.style.pointerEvents = e > 0.5 ? 'none' : '';
-    }
   }
 
   /* Once the wireframe has formed the flight is over, but the descent is not:
