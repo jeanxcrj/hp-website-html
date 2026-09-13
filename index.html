@@ -3,12 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Designing the Future — HP</title>
-<meta name="description" content="A tour through what comes next.">
+<title>HP College Tour 2026 — Exploring Tomorrow. Empowering Today.</title>
+<meta name="description" content="Exploring Tomorrow. Empowering Today.">
 <link rel="icon" href="hp-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
+<link rel="stylesheet" href="https://use.typekit.net/yxt3aqw.css">
 <style>
 /* The blue is the logo's own — the asset is a single colour, #024AD8, so the
    mark, the type and the bars in the field are all literally one ink. */
@@ -20,7 +19,7 @@
   --bar-h:84px;
   --edge:clamp(16px,3.2vw,46px);
   --hero-x:clamp(20px,8vw,118px);
-  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -50,9 +49,9 @@ body{
    knocked out of the disc as transparency, so the band shows through them and
    the mark reads white-on-blue without a second asset. */
 .brand img{width:38px;height:38px;display:block;filter:brightness(0) invert(1)}
-.brand span{font-size:11px;line-height:1.36;letter-spacing:.13em;font-weight:500}
+.brand span{font-size:11px;line-height:1.36;letter-spacing:.05em;word-spacing:-.3em;font-weight:700}
 .host{
-  font-size:11px;letter-spacing:.13em;font-weight:500;color:#fff;text-decoration:none;
+  font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;color:#fff;text-decoration:none;
   border:1px solid #fff;padding:7px 13px;transition:background .18s ease,color .18s ease;
 }
 .host:hover{background:#fff;color:var(--blue)}
@@ -68,7 +67,11 @@ main{position:relative;z-index:2;height:100%;
 }
 h1{
   margin:0;font-size:clamp(26px,3.1vw,44px);line-height:1.24;font-weight:700;
-  letter-spacing:.01em;color:var(--blue);
+  letter-spacing:-.02em;word-spacing:-.34em;color:var(--blue);
+}
+.tagline{
+  margin:clamp(14px,1.6vw,20px) 0 0;font-size:clamp(11px,.95vw,13px);
+  line-height:1.5;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;color:var(--blue);
 }
 /* the cursor blinks the way a prompt does; it is the one moving thing in the
    type, so it carries the "still running" note on its own */
@@ -80,20 +83,19 @@ h1{
    different depths rather than one panel. */
 .register{
   position:absolute;right:clamp(-86px,-6vw,-40px);bottom:clamp(38px,5vw,64px);
-  display:inline-block;background:var(--blue);color:#fff;text-decoration:none;
-  font-size:clamp(12px,1.05vw,14px);letter-spacing:.13em;font-weight:500;
-  padding:15px 27px;border:1px solid var(--blue);
-  transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s ease;
+  display:inline-block;color:#fff;text-decoration:none;
+  font-size:clamp(12px,1.05vw,14px);letter-spacing:.13em;font-weight:700;
+  padding:15px 27px;
+  transition:transform .2s cubic-bezier(.22,1,.36,1);
   opacity:0;
 }
-.register:hover{background:var(--blue-ink);transform:translateX(5px)}
-
-/* ---------- footnote ---------- */
-.meta{
-  position:fixed;left:var(--edge);bottom:18px;z-index:2;
-  font-size:10px;letter-spacing:.15em;color:var(--blue);opacity:0;
-}
-.meta b{font-weight:500}
+/* xbox.js draws the slab into this SVG: the face, the two visible side faces
+   and the hairline. It recedes toward the field's own vanishing point, so the
+   button and the corridor agree about where the camera is. overflow must stay
+   visible — the extrusion legitimately draws outside the anchor's box. */
+.register svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.register span{position:relative;z-index:1}
+.register:hover{transform:translateX(5px)}
 
 /* ---------- entrance ----------
    Everything arrives after the field has already been flying for a moment, so
@@ -102,10 +104,8 @@ h1{
 .bar{animation:drop .7s cubic-bezier(.22,1,.36,1) .15s forwards}
 .card{animation:rise .8s cubic-bezier(.22,1,.36,1) .5s forwards}
 .register{animation:rise .6s cubic-bezier(.22,1,.36,1) .95s forwards}
-.meta{animation:fade .8s ease 1.2s forwards}
 @keyframes drop{to{transform:translateY(0)}}
 @keyframes rise{to{opacity:1;transform:translateY(0)}}
-@keyframes fade{to{opacity:.75}}
 
 @media (max-width:720px){
   :root{--bar-h:68px}
@@ -115,7 +115,7 @@ h1{
   .register{right:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
 }
 @media (prefers-reduced-motion:reduce){
-  .bar,.card,.register,.meta{animation-duration:.01ms;animation-delay:0ms}
+  .bar,.card,.register{animation-duration:.01ms;animation-delay:0ms}
   .caret{animation:none}
 }
 </style>
@@ -127,40 +127,58 @@ h1{
 <header class="bar">
   <a class="brand" href="#">
     <img src="hp-logo.png" alt="HP">
-    <span>DESIGNING<br>THE FUTURE_</span>
+    <span>HP COLLEGE<br>TOUR 2026_</span>
   </a>
   <a class="host" href="#">HOST THE TOUR</a>
 </header>
 
 <main>
   <div class="card">
-    <h1>DESIGNING<br>THE FUTURE<i class="caret">_</i></h1>
-    <a class="register" href="#">REGISTER</a>
+    <h1>HP COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
+    <p class="tagline">Exploring Tomorrow.<br>Empowering Today.</p>
+    <a class="register" href="#"><span>REGISTER</span></a>
   </div>
 </main>
 
-<p class="meta"><b>2026 TOUR</b> &nbsp;·&nbsp; DRAG TO STEER &nbsp;·&nbsp; SCROLL TO ACCELERATE</p>
-
 <script src="field.js"></script>
+<script src="xbox.js"></script>
 <script>
 (function () {
   'use strict';
   var canvas = document.getElementById('field');
 
-  /* Tuned off the reference rather than off the tool's own presets: the knot
-     sits left of centre and low, the cloud is wider than it is tall so the
-     corridor reads as a road rather than a tunnel, and the ground is a pale
-     blue that the wash bleaches to white at the vanishing point. */
+  /* Tuned off the poster. The knot stays left and low, so the field still
+     streams out from the left, but aspectXY is pulled well down from the
+     original 1.8: the cloud now surrounds the knot rather than fanning into a
+     flat band, which is what puts structure above the vanishing point as well
+     as below it. hole holds a void open on the view axis so a near slab cannot
+     park on the centre and plug it. The "zoomed in" read comes from thick —
+     massive, fewer slabs at the same camera distance — not from moving the
+     camera in. The bloom is wide and gaussian (washSoft) so the light
+     disperses across the frame instead of stopping at a hard shoulder. */
   var field = new ExtrusionField(canvas, {
-    count: 430, seed: 12,
-    spread: 1700, aspectXY: 1.8, clump: 0.46, hole: 0.02, cone: 0.55,
-    zNear: 700, zFar: 12000, zPow: 1.35,
-    lenMin: 600, lenMax: 5200, lenDepth: 0.8,
-    thick: 145, thickVar: 0.8, flat: 0.28, flatVar: 0.85,
+    count: 220, seed: 12,
+    spread: 1500, aspectXY: 1.15, clump: 0.55, hole: 0.13, cone: 0.55,
+    zNear: 620, zFar: 10000, zPow: 1.35,
+    lenMin: 900, lenMax: 5600, lenDepth: 0.8,
+    thick: 400, thickVar: 0.5, flat: 0.30, flatVar: 0.6,
     faces: true, faceShade: 0.36,
-    fade: 0.88, fadePow: 1.5, grad: 0.8, gradPow: 1,
-    fov: 66, vpX: 0.27, vpY: 0.58,
-    col: '#024AD8', bg: '#b9cbf0', wash: 0.96, washCol: '#ffffff', washR: 0.5,
+    fade: 0.76, fadePow: 1.5, grad: 0.55, gradPow: 1, gradStops: 22, gradExtend: 0.45,
+    /* minPx 2 rather than the default 1.2: with the hairline on, anything
+       smaller is more stroke than fill and reads as grit */
+    minPx: 4, edge: 0.5, edgeCol: '#ffffff', edgeFade: true,
+    /* Flat dark marks drifting through the field, off for now. The tuning
+       below is kept so chips: 7 switches them straight back on. */
+    chips: 0, chipCol: '#17287F',
+    chipMinW: 0.03, chipMaxW: 0.105, chipMinH: 8, chipMaxH: 24, chipDrift: 0.0035,
+    /* dissolve in and out of the depth loop instead of popping — measured:
+       the ramp runs at both ends of the loop, so past ~0.3 it starts bleaching
+       the near slabs, which are the ones carrying the colour */
+    wrapFade: 0.16,
+    /* dissolve at the frame border instead of being clipped by it */
+    borderFade: 0.38,
+    fov: 70, vpX: 0.37, vpY: 0.58,
+    col: '#024AD8', bg: '#b9cbf0', wash: 0.52, washCol: '#ffffff', washR: 0.88, washSoft: 2.8,
     speed: 760, parallax: 0.055, ease: 0.05
   });
 
@@ -188,10 +206,22 @@ h1{
   }
 
   /* Drag steers harder than hover: while the pointer is down the vanishing
-     point takes the full width of the window rather than a sliver of it. */
-  var basePar = field.P.parallax;
-  addEventListener('pointerdown', function () { field.set({ parallax: 0.55, ease: 0.12 }); });
-  addEventListener('pointerup', function () { field.set({ parallax: basePar, ease: 0.05 }); });
+     point takes the full width of the window rather than a sliver of it.
+     Only from the backdrop, though — pressing the card, the header or any
+     control is someone using the page, not aiming the corridor, and swinging
+     the whole field under their cursor as they click REGISTER reads as a bug. */
+  var basePar = field.P.parallax, steering = false;
+  var UI = 'a, button, input, .card, .bar';
+  addEventListener('pointerdown', function (e) {
+    if (e.target && e.target.closest && e.target.closest(UI)) return;
+    steering = true;
+    field.set({ parallax: 0.55, ease: 0.12 });
+  });
+  addEventListener('pointerup', function () {
+    if (!steering) return;          // never started, so nothing to restore
+    steering = false;
+    field.set({ parallax: basePar, ease: 0.05 });
+  });
 
   /* Wheel is a throttle, not a scroll — the page has nowhere to go, so the
      gesture drives the flight instead. It always falls back to cruise. */
@@ -207,13 +237,38 @@ h1{
     });
   }, { passive: false });
 
-  addEventListener('resize', function () { field.resize(); });
+  addEventListener('resize', function () {
+    field.resize();
+    if (reduced) field.draw();   // no loop running to repaint it
+  });
 
   /* A hidden tab renders nothing; coming back should not jump the field
      forward by however long you were away. */
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) field.stop(); else field.start();
   });
+
+  /* ---------- the REGISTER slab ----------
+     It shares the field's live (parallaxed) vanishing point, so steering the
+     corridor re-angles the button's extrusion with it. Redrawing its SVG every
+     frame would be waste, so it only redraws when the point has actually moved
+     or the hover depth is still settling. */
+  var slab = new ExtrudedBox(document.querySelector('.register'), {
+    col: '#024AD8', bg: '#b9cbf0', edgeCol: '#ffffff', edge: 0.5, faceShade: 0.36
+  });
+  var lastVX = NaN, lastVY = NaN;
+  function drawSlab(force) {
+    var moved = force || Math.abs(field.vp.x - lastVX) > 0.0004
+                      || Math.abs(field.vp.y - lastVY) > 0.0004;
+    if (!moved && Math.abs(slab.k - slab.kTarget) < 0.0004) return;
+    slab.set({ vpX: field.vp.x, vpY: field.vp.y });
+    slab.draw();
+    lastVX = field.vp.x; lastVY = field.vp.y;
+  }
+  (function slabTick() { drawSlab(false); requestAnimationFrame(slabTick); })();
+  addEventListener('resize', function () { drawSlab(true); });
+  /* the face changes width once the real mono lands, so re-lay the slab then */
+  if (document.fonts) document.fonts.ready.then(function () { drawSlab(true); });
 
   field.start();
   if (reduced) field.stop(), field.draw();
