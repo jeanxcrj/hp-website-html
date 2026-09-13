@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><title>engine test</title>
+<style>html,body{margin:0;height:100%;background:#fff}canvas{display:block;width:100vw;height:100vh}</style>
+<canvas id="c"></canvas>
+<script src="field.js"></script>
+<script>
+var f = new ExtrusionField(document.getElementById('c'), {});
+addEventListener('resize', function(){ f.resize(); });
+addEventListener('pointermove', function(e){ f.pointer.x = e.clientX/innerWidth; f.pointer.y = e.clientY/innerHeight; });
+f.start();
+</script>

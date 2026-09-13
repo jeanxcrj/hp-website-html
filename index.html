@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Designing the Future — HP</title>
+<meta name="description" content="A tour through what comes next.">
+<link rel="icon" href="hp-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* The blue is the logo's own — the asset is a single colour, #024AD8, so the
+   mark, the type and the bars in the field are all literally one ink. */
+:root{
+  --blue:#024AD8;
+  --blue-ink:#0b2f96;
+  --ground:#b9cbf0;      /* the wash the corridor sits on, away from the knot */
+  --paper:#ffffff;
+  --bar-h:84px;
+  --edge:clamp(16px,3.2vw,46px);
+  --hero-x:clamp(20px,8vw,118px);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;overflow:hidden;background:var(--ground);color:var(--blue);
+  font-family:var(--mono);-webkit-font-smoothing:antialiased;
+  /* the corridor is a drag surface for the vanishing point, so no text caret */
+  -webkit-user-select:none;user-select:none;
+}
+
+/* ---------- the field ----------
+   One canvas behind everything, sized to the window in CSS pixels; field.js
+   handles the device-pixel scaling itself. */
+#field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+
+/* ---------- header ----------
+   A solid band of the ink across the top, the way the reference cuts the
+   corridor off rather than fading it out. */
+.bar{
+  position:fixed;top:0;left:0;right:0;height:var(--bar-h);z-index:3;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--edge);background:var(--blue);color:#fff;
+  transform:translateY(-100%);
+}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
+/* brightness(0) invert(1) turns every opaque pixel white; the letterforms are
+   knocked out of the disc as transparency, so the band shows through them and
+   the mark reads white-on-blue without a second asset. */
+.brand img{width:38px;height:38px;display:block;filter:brightness(0) invert(1)}
+.brand span{font-size:11px;line-height:1.36;letter-spacing:.13em;font-weight:500}
+.host{
+  font-size:11px;letter-spacing:.13em;font-weight:500;color:#fff;text-decoration:none;
+  border:1px solid #fff;padding:7px 13px;transition:background .18s ease,color .18s ease;
+}
+.host:hover{background:#fff;color:var(--blue)}
+
+/* ---------- hero ---------- */
+main{position:relative;z-index:2;height:100%;
+  padding:calc(var(--bar-h) + clamp(40px,7vh,86px)) var(--edge) 0 var(--hero-x)}
+.card{
+  position:relative;width:min(430px,40vw);min-width:290px;
+  background:var(--paper);border:1px solid var(--blue);
+  padding:clamp(26px,3vw,40px) clamp(26px,3vw,40px) clamp(58px,7vw,86px);
+  opacity:0;transform:translateY(18px);
+}
+h1{
+  margin:0;font-size:clamp(26px,3.1vw,44px);line-height:1.24;font-weight:700;
+  letter-spacing:.01em;color:var(--blue);
+}
+/* the cursor blinks the way a prompt does; it is the one moving thing in the
+   type, so it carries the "still running" note on its own */
+.caret{font-style:normal;animation:blink 1.15s steps(1,end) infinite}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+
+/* Straddles the card's right edge, as in the reference — inside the box
+   horizontally, but hanging past its border, so the two planes read as
+   different depths rather than one panel. */
+.register{
+  position:absolute;right:clamp(-86px,-6vw,-40px);bottom:clamp(38px,5vw,64px);
+  display:inline-block;background:var(--blue);color:#fff;text-decoration:none;
+  font-size:clamp(12px,1.05vw,14px);letter-spacing:.13em;font-weight:500;
+  padding:15px 27px;border:1px solid var(--blue);
+  transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s ease;
+  opacity:0;
+}
+.register:hover{background:var(--blue-ink);transform:translateX(5px)}
+
+/* ---------- footnote ---------- */
+.meta{
+  position:fixed;left:var(--edge);bottom:18px;z-index:2;
+  font-size:10px;letter-spacing:.15em;color:var(--blue);opacity:0;
+}
+.meta b{font-weight:500}
+
+/* ---------- entrance ----------
+   Everything arrives after the field has already been flying for a moment, so
+   the page reads as a window onto something that was running before you got
+   there. */
+.bar{animation:drop .7s cubic-bezier(.22,1,.36,1) .15s forwards}
+.card{animation:rise .8s cubic-bezier(.22,1,.36,1) .5s forwards}
+.register{animation:rise .6s cubic-bezier(.22,1,.36,1) .95s forwards}
+.meta{animation:fade .8s ease 1.2s forwards}
+@keyframes drop{to{transform:translateY(0)}}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+@keyframes fade{to{opacity:.75}}
+
+@media (max-width:720px){
+  :root{--bar-h:68px}
+  .brand span{font-size:10px}
+  .card{width:min(100%,420px)}
+  main{padding-left:var(--edge)}
+  .register{right:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .bar,.card,.register,.meta{animation-duration:.01ms;animation-delay:0ms}
+  .caret{animation:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="field" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <a class="brand" href="#">
+    <img src="hp-logo.png" alt="HP">
+    <span>DESIGNING<br>THE FUTURE_</span>
+  </a>
+  <a class="host" href="#">HOST THE TOUR</a>
+</header>
+
+<main>
+  <div class="card">
+    <h1>DESIGNING<br>THE FUTURE<i class="caret">_</i></h1>
+    <a class="register" href="#">REGISTER</a>
+  </div>
+</main>
+
+<p class="meta"><b>2026 TOUR</b> &nbsp;·&nbsp; DRAG TO STEER &nbsp;·&nbsp; SCROLL TO ACCELERATE</p>
+
+<script src="field.js"></script>
+<script>
+(function () {
+  'use strict';
+  var canvas = document.getElementById('field');
+
+  /* Tuned off the reference rather than off the tool's own presets: the knot
+     sits left of centre and low, the cloud is wider than it is tall so the
+     corridor reads as a road rather than a tunnel, and the ground is a pale
+     blue that the wash bleaches to white at the vanishing point. */
+  var field = new ExtrusionField(canvas, {
+    count: 430, seed: 12,
+    spread: 1700, aspectXY: 1.8, clump: 0.46, hole: 0.02, cone: 0.55,
+    zNear: 700, zFar: 12000, zPow: 1.35,
+    lenMin: 600, lenMax: 5200, lenDepth: 0.8,
+    thick: 145, thickVar: 0.8, flat: 0.28, flatVar: 0.85,
+    faces: true, faceShade: 0.36,
+    fade: 0.88, fadePow: 1.5, grad: 0.8, gradPow: 1,
+    fov: 66, vpX: 0.27, vpY: 0.58,
+    col: '#024AD8', bg: '#b9cbf0', wash: 0.96, washCol: '#ffffff', washR: 0.5,
+    speed: 760, parallax: 0.055, ease: 0.05
+  });
+
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* The flight arrives already at speed and settles into its cruise — the page
+     opens mid-journey instead of starting from rest. */
+  var warp = reduced ? 1 : 5.5;
+  field.speedScale = warp;
+  (function settle() {
+    if (warp > 1.002) {
+      warp += (1 - warp) * 0.045;
+      field.speedScale = warp;
+      requestAnimationFrame(settle);
+    } else field.speedScale = 1;
+  })();
+
+  /* Pointer steers the vanishing point; the engine eases toward it itself, so
+     this only has to report where the pointer is. */
+  if (!reduced) {
+    addEventListener('pointermove', function (e) {
+      field.pointer.x = e.clientX / innerWidth;
+      field.pointer.y = e.clientY / innerHeight;
+    }, { passive: true });
+  }
+
+  /* Drag steers harder than hover: while the pointer is down the vanishing
+     point takes the full width of the window rather than a sliver of it. */
+  var basePar = field.P.parallax;
+  addEventListener('pointerdown', function () { field.set({ parallax: 0.55, ease: 0.12 }); });
+  addEventListener('pointerup', function () { field.set({ parallax: basePar, ease: 0.05 }); });
+
+  /* Wheel is a throttle, not a scroll — the page has nowhere to go, so the
+     gesture drives the flight instead. It always falls back to cruise. */
+  var boost = 1, boostRaf = 0;
+  addEventListener('wheel', function (e) {
+    e.preventDefault();
+    boost = Math.max(0.15, Math.min(6, boost + e.deltaY * 0.0016));
+    if (!boostRaf) boostRaf = requestAnimationFrame(function decay() {
+      boost += (1 - boost) * 0.03;
+      field.speedScale = warp > 1.002 ? warp : boost;
+      if (Math.abs(boost - 1) > 0.004) boostRaf = requestAnimationFrame(decay);
+      else { boost = 1; boostRaf = 0; field.speedScale = 1; }
+    });
+  }, { passive: false });
+
+  addEventListener('resize', function () { field.resize(); });
+
+  /* A hidden tab renders nothing; coming back should not jump the field
+     forward by however long you were away. */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) field.stop(); else field.start();
+  });
+
+  field.start();
+  if (reduced) field.stop(), field.draw();
+
+  window.field = field;   // so the console can poke at it while tuning
+})();
+</script>
+</body>
+</html>
