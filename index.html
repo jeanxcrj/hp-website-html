@@ -14,11 +14,12 @@
 :root{
   --blue:#024AD8;
   --blue-ink:#0b2f96;
-  --ground:#b9cbf0;      /* the wash the corridor sits on, away from the knot */
+  --ground:#ffffff;      /* the ground the corridor sits on */
   --paper:#ffffff;
   --bar-h:84px;
   --edge:clamp(16px,3.2vw,46px);
   --hero-x:clamp(20px,8vw,118px);
+  --card-w:min(430px,40vw);
   --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{box-sizing:border-box}
@@ -60,7 +61,7 @@ body{
 main{position:relative;z-index:2;height:100%;
   padding:calc(var(--bar-h) + clamp(40px,7vh,86px)) var(--edge) 0 var(--hero-x)}
 .card{
-  position:relative;width:min(430px,40vw);min-width:290px;
+  position:relative;width:var(--card-w);min-width:290px;
   background:var(--paper);border:1px solid var(--blue);
   padding:clamp(26px,3vw,40px) clamp(26px,3vw,40px) clamp(58px,7vw,86px);
   opacity:0;transform:translateY(18px);
@@ -97,6 +98,37 @@ h1{
 .register span{position:relative;z-index:1}
 .register:hover{transform:translateX(5px)}
 
+/* ---------- sponsors ----------
+   A second plate under the card, same width and same border, so the two read
+   as one stack. The logos keep their own brand colours — the white plate is
+   what makes that safe over a field this saturated. */
+.spon{
+  position:relative;width:var(--card-w);min-width:290px;margin-top:10px;
+  background:var(--paper);border:1px solid var(--blue);
+  overflow:hidden;opacity:0;
+}
+.spon__track{
+  display:flex;align-items:center;gap:38px;width:max-content;
+  padding:15px 0 15px 38px;
+  animation:slide 26s linear infinite;
+}
+.spon:hover .spon__track{animation-play-state:paused}
+/* The set is duplicated once in the markup and the track travels exactly half
+   its own width, so the second copy lands where the first began — seamless,
+   with no jump to hide. */
+@keyframes slide{to{transform:translateX(-50%)}}
+.spon img{display:block;height:17px;width:auto;flex:none}
+/* Square and near-square marks read smaller than wordmarks at equal height,
+   so they get a little more. */
+.spon img.sq{height:25px}
+.spon img.md{height:22px}
+/* feather both ends so logos arrive and leave instead of being cut by the edge */
+.spon__mask{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,var(--paper) 0,rgba(255,255,255,0) 9%,
+    rgba(255,255,255,0) 91%,var(--paper) 100%);
+}
+
 /* ---------- entrance ----------
    Everything arrives after the field has already been flying for a moment, so
    the page reads as a window onto something that was running before you got
@@ -104,6 +136,7 @@ h1{
 .bar{animation:drop .7s cubic-bezier(.22,1,.36,1) .15s forwards}
 .card{animation:rise .8s cubic-bezier(.22,1,.36,1) .5s forwards}
 .register{animation:rise .6s cubic-bezier(.22,1,.36,1) .95s forwards}
+.spon{animation:rise .7s cubic-bezier(.22,1,.36,1) 1.15s forwards}
 @keyframes drop{to{transform:translateY(0)}}
 @keyframes rise{to{opacity:1;transform:translateY(0)}}
 
@@ -115,7 +148,9 @@ h1{
   .register{right:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
 }
 @media (prefers-reduced-motion:reduce){
-  .bar,.card,.register{animation-duration:.01ms;animation-delay:0ms}
+  .bar,.card,.register,.spon{animation-duration:.01ms;animation-delay:0ms}
+  /* the entrance may snap, but a marquee that never stops cannot */
+  .spon__track{animation:none}
   .caret{animation:none}
 }
 </style>
@@ -137,6 +172,22 @@ h1{
     <h1>HP COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
     <p class="tagline">Exploring Tomorrow.<br>Empowering Today.</p>
     <a class="register" href="#"><span>REGISTER</span></a>
+  </div>
+
+  <div class="spon">
+    <div class="spon__track">
+      <img src="logos/solidworks.png" alt="SOLIDWORKS">
+      <img src="logos/intel.svg" class="md" alt="Intel">
+      <img src="logos/bentley.png" alt="Bentley Systems">
+      <img src="logos/d5.png" class="sq" alt="D5 Render">
+      <img src="logos/amd.png" alt="AMD">
+      <img src="logos/solidworks.png" alt="" aria-hidden="true">
+      <img src="logos/intel.svg" class="md" alt="" aria-hidden="true">
+      <img src="logos/bentley.png" alt="" aria-hidden="true">
+      <img src="logos/d5.png" class="sq" alt="" aria-hidden="true">
+      <img src="logos/amd.png" alt="" aria-hidden="true">
+    </div>
+    <div class="spon__mask"></div>
   </div>
 </main>
 
@@ -178,7 +229,7 @@ h1{
     /* dissolve at the frame border instead of being clipped by it */
     borderFade: 0.38,
     fov: 70, vpX: 0.37, vpY: 0.58,
-    col: '#024AD8', bg: '#b9cbf0', wash: 0.52, washCol: '#ffffff', washR: 0.88, washSoft: 2.8,
+    col: '#024AD8', bg: '#ffffff', wash: 0, washCol: '#ffffff', washR: 0.88, washSoft: 2.8,
     speed: 760, parallax: 0.055, ease: 0.05
   });
 
@@ -211,7 +262,7 @@ h1{
      control is someone using the page, not aiming the corridor, and swinging
      the whole field under their cursor as they click REGISTER reads as a bug. */
   var basePar = field.P.parallax, steering = false;
-  var UI = 'a, button, input, .card, .bar';
+  var UI = 'a, button, input, .card, .bar, .spon';
   addEventListener('pointerdown', function (e) {
     if (e.target && e.target.closest && e.target.closest(UI)) return;
     steering = true;
@@ -254,7 +305,7 @@ h1{
      frame would be waste, so it only redraws when the point has actually moved
      or the hover depth is still settling. */
   var slab = new ExtrudedBox(document.querySelector('.register'), {
-    col: '#024AD8', bg: '#b9cbf0', edgeCol: '#ffffff', edge: 0.5, faceShade: 0.36
+    col: '#024AD8', bg: '#ffffff', edgeCol: '#ffffff', edge: 0.5, faceShade: 0.36
   });
   var lastVX = NaN, lastVY = NaN;
   function drawSlab(force) {
