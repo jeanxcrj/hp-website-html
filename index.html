@@ -23,13 +23,14 @@
   --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html{scroll-behavior:smooth}
 body{
-  margin:0;overflow:hidden;background:var(--ground);color:var(--blue);
+  margin:0;background:var(--ground);color:var(--blue);
   font-family:var(--mono);-webkit-font-smoothing:antialiased;
-  /* the corridor is a drag surface for the vanishing point, so no text caret */
-  -webkit-user-select:none;user-select:none;
 }
+/* Only the corridor is a drag surface, so only it suppresses the text caret —
+   the prose below has to stay selectable. */
+.hero,#field{-webkit-user-select:none;user-select:none}
 
 /* ---------- the field ----------
    One canvas behind everything, sized to the window in CSS pixels; field.js
@@ -58,8 +59,11 @@ body{
 .host:hover{background:#fff;color:var(--blue)}
 
 /* ---------- hero ---------- */
-main{position:relative;z-index:2;height:100%;
+.hero{position:relative;z-index:2;min-height:100vh;
   padding:calc(var(--bar-h) + clamp(40px,7vh,86px)) var(--edge) 0 var(--hero-x)}
+/* The field keeps running behind this while it whitens and freezes — nothing
+   is painted over it, so the wireframe is the whole view for a beat. */
+.freeze{position:relative;z-index:2;height:70vh}
 .card{
   position:relative;width:var(--card-w);min-width:290px;
   background:var(--paper);border:1px solid var(--blue);
@@ -134,6 +138,35 @@ h1{
     rgba(255,255,255,0) 91%,var(--paper) 100%);
 }
 
+/* ---------- sections below the fold ----------
+   Opaque, so they scroll up over the frozen wireframe rather than fighting it
+   for legibility. */
+.sheet{position:relative;z-index:2;background:var(--paper);
+  border-top:1px solid var(--blue);
+  padding:clamp(48px,6.5vw,88px) var(--edge) clamp(48px,6.5vw,88px) var(--hero-x)}
+.sheet + .sheet{border-top:0}
+.eyebrow{font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
+  margin:0 0 clamp(18px,3vw,30px)}
+.sheet h2{margin:0;font-size:clamp(24px,3.4vw,44px);line-height:1.18;
+  font-weight:700;letter-spacing:-.02em;word-spacing:-.34em;max-width:17ch}
+.about__body{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
+  gap:clamp(22px,3.4vw,54px);margin-top:clamp(26px,4vw,48px);max-width:1100px}
+.about__body p{margin:0;font-size:13px;line-height:1.75;letter-spacing:.01em}
+.stats{display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,72px);margin-top:clamp(34px,5vw,64px)}
+.stat b{display:block;font-size:clamp(26px,3.6vw,46px);line-height:1;font-weight:700;letter-spacing:-.03em}
+.stat span{display:block;margin-top:8px;font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700}
+
+/* ---------- gallery ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));
+  gap:10px;margin-top:clamp(26px,4vw,48px);max-width:1300px}
+.shot{position:relative;aspect-ratio:4/3;border:1px solid var(--blue);overflow:hidden;background:var(--paper)}
+.shot img{width:100%;height:100%;object-fit:cover;display:block}
+/* Placeholder until real photography lands — deliberately empty rather than a
+   stock image standing in for something that does not exist yet. */
+.shot--empty{display:flex;align-items:flex-end;padding:12px;
+  background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
+.shot--empty span{font-size:10px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;opacity:.65}
+
 /* ---------- entrance ----------
    Everything arrives after the field has already been flying for a moment, so
    the page reads as a window onto something that was running before you got
@@ -175,10 +208,10 @@ h1{
     <img src="hp-logo.png" alt="HP">
     <span>HP COLLEGE<br>TOUR 2026_</span>
   </a>
-  <a class="host" href="#">HOST THE TOUR</a>
+  <a class="host" href="#about">HOST THE TOUR</a>
 </header>
 
-<main>
+<main class="hero">
   <div class="card">
     <h1>HP COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
     <p class="tagline">Exploring Tomorrow.<br>Empowering Today.</p>
@@ -186,6 +219,44 @@ h1{
   </div>
 
 </main>
+
+<div class="freeze" aria-hidden="true"></div>
+
+<section class="sheet" id="about">
+  <p class="eyebrow">01 / ABOUT</p>
+  <h2>A year of build nights, on the road.</h2>
+  <div class="about__body">
+    <p>The HP College Tour brings the workstation floor to campus. Bring a project
+    and an idea of where it is stuck; leave with it rendering on hardware you could
+    not otherwise get your hands on.</p>
+    <p>Every stop runs the same shape. A morning of short talks from people who ship,
+    an afternoon of open benches with engineers on the floor, and an evening where
+    the room shows what it made that day.</p>
+    <p>It is free, and it is open to any enrolled student. No portfolio review, no
+    application, no prior experience with any of the software on the benches.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>24</b><span>CAMPUSES</span></div>
+    <div class="stat"><b>6</b><span>MONTHS</span></div>
+    <div class="stat"><b>5</b><span>PARTNERS</span></div>
+    <div class="stat"><b>0</b><span>COST</span></div>
+  </div>
+</section>
+
+<section class="sheet" id="gallery">
+  <p class="eyebrow">02 / GALLERY</p>
+  <h2>From last year's run.</h2>
+  <div class="grid">
+    <div class="shot shot--empty"><span>PHOTO 01</span></div>
+    <div class="shot shot--empty"><span>PHOTO 02</span></div>
+    <div class="shot shot--empty"><span>PHOTO 03</span></div>
+    <div class="shot shot--empty"><span>PHOTO 04</span></div>
+    <div class="shot shot--empty"><span>PHOTO 05</span></div>
+    <div class="shot shot--empty"><span>PHOTO 06</span></div>
+    <div class="shot shot--empty"><span>PHOTO 07</span></div>
+    <div class="shot shot--empty"><span>PHOTO 08</span></div>
+  </div>
+</section>
 
 <div class="spon">
   <div class="spon__track">
@@ -250,19 +321,21 @@ h1{
   /* The flight arrives already at speed and settles into its cruise — the page
      opens mid-journey instead of starting from rest. */
   var warp = reduced ? 1 : 5.5;
-  field.speedScale = warp;
+  function drive() { field.speedScale = warp * (1 - (morph < 0 ? 0 : morph)); }
+  drive();
   (function settle() {
     if (warp > 1.002) {
       warp += (1 - warp) * 0.045;
-      field.speedScale = warp;
+      drive();
       requestAnimationFrame(settle);
-    } else field.speedScale = 1;
+    } else { warp = 1; drive(); }
   })();
 
   /* Pointer steers the vanishing point; the engine eases toward it itself, so
      this only has to report where the pointer is. */
   if (!reduced) {
     addEventListener('pointermove', function (e) {
+      if (morph > 0.6) return;
       field.pointer.x = e.clientX / innerWidth;
       field.pointer.y = e.clientY / innerHeight;
     }, { passive: true });
@@ -277,6 +350,8 @@ h1{
   var UI = 'a, button, input, .card, .bar, .spon';
   addEventListener('pointerdown', function (e) {
     if (e.target && e.target.closest && e.target.closest(UI)) return;
+    if (morph > 0.6) return;        // frozen — nothing to aim
+
     steering = true;
     field.set({ parallax: 0.55, ease: 0.12 });
   });
@@ -286,19 +361,80 @@ h1{
     field.set({ parallax: basePar, ease: 0.05 });
   });
 
-  /* Wheel is a throttle, not a scroll — the page has nowhere to go, so the
-     gesture drives the flight instead. It always falls back to cruise. */
-  var boost = 1, boostRaf = 0;
-  addEventListener('wheel', function (e) {
-    e.preventDefault();
-    boost = Math.max(0.15, Math.min(6, boost + e.deltaY * 0.0016));
-    if (!boostRaf) boostRaf = requestAnimationFrame(function decay() {
-      boost += (1 - boost) * 0.03;
-      field.speedScale = warp > 1.002 ? warp : boost;
-      if (Math.abs(boost - 1) > 0.004) boostRaf = requestAnimationFrame(decay);
-      else { boost = 1; boostRaf = 0; field.speedScale = 1; }
+  /* ---------- scroll: the corridor whitens and stops ----------
+     Over the first stretch of scroll the field crosses from solid blue slabs on
+     white to white slabs outlined in blue, and the flight decelerates to a halt.
+     By the time the sheets below arrive it is a still wireframe, so the page
+     reads as one continuous move rather than a hero and then a separate site. */
+  var LO = 0.10, HI = 1.25;      // in viewport heights
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function mixHex(a, b, t) {
+    a = a.replace('#', ''); b = b.replace('#', '');
+    var o = '#';
+    for (var i = 0; i < 3; i++) {
+      var v = Math.round(lerp(parseInt(a.substr(i * 2, 2), 16),
+                              parseInt(b.substr(i * 2, 2), 16), t));
+      o += (v < 16 ? '0' : '') + v.toString(16);
+    }
+    return o;
+  }
+
+  var spon = document.querySelector('.spon');
+  var morph = -1;
+
+  /* The entrance animation runs with fill-mode: forwards, and a running or
+     filled animation outranks an inline style — so spon.style.opacity is simply
+     ignored until the animation is taken off the element. Drop it once it has
+     played (or the moment a scroll needs the plate to fade, whichever is
+     first) and pin the value it left behind. */
+  var sponFree = false;
+  function freeSpon() {
+    if (sponFree || !spon) return;
+    sponFree = true;
+    spon.style.animation = 'none';
+    spon.style.opacity = '1';
+  }
+  if (spon) spon.addEventListener('animationend', freeSpon);
+
+  function applyMorph(m) {
+    if (Math.abs(m - morph) < 0.002) return;
+    morph = m;
+    var e = m * m * (3 - 2 * m);          // smoothstep, so neither end lurches
+
+    field.set({
+      col: mixHex('#024AD8', '#ffffff', e),
+      edgeCol: mixHex('#ffffff', '#024AD8', e),
+      edge: lerp(0.5, 0.9, e),
+      // the tonal steps between faces go with the fill; only the outline is left
+      faceShade: lerp(0.36, 0, e),
+      grad: lerp(0.55, 0, e),
+      fade: lerp(0.76, 0.42, e),
+      // the ground picks up a faint blue and the knot keeps a white bloom, so a
+      // white slab still reads against what is behind it
+      bg: mixHex('#ffffff', '#e9eefb', e),
+      wash: lerp(0, 0.85, e)
     });
-  }, { passive: false });
+
+    drive();
+    // reduced motion runs no loop, so a param change would never reach the
+    // canvas — the corridor would stay solid blue the whole way down the page
+    if (reduced) field.draw();
+
+    // the corner plate belongs to the hero, not to the sheets it would sit over
+    if (spon) {
+      if (e > 0) freeSpon();
+      if (sponFree) spon.style.opacity = String(Math.max(0, 1 - e * 1.6));
+      spon.style.pointerEvents = e > 0.5 ? 'none' : '';
+    }
+  }
+
+  function onScroll() {
+    var vh = innerHeight || 1;
+    var t = (scrollY / vh - LO) / (HI - LO);
+    applyMorph(t < 0 ? 0 : t > 1 ? 1 : t);
+  }
+  addEventListener('scroll', onScroll, { passive: true });
 
   addEventListener('resize', function () {
     field.resize();
@@ -333,6 +469,7 @@ h1{
   /* the face changes width once the real mono lands, so re-lay the slab then */
   if (document.fonts) document.fonts.ready.then(function () { drawSlab(true); });
 
+  onScroll();                       // honour a restored scroll position
   field.start();
   if (reduced) field.stop(), field.draw();
 
