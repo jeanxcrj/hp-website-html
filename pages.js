@@ -94,6 +94,111 @@
     });
   }
 
+  /* ---------- gallery ----------
+     One row, filterable by campus. The filter is the reason this is not just a
+     strip of pictures: eleven stops will produce more photographs than anyone
+     scrolls through, and the question people actually arrive with is "what did
+     my campus look like".
+
+     It works before there is anything to filter. With TOUR.photos empty every
+     campus falls through to the same empty template, and the caption names the
+     campus you picked — so the control visibly answers rather than looking
+     broken, and it needs no second code path once the photographs land. */
+  var TILES = 4;
+
+  function gallery(el) {
+    if (!el) return;
+    el.classList.add('gal');   // carries the grid's column count and gap
+    var campuses = [];
+    var seen = {};
+    T.stops.forEach(function (st) {
+      if (st.staging || seen[st.school]) return;
+      seen[st.school] = true;
+      campuses.push(st.school);
+    });
+
+    var CHEV = '<svg width="11" height="7" viewBox="0 0 11 7" aria-hidden="true">' +
+      '<path d="M1 1l4.5 4.5L10 1" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+
+    el.innerHTML =
+      '<div class="galpick">' +
+        '<div class="galpick__top">' +
+          '<p class="galpick__label">SORT BY SCHOOL</p>' +
+          '<p class="gal__soon" id="gal-note"></p>' +
+        '</div>' +
+        '<div class="galpick__wrap">' +
+          '<button class="galpick__btn" type="button" aria-expanded="false" ' +
+            'aria-controls="gal-menu"><span id="gal-current">All campuses</span>' +
+            CHEV + '</button>' +
+          '<div class="navdrop galdrop" id="gal-menu" hidden>' +
+            ['', ].concat(campuses).map(function (c) {
+              return '<a href="#gallery" data-school="' + esc(c) + '">' +
+                esc(c || 'All campuses') + '</a>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="grid" id="gal-grid"></div>';
+
+    var grid = el.querySelector('#gal-grid');
+    var note = el.querySelector('#gal-note');
+    var btn = el.querySelector('.galpick__btn');
+    var menu = el.querySelector('#gal-menu');
+    var current = el.querySelector('#gal-current');
+    var school = '';
+
+    function open(on) {
+      menu.hidden = !on;
+      btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+
+    function draw() {
+      current.textContent = school || 'All campuses';
+      var shots = (T.photos || []).filter(function (ph) {
+        return !school || ph.school === school;
+      });
+
+      if (shots.length) {
+        note.textContent = shots.length + (shots.length === 1 ? ' PHOTO' : ' PHOTOS');
+        grid.innerHTML = shots.map(function (ph) {
+          return '<div class="shot"><img src="' + esc(ph.src) + '" alt="' +
+            esc(ph.alt || ph.school || '') + '"></div>';
+        }).join('');
+        return;
+      }
+
+      /* Nothing for this campus — or nothing at all yet. Same template either
+         way; only the caption knows the difference. */
+      note.textContent = (school ? school.toUpperCase() + ' — ' : '') +
+        'PHOTOS COMING SOON';
+      var tiles = '';
+      for (var i = 0; i < TILES; i++) tiles += '<div class="shot shot--empty"></div>';
+      grid.innerHTML = tiles;
+    }
+
+    /* Click, not hover. The band's menu opens on hover because it is navigation
+       you are reaching for; this one is full-bleed across the section, and a
+       panel that drops every time the pointer crosses the gallery on its way
+       down the page is a trapdoor. */
+    btn.addEventListener('click', function () { open(menu.hidden); });
+    menu.addEventListener('click', function (e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+      e.preventDefault();
+      school = a.dataset.school || '';
+      open(false);
+      draw();
+    });
+    addEventListener('pointerdown', function (e) {
+      if (!el.contains(e.target)) open(false);
+    });
+    addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.hidden) { open(false); btn.focus(); }
+    });
+
+    draw();
+  }
+
   /* ---------- speakers ---------- */
   function speakers(el) {
     if (!el) return;
@@ -317,6 +422,7 @@
       ['ABOUT', 'index.html#about'],
       ['SCHEDULE', 'index.html#schedule'],
       ['SPEAKERS', 'index.html#speakers'],
+      ['GALLERY', 'index.html#gallery'],
       ['REGISTER', 'index.html#schedule']
     ],
     /* Placeholders. Nobody has given us the real handles, and a social link
@@ -443,7 +549,7 @@
   }
 
   global.PAGES = {
-    cards: cards, speakers: speakers, nav: nav, backdrop: backdrop,
+    cards: cards, gallery: gallery, speakers: speakers, nav: nav, backdrop: backdrop,
     register: register, reveal: reveal, footer: footer
   };
 })(window);

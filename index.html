@@ -270,6 +270,11 @@ h1{
       <div class="spk rise" id="speakers-grid"></div>
     </div>
 
+    <div class="blk blk--bare" id="gallery">
+      <h2 class="rise">Photo gallery</h2>
+      <div class="rise" id="gal"></div>
+    </div>
+
   </div>
 
   <footer id="foot"></footer>
@@ -474,6 +479,7 @@ h1{
      observer pointed at an empty div never fires. */
   PAGES.cards(document.getElementById('sked'));
   PAGES.speakers(document.getElementById('speakers-grid'));
+  PAGES.gallery(document.getElementById('gal'));
   PAGES.nav(document.querySelector('.bar'));
   PAGES.footer(document.getElementById('foot'));
   PAGES.reveal();

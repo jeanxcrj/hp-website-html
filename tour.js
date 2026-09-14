@@ -86,6 +86,17 @@
       stops: [], bio: null, photo: 'photos/learn-upstairs.jpg' }
   ];
 
+  /* Photographs, keyed to the school they were taken at. Empty until the tour
+     runs — the gallery reads the length of this and shows the empty template
+     when there is nothing yet, so filling it in is the whole job:
+
+       { school: 'Cornell University', src: 'photos/cornell-01.jpg',
+         alt: 'Open benches at Cornell' }
+
+     `school` must match a STOPS entry's school exactly; that string is what the
+     filter groups on. */
+  var PHOTOS = [];
+
   /* The chapter is what separates two stops at the same school, so a stop's
      name is the school plus the chapter when there is one. Used as the page
      title on a registration page and as the row label in the schedule. */
@@ -113,7 +124,7 @@
   }
 
   global.TOUR = {
-    stops: STOPS, speakers: SPEAKERS,
+    stops: STOPS, speakers: SPEAKERS, photos: PHOTOS,
     stopName: stopName, bySlug: bySlug, bySchool: bySchool
   };
 })(window);

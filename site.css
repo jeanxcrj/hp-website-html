@@ -355,6 +355,53 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
 .sent{margin:16px 0 0;font-size:13px;line-height:1.6;color:var(--ink);
   border-left:2px solid var(--blue);padding-left:12px}
 
+/* ---------- gallery ----------
+   One row filling the plate's margins, like the schedule. The tiles are the
+   template: drop files into photos/ and point each one at an <img>. */
+/* The grid's two numbers live here rather than in .grid, because the picker is
+   sized off them: it is exactly one tile wide, and stays one tile wide when the
+   column count steps down at a breakpoint. Hard-coding a width would be a third
+   number to keep in step with the other two. */
+.gal{--gal-cols:4;--gal-gap:clamp(12px,1.4vw,20px)}
+
+/* The label and the current state share the line above the control, question on
+   the left and answer on the right, both across the full strip. */
+.galpick{margin:clamp(18px,2.4vw,28px) 0 clamp(14px,1.8vw,22px)}
+.galpick__top{display:flex;align-items:baseline;justify-content:space-between;
+  gap:18px;margin-bottom:9px}
+.galpick__label{margin:0;font-family:var(--mono);font-size:10px;letter-spacing:.0525em;
+  word-spacing:-.2em;font-weight:500;color:var(--slate)}
+.galpick__wrap{position:relative;
+  width:calc((100% - (var(--gal-cols) - 1) * var(--gal-gap)) / var(--gal-cols))}
+/* Not a <select>: the platform's own list cannot be made to match the band's
+   menu, and the two are the same object — a panel of campuses. This is a button
+   plus .navdrop, so they stay one thing. */
+.galpick__btn{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-family:var(--text);font-weight:400;font-size:14px;
+  color:var(--blue);background:var(--paper);text-align:left;
+  border:var(--bd) solid var(--blue);border-radius:0;
+  padding:12px 14px;cursor:pointer;
+}
+.galpick__btn svg{flex:none;transition:transform .2s cubic-bezier(.22,1,.36,1)}
+.galpick__btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+/* Anchored to the trigger's left edge and free to grow past it: at one tile wide
+   "Massachusetts College of Art and Design" would be three lines, and a campus
+   list you cannot read at a glance is not a shortcut. */
+.galdrop{left:0;right:auto;min-width:100%;width:max-content;max-width:min(440px,86vw)}
+
+.gal__soon{margin:0;font-family:var(--mono);font-size:10.5px;letter-spacing:.0675em;
+  word-spacing:-.2em;font-weight:500;color:var(--slate)}
+.grid{display:grid;grid-template-columns:repeat(var(--gal-cols),minmax(0,1fr));
+  gap:var(--gal-gap)}
+.shot{position:relative;aspect-ratio:4/3;border:var(--bd) solid var(--blue);
+  overflow:hidden;background:var(--paper)}
+.shot img{width:100%;height:100%;object-fit:cover;display:block}
+/* background-IMAGE, not background: the shorthand would reset the paper colour
+   .shot sets, leaving a hatch floating on the corridor rather than on a plate. */
+.shot--empty{background-image:repeating-linear-gradient(135deg,
+  rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
+
 /* ---------- footer ----------
    The page inverts here. Everything above is blue on white; the footer is the
    same corridor seen the other way round — white hairlines on the ink — which
@@ -448,6 +495,7 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
 .no-medium .rcard__go,
 .no-medium .spk__photo span,
 .no-medium .reg__line b,.no-medium .field > span,.no-medium .send,
+.no-medium .gal__soon,.no-medium .galpick__label,
 .no-medium .foot__col h3,.no-medium .foot__col a,
 .no-medium .card__eyebrow,.no-medium .register{
   -webkit-text-stroke:.03em currentColor;
@@ -498,6 +546,7 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
   .about__body{columns:1}
 }
 @media (max-width:620px){
+  .gal{--gal-cols:2}
   .rcards{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:520px){
