@@ -1,0 +1,250 @@
+/* The shell every page shares: the ink, the band, the gutters and the type.
+
+   This was inline in index.html while index.html was the whole site. With a
+   speakers page and a registration page per stop it is three copies or one
+   file, and three copies of a header band drift within a week. index.html
+   still carries its own <style> for the things only it has — the corridor, the
+   hero card, the sponsor plate, the swipe. */
+
+/* The blue is the logo's own — the asset is a single colour, #024AD8, so the
+   mark, the type and the bars in the field are all literally one ink. */
+:root{
+  --blue:#024AD8;
+  --ground:#ffffff;      /* the ground the corridor sits on */
+  --paper:#ffffff;
+  --bar-h:60px;
+  --edge:clamp(16px,3.2vw,46px);
+  --hero-x:clamp(20px,8vw,118px);
+  --card-w:min(430px,40vw);
+  --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--ground);color:var(--blue);
+  font-family:var(--mono);-webkit-font-smoothing:antialiased;
+}
+
+/* ---------- header ----------
+   A solid band of the ink across the top, the way the reference cuts the
+   corridor off rather than fading it out. */
+.bar{
+  position:fixed;top:0;left:0;right:0;height:var(--bar-h);z-index:3;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--edge);background:var(--blue);color:#fff;
+}
+.brand{display:flex;align-items:center;text-decoration:none;color:inherit}
+/* One asset. The mark, the wordmark, the leading between its two lines and the
+   space between mark and type are all inside the SVG, so the lockup cannot
+   drift out of its own proportions the way a mark-plus-span pair can. Its paths
+   ship white, which is why the filter that used to knock the PNG out is gone.
+   Height is the only handle here — width follows the 551:135 box. */
+.brand img{height:34px;width:auto;display:block}
+
+.nav{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
+.nav a{
+  font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
+  color:#fff;text-decoration:none;white-space:nowrap;opacity:.78;
+  transition:opacity .18s ease;
+}
+.nav a:hover,.nav a[aria-current]{opacity:1}
+/* The current page is marked by a rule under it rather than by a colour: there
+   is only one ink on the band and it is the band. */
+.nav a[aria-current]{box-shadow:0 3px 0 -1px #fff}
+.host{
+  font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;color:#fff;text-decoration:none;
+  border:1px solid #fff;padding:6px 12px;opacity:1;
+  transition:background .18s ease,color .18s ease;
+}
+.host:hover{background:#fff;color:var(--blue)}
+.host[aria-current]{background:#fff;color:var(--blue);box-shadow:none}
+
+/* ---------- the sheet and the sub-pages ----------
+   index.html arrives at its sheet by swiping it up over the corridor; a
+   sub-page simply is the sheet, opened at the top. Same gutters, same type,
+   so moving between them is moving within one surface. */
+.night__in,.page__in{padding:clamp(64px,9vw,120px) var(--edge) 0 var(--hero-x)}
+.page{position:relative;z-index:2;min-height:100vh;
+  padding:var(--bar-h) 0 clamp(70px,10vw,140px)}
+.blk + .blk{margin-top:clamp(70px,10vw,150px)}
+
+.eyebrow{font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
+  margin:0 0 clamp(18px,3vw,30px)}
+.night h2,.page h2{margin:0;font-size:clamp(24px,3.4vw,44px);line-height:1.18;
+  font-weight:700;letter-spacing:-.02em;word-spacing:-.34em;max-width:17ch}
+.lede{margin:clamp(20px,3vw,32px) 0 0;font-size:13px;line-height:1.75;
+  letter-spacing:.01em;max-width:64ch}
+
+/* ---------- schedule ----------
+   Grouped by school, not by date. Two schools host two chapters each on
+   different days, and a flat date list splits those pairs across the page —
+   which is exactly the thing someone scanning for their own campus is looking
+   for. Date order survives inside each group. */
+.sked{margin-top:clamp(30px,4.5vw,54px);max-width:920px}
+.sked__grp{border-top:1px solid var(--blue);padding:clamp(16px,2vw,22px) 0}
+.sked__grp:last-child{border-bottom:1px solid var(--blue)}
+.sked__school{font-size:clamp(15px,1.5vw,19px);font-weight:700;letter-spacing:-.01em;
+  word-spacing:-.2em;margin:0 0 14px}
+.sked__row{
+  display:grid;grid-template-columns:106px minmax(0,1fr) auto auto;
+  align-items:center;gap:clamp(12px,1.8vw,26px);
+  padding:9px 0;font-size:12px;letter-spacing:.02em;
+}
+.sked__row + .sked__row{border-top:1px solid rgba(2,74,216,.16)}
+.sked__date{font-weight:700;letter-spacing:.03em;word-spacing:-.2em}
+.sked__what{opacity:.8}
+/* The planning sheet says all of this in green, cream and orange. There is one
+   ink here, so the same three states are carried by weight instead: filled is
+   agreed, outlined is aimed at, dashed is booked but moving. Never by colour —
+   a second hue would be a second brand. */
+.chip{
+  display:inline-block;font-size:9.5px;letter-spacing:.07em;word-spacing:-.2em;
+  font-weight:700;padding:4px 7px;border:1px solid var(--blue);text-align:center;
+  /* a fixed floor so the three states line up as a column down the schedule
+     instead of each row's chip being as wide as its own word */
+  min-width:84px;justify-self:start;
+}
+.chip.is-set{background:var(--blue);color:#fff}
+.chip.is-target{background:none;color:var(--blue)}
+.chip.is-hold{background:none;color:var(--blue);border-style:dashed}
+.sked__go{
+  font-size:10px;letter-spacing:.07em;word-spacing:-.2em;font-weight:700;
+  text-decoration:none;color:var(--blue);border-bottom:1px solid var(--blue);
+  padding-bottom:2px;justify-self:start;
+}
+.sked__go:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* A staging day is on the sheet because the trucks move that day, not because
+   anyone can come to it. It stays visible and is struck out of the offer. */
+.sked__row.is-staging{opacity:.52}
+.sked__row.is-staging .sked__go{display:none}
+.sked__note{grid-column:1/-1;margin:2px 0 0;font-size:11px;line-height:1.6;opacity:.62}
+
+/* ---------- speakers ----------
+   Slots, not people. Everything a real entry needs is drawn empty rather than
+   filled with a plausible stranger — a placeholder that looks like content is
+   the one kind that ships by accident. */
+.spk{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(272px,100%),1fr));
+  gap:clamp(14px,1.8vw,24px);margin-top:clamp(30px,4.5vw,54px);max-width:1300px}
+.spk__card{border:1px solid var(--blue);display:flex;flex-direction:column}
+.spk__photo{position:relative;aspect-ratio:4/5;border-bottom:1px solid var(--blue);
+  display:flex;align-items:flex-end;padding:12px;
+  background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
+.spk__photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.spk__photo span{font-size:10px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;opacity:.65}
+.spk__body{padding:clamp(14px,1.6vw,20px);display:flex;flex-direction:column;gap:9px;flex:1}
+.spk__name{font-size:16px;font-weight:700;letter-spacing:-.01em;word-spacing:-.2em;margin:0}
+.spk__role{font-size:11px;letter-spacing:.04em;word-spacing:-.2em;font-weight:700;margin:0}
+.spk__bio{font-size:12px;line-height:1.7;margin:0;opacity:.78;flex:1}
+.spk__stops{margin:0;font-size:10px;letter-spacing:.05em;word-spacing:-.2em;font-weight:700;
+  padding-top:10px;border-top:1px solid rgba(2,74,216,.22)}
+/* An unfilled field is a labelled gap, not blank space: you can see which one
+   is missing without opening tour.js. */
+.tbc{opacity:.42}
+
+/* ---------- registration ----------
+   One page per stop, addressed by slug. Everything on it — the school, the
+   chapter, the date, the caveat on the date — is read out of tour.js, so the
+   twelve pages cannot disagree with the schedule they came from. */
+.reg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(26px,4vw,64px);margin-top:clamp(30px,4.5vw,54px);max-width:1180px;align-items:start}
+.reg__meta{border:1px solid var(--blue);padding:clamp(18px,2.2vw,28px)}
+.reg__line{display:flex;justify-content:space-between;gap:18px;padding:11px 0;font-size:12px}
+.reg__line + .reg__line{border-top:1px solid rgba(2,74,216,.18)}
+.reg__line b{font-weight:700;letter-spacing:.04em;word-spacing:-.2em;opacity:.62}
+.reg__line span{text-align:right}
+.field{display:block;margin-bottom:clamp(14px,1.8vw,20px)}
+.field > span{display:block;font-size:10px;letter-spacing:.07em;word-spacing:-.2em;
+  font-weight:700;margin-bottom:7px;opacity:.7}
+.field input,.field textarea,.field select{
+  width:100%;font:inherit;font-size:13px;color:var(--blue);
+  background:var(--paper);border:1px solid var(--blue);border-radius:0;
+  padding:11px 12px;appearance:none;
+}
+.field textarea{min-height:104px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;box-shadow:inset 0 0 0 1px var(--blue)
+}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:11.5px;line-height:1.6;
+  margin-bottom:clamp(16px,2vw,22px)}
+.check input{width:15px;height:15px;margin:2px 0 0;accent-color:var(--blue);flex:none}
+.send{
+  font:inherit;font-size:12px;letter-spacing:.13em;word-spacing:-.2em;font-weight:700;
+  color:#fff;background:var(--blue);border:1px solid var(--blue);border-radius:0;
+  padding:14px 26px;cursor:pointer;transition:background .18s ease,color .18s ease;
+}
+.send:hover{background:var(--paper);color:var(--blue)}
+/* Nothing is wired to a backend yet, so the form says so on submit instead of
+   swallowing the entry and showing a success state for something that did not
+   happen. Point the <form> at a real endpoint and delete this. */
+.sent{margin:16px 0 0;font-size:11.5px;line-height:1.65;
+  border-left:2px solid var(--blue);padding-left:12px}
+
+/* ---------- gallery ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));
+  gap:10px;margin-top:clamp(18px,2.4vw,26px);max-width:1300px}
+.shot{position:relative;aspect-ratio:4/3;border:1px solid var(--blue);
+  overflow:hidden;background:var(--paper)}
+.shot img{width:100%;height:100%;object-fit:cover;display:block}
+/* Placeholder until real photography lands — deliberately empty rather than a
+   stock image standing in for something that does not exist yet. The slot is
+   the deliverable: drop a file in photos/ and point the tile at it. */
+.shot--empty{display:flex;align-items:flex-end;padding:12px;
+  background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
+.shot--empty span{font-size:10px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;opacity:.65}
+/* The groups need the same air under the lede that the schedule gets; the
+   per-group margin only applies between groups, never before the first. */
+.gal{margin-top:clamp(30px,4.5vw,54px)}
+/* One "coming soon" per school, laid over the group rather than repeated on
+   every tile — twelve copies of the same two words is noise, one is a caption. */
+.gal__grp + .gal__grp{margin-top:clamp(34px,4.5vw,56px)}
+.gal__head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;
+  border-bottom:1px solid var(--blue);padding-bottom:10px}
+.gal__school{font-size:clamp(14px,1.4vw,17px);font-weight:700;letter-spacing:-.01em;
+  word-spacing:-.2em;margin:0}
+.gal__soon{font-size:10px;letter-spacing:.07em;word-spacing:-.2em;font-weight:700;opacity:.55;
+  white-space:nowrap}
+
+/* ---------- footer ----------
+   The band is the only navigation on a phone, and it cannot hold four links at
+   that width. This is where they go instead. */
+.foot{border-top:1px solid var(--blue);margin-top:clamp(64px,9vw,120px);
+  padding:clamp(22px,3vw,30px) var(--edge) 0 var(--hero-x);
+  display:flex;flex-wrap:wrap;gap:14px 26px;align-items:baseline}
+.foot a{font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
+  color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+.foot a:hover{border-bottom-color:var(--blue)}
+.foot small{font-size:10px;letter-spacing:.05em;word-spacing:-.2em;opacity:.5;margin-left:auto}
+
+/* ---------- arrival ----------
+   On index.html the sheet's own entrance is the scroll, so its contents cannot
+   also be the scroll or the whole thing lands at once. On a sub-page there is
+   nothing to swipe, so the blocks simply come in as they are reached. */
+.rise{opacity:0;transform:translateY(22px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.blk.is-up .rise{opacity:1;transform:none}
+.blk.is-up>.rise:nth-child(1){transition-delay:.08s}
+.blk.is-up>.rise:nth-child(2){transition-delay:.16s}
+.blk.is-up>.rise:nth-child(3){transition-delay:.24s}
+.blk.is-up>.rise:nth-child(4){transition-delay:.32s}
+
+@media (max-width:860px){
+  .reg{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){
+  :root{--bar-h:52px}
+  .brand img{height:28px}
+  /* Four items will not fit beside the lockup at this width. The band keeps the
+     one that is a call to action; the rest are in the footer, which is why the
+     footer is on every page and not only on the index. */
+  .nav a:not(.host){display:none}
+  .night__in,.page__in,.foot{padding-left:var(--edge)}
+  /* The four-column row collapses rather than compresses: at 360px the date and
+     the status would each be a two-line stack of their own. */
+  .sked__row{grid-template-columns:1fr auto;row-gap:6px}
+  .sked__what{grid-column:1/-1;order:3}
+  .sked__go{grid-column:1/-1;order:4;margin-top:4px}
+  .sked__note{order:5}
+}
+@media (prefers-reduced-motion:reduce){
+  .rise{opacity:1;transform:none;transition:none}
+}

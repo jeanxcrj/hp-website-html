@@ -3,31 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HP College Tour 2026 — Exploring Tomorrow. Empowering Today.</title>
+<title>HP USA College Tour 2026 — Exploring Tomorrow. Empowering Today.</title>
 <meta name="description" content="Exploring Tomorrow. Empowering Today.">
 <link rel="icon" href="hp-logo.png">
 <link rel="preconnect" href="https://use.typekit.net" crossorigin>
 <link rel="stylesheet" href="https://use.typekit.net/yxt3aqw.css">
+<link rel="stylesheet" href="site.css">
 <style>
-/* The blue is the logo's own — the asset is a single colour, #024AD8, so the
-   mark, the type and the bars in the field are all literally one ink. */
-:root{
-  --blue:#024AD8;
-  --blue-ink:#0b2f96;
-  --ground:#ffffff;      /* the ground the corridor sits on */
-  --paper:#ffffff;
-  --bar-h:84px;
-  --edge:clamp(16px,3.2vw,46px);
-  --hero-x:clamp(20px,8vw,118px);
-  --card-w:min(430px,40vw);
-  --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;background:var(--ground);color:var(--blue);
-  font-family:var(--mono);-webkit-font-smoothing:antialiased;
-}
+/* Only what the index has. The ink, the band, the gutters, the sheet type, the
+   schedule, the gallery and the arrival all live in site.css now — three pages
+   share them, and three copies of a header band drift within a week. What is
+   left here is the corridor and the things that sit on it. */
+
 /* Only the corridor is a drag surface, so only it suppresses the text caret —
    the prose below has to stay selectable. */
 .hero,#field{-webkit-user-select:none;user-select:none}
@@ -37,26 +24,9 @@ body{
    handles the device-pixel scaling itself. */
 #field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
 
-/* ---------- header ----------
-   A solid band of the ink across the top, the way the reference cuts the
-   corridor off rather than fading it out. */
-.bar{
-  position:fixed;top:0;left:0;right:0;height:var(--bar-h);z-index:3;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 var(--edge);background:var(--blue);color:#fff;
-  transform:translateY(-100%);
-}
-.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
-/* brightness(0) invert(1) turns every opaque pixel white; the letterforms are
-   knocked out of the disc as transparency, so the band shows through them and
-   the mark reads white-on-blue without a second asset. */
-.brand img{width:38px;height:38px;display:block;filter:brightness(0) invert(1)}
-.brand span{font-size:11px;line-height:1.36;letter-spacing:.05em;word-spacing:-.3em;font-weight:700}
-.host{
-  font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;color:#fff;text-decoration:none;
-  border:1px solid #fff;padding:7px 13px;transition:background .18s ease,color .18s ease;
-}
-.host:hover{background:#fff;color:var(--blue)}
+/* The band drops in rather than being there; site.css draws it, this is only
+   where it starts from. */
+.bar{transform:translateY(-100%)}
 
 /* ---------- hero ---------- */
 .hero{position:relative;z-index:2;min-height:100vh;
@@ -124,10 +94,13 @@ h1{
    with no jump to hide. */
 @keyframes slide{to{transform:translateX(-50%)}}
 .spon img{display:block;height:17px;width:auto;flex:none}
-/* Square and near-square marks read smaller than wordmarks at equal height,
-   so they get a little more. */
+/* A mark whose ink does not fill its own box at the nominal height reads small
+   beside one that does, so it gets a little more: sq for a square badge, md for
+   a lowercase wordmark. md is measured off Bentley rather than off the box —
+   matching intel's x-height to its neighbour's is what makes the row sit level,
+   and matching the two bounding boxes instead puts intel a step above everyone. */
 .spon img.sq{height:25px}
-.spon img.md{height:22px}
+.spon img.md{height:19px}
 /* feather both ends so logos arrive and leave instead of being cut by the edge */
 .spon__mask{
   position:absolute;inset:0;pointer-events:none;
@@ -135,42 +108,40 @@ h1{
     rgba(255,255,255,0) 91%,var(--paper) 100%);
 }
 
-/* ---------- sections below the fold ----------
-   Transparent, with no rule across the top. An opaque sheet with a border made
-   the scroll read as arriving at a second page; the corridor has to keep going
-   behind the type so the whole descent is one continuous move into the scene.
-   Legible because by this point every fill in the field is white — only the
-   hairlines are left, and blue type sits on them cleanly. */
-.sheet{position:relative;z-index:2;background:transparent;
-  padding:clamp(48px,6.5vw,88px) var(--edge) clamp(48px,6.5vw,88px) var(--hero-x)}
-.eyebrow{font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
-  margin:0 0 clamp(18px,3vw,30px)}
-.sheet h2{margin:0;font-size:clamp(24px,3.4vw,44px);line-height:1.18;
-  font-weight:700;letter-spacing:-.02em;word-spacing:-.34em;max-width:17ch}
+.scrollspace{position:relative;z-index:1;height:120vh;pointer-events:none}
+
+/* ---------- the sheet ----------
+   Everything above this is one continuous flight down a corridor. This is the
+   arrival. It is an ordinary block in flow and the field is a fixed canvas, so
+   scrolling past the frozen wireframe IS the swipe — the sheet rides up over
+   the corridor with nothing driving it. That matters more than it sounds: a
+   JS-driven panel has to be resynced after a reload halfway down, a keyboard
+   PageDown or a trackpad fling, and this one cannot fall out of step because
+   there is no second clock to fall out of step with.
+
+   It is the same white as the ground, which means the swipe has no contrast of
+   its own to ride in on — the seam is doing all of the work. That is the point:
+   the sheet reads as the corridor's own surface coming up to meet the camera
+   rather than as a panel laid over it, and what it erases on the way up is the
+   hairlines, one row at a time. */
+.night{position:relative;z-index:2;background:var(--paper);color:var(--blue);
+  min-height:100vh;padding-bottom:clamp(30px,4vw,60px)}
+/* The seam. It is the only edge the rise has, so it carries the whole move and
+   takes the header band's ink at a weight that survives a hairline field
+   behind it. */
+.night__edge{height:6px;background:var(--blue)}
+
 .about__body{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
   gap:clamp(22px,3.4vw,54px);margin-top:clamp(26px,4vw,48px);max-width:1100px}
-/* Each column sits on its own plane, the way the type in the reference sits on
-   a surface inside the scene. Without it the corridor's hairlines run straight
-   through 13px body copy. The headline and the stats are heavy enough to hold
-   their own, so they stay bare. */
-.about__body p{margin:0;font-size:13px;line-height:1.75;letter-spacing:.01em;
-  background:rgba(255,255,255,.9);border:1px solid rgba(2,74,216,.3);
-  padding:clamp(14px,1.6vw,20px)}
-.stats{display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,72px);margin-top:clamp(34px,5vw,64px)}
+/* Over the corridor each column needed its own plate and border or the
+   hairlines ran straight through 13px copy. The sheet is opaque, so nothing
+   runs behind them now and the type sits directly on it. */
+.about__body p{margin:0;font-size:13px;line-height:1.75;letter-spacing:.01em}
+.stats{display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,72px);margin-top:clamp(40px,6vw,72px)}
+.stat{padding-top:14px;border-top:1px solid rgba(2,74,216,.3)}
 .stat b{display:block;font-size:clamp(26px,3.6vw,46px);line-height:1;font-weight:700;letter-spacing:-.03em}
-.stat span{display:block;margin-top:8px;font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700}
-
-/* ---------- gallery ---------- */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));
-  gap:10px;margin-top:clamp(26px,4vw,48px);max-width:1300px}
-.shot{position:relative;aspect-ratio:4/3;border:1px solid var(--blue);overflow:hidden;
-  background:rgba(255,255,255,.82)}
-.shot img{width:100%;height:100%;object-fit:cover;display:block}
-/* Placeholder until real photography lands — deliberately empty rather than a
-   stock image standing in for something that does not exist yet. */
-.shot--empty{display:flex;align-items:flex-end;padding:12px;
-  background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
-.shot--empty span{font-size:10px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;opacity:.65}
+.stat span{display:block;margin-top:8px;font-size:11px;letter-spacing:.05em;word-spacing:-.3em;
+  font-weight:700}
 
 /* ---------- entrance ----------
    Everything arrives after the field has already been flying for a moment, so
@@ -184,8 +155,6 @@ h1{
 @keyframes rise{to{opacity:1;transform:translateY(0)}}
 
 @media (max-width:720px){
-  :root{--bar-h:68px}
-  .brand span{font-size:10px}
   /* the register button sits inside the card on this breakpoint; the tagline
      added below the h1 needs the floor raised or the two collide */
   .card{width:min(100%,420px);padding-bottom:92px}
@@ -211,15 +180,19 @@ h1{
 
 <header class="bar">
   <a class="brand" href="#">
-    <img src="hp-logo.png" alt="HP">
-    <span>HP COLLEGE<br>TOUR 2026_</span>
+    <img src="hp-lockup.svg" alt="HP USA College Tour 2026">
   </a>
-  <a class="host" href="#about">HOST THE TOUR</a>
+  <nav class="nav">
+    <a href="#schedule">SCHEDULE</a>
+    <a href="speakers.html">SPEAKERS</a>
+    <a href="#about">ABOUT</a>
+    <a class="host" href="register.html">REGISTER</a>
+  </nav>
 </header>
 
 <main class="hero">
   <div class="card">
-    <h1>HP COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
+    <h1>HP USA COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
     <p class="tagline">Exploring Tomorrow.<br>Empowering Today.</p>
     <a class="register" href="#"><span>REGISTER</span></a>
   </div>
@@ -227,12 +200,12 @@ h1{
   <div class="spon">
     <div class="spon__track">
       <img src="logos/solidworks.png" alt="SOLIDWORKS">
-      <img src="logos/intel.svg" class="md" alt="Intel">
+      <img src="logos/intel.png" class="md" alt="Intel">
       <img src="logos/bentley.png" alt="Bentley Systems">
       <img src="logos/d5.png" class="sq" alt="D5 Render">
       <img src="logos/amd.png" alt="AMD">
       <img src="logos/solidworks.png" alt="" aria-hidden="true">
-      <img src="logos/intel.svg" class="md" alt="" aria-hidden="true">
+      <img src="logos/intel.png" class="md" alt="" aria-hidden="true">
       <img src="logos/bentley.png" alt="" aria-hidden="true">
       <img src="logos/d5.png" class="sq" alt="" aria-hidden="true">
       <img src="logos/amd.png" alt="" aria-hidden="true">
@@ -244,45 +217,77 @@ h1{
 
 <div class="freeze" aria-hidden="true"></div>
 
-<section class="sheet" id="about">
-  <p class="eyebrow">01 / ABOUT</p>
-  <h2>A year of build nights, on the road.</h2>
-  <div class="about__body">
-    <p>The HP College Tour brings the workstation floor to campus. Bring a project
-    and an idea of where it is stuck; leave with it rendering on hardware you could
-    not otherwise get your hands on.</p>
-    <p>Every stop runs the same shape. A morning of short talks from people who ship,
-    an afternoon of open benches with engineers on the floor, and an evening where
-    the room shows what it made that day.</p>
-    <p>It is free, and it is open to any enrolled student. No portfolio review, no
-    application, no prior experience with any of the software on the benches.</p>
-  </div>
-  <div class="stats">
-    <div class="stat"><b>24</b><span>CAMPUSES</span></div>
-    <div class="stat"><b>6</b><span>MONTHS</span></div>
-    <div class="stat"><b>5</b><span>PARTNERS</span></div>
-    <div class="stat"><b>0</b><span>COST</span></div>
-  </div>
-</section>
+<!-- Holds the scroll open between the corridor freezing and the sheet arriving.
+     Without it the wireframe forms and is immediately covered, and the one beat
+     the whole descent is built toward never happens. -->
+<div class="scrollspace" aria-hidden="true"></div>
 
-<section class="sheet" id="gallery">
-  <p class="eyebrow">02 / GALLERY</p>
-  <h2>From last year's run.</h2>
-  <div class="grid">
-    <div class="shot shot--empty"><span>PHOTO 01</span></div>
-    <div class="shot shot--empty"><span>PHOTO 02</span></div>
-    <div class="shot shot--empty"><span>PHOTO 03</span></div>
-    <div class="shot shot--empty"><span>PHOTO 04</span></div>
-    <div class="shot shot--empty"><span>PHOTO 05</span></div>
-    <div class="shot shot--empty"><span>PHOTO 06</span></div>
-    <div class="shot shot--empty"><span>PHOTO 07</span></div>
-    <div class="shot shot--empty"><span>PHOTO 08</span></div>
+<!-- The sheet. In flow, so the scroll swipes it up over the fixed corridor;
+     the header band stays above it on z-index 3 and holds the page still while
+     the field is wiped out from under it. -->
+<section class="night" id="about">
+  <div class="night__edge" aria-hidden="true"></div>
+  <div class="night__in">
+
+    <div class="blk">
+      <p class="eyebrow rise">01 / ABOUT</p>
+      <h2 class="rise">A year of build nights, on the road.</h2>
+      <div class="about__body rise">
+        <p>The HP USA College Tour brings the workstation floor to campus. Bring a project
+        and an idea of where it is stuck; leave with it rendering on hardware you could
+        not otherwise get your hands on.</p>
+        <p>Every stop runs the same shape. A morning of short talks from people who ship,
+        an afternoon of open benches with engineers on the floor, and an evening where
+        the room shows what it made that day.</p>
+        <p>It is free, and it is open to any enrolled student. No portfolio review, no
+        application, no prior experience with any of the software on the benches.</p>
+      </div>
+      <div class="stats rise">
+        <div class="stat"><b>24</b><span>CAMPUSES</span></div>
+        <div class="stat"><b>6</b><span>MONTHS</span></div>
+        <div class="stat"><b>5</b><span>PARTNERS</span></div>
+        <div class="stat"><b>0</b><span>COST</span></div>
+      </div>
+    </div>
+
+    <!-- Both of these are drawn from tour.js rather than typed here, so a stop
+         cannot appear on the schedule without a registration page behind it or
+         a gallery group in front of it. -->
+    <div class="blk" id="schedule">
+      <p class="eyebrow rise">02 / SCHEDULE</p>
+      <h2 class="rise">Twelve stops, six weeks.</h2>
+      <p class="lede rise">Grouped by campus. Half of these dates are agreed and half are
+      still being worked out with the chapters, and the schedule says which is which rather
+      than printing them all in the same weight — a date marked TARGETING has not been
+      confirmed, and one marked ON HOLD is already moving.</p>
+      <div class="sked rise" id="sked"></div>
+    </div>
+
+    <div class="blk" id="gallery">
+      <p class="eyebrow rise">03 / GALLERY</p>
+      <h2 class="rise">From the road.</h2>
+      <p class="lede rise">A group per campus, filling in as the tour runs. The tiles are
+      the template — drop the files into photos/ and point each tile at one.</p>
+      <div class="gal rise" id="gal"></div>
+    </div>
+
   </div>
+
+  <footer class="foot">
+    <a href="#about">ABOUT</a>
+    <a href="#schedule">SCHEDULE</a>
+    <a href="speakers.html">SPEAKERS</a>
+    <a href="#gallery">GALLERY</a>
+    <a href="register.html">REGISTER</a>
+    <small>EXPLORING TOMORROW. EMPOWERING TODAY.</small>
+  </footer>
 </section>
 
 
 <script src="field.js"></script>
 <script src="xbox.js"></script>
+<script src="tour.js"></script>
+<script src="pages.js"></script>
 <script>
 (function () {
   'use strict';
@@ -404,7 +409,15 @@ h1{
          point, which is the actual zoom. Pushing `travel` instead would only
          cycle the field — bars wrap, so advancing time brings new bars at the
          same apparent scale rather than bringing these ones closer. */
-      fov: lerp(70, 36, e),
+      fov: lerp(70, 28, e),
+      /* Both fade ramps have to switch off with the morph. The fills are safe
+         either way now that the ground is white, but the HAIRLINE is mixed by
+         the same alpha — so a ramped slab gets an outline that dissolves into
+         nothing partway along its own edge. That is the blank half-drawn shape.
+         They earn their keep while the corridor is flying; once it is frozen
+         and scroll drives the camera, nothing needs easing in or out. */
+      wrapFade: lerp(0.16, 0, e),
+      borderFade: lerp(0.38, 0, e),
       // the tonal steps between faces go with the fill; only the outline is left
       faceShade: lerp(0.36, 0, e),
       grad: lerp(0.55, 0, e),
@@ -438,6 +451,25 @@ h1{
   var SCRUB = 2.4;                 // world units per pixel of scroll
   var frozenAt = null;             // scrollY and travel at the moment it froze
 
+  /* ---------- the black screen ----------
+     The rise is the scroll — the sheet is in flow over a fixed canvas, so
+     nothing here moves it. What is left is the two things the CSS cannot know:
+     that the corridor is fully hidden and can stop painting, and that a block
+     has arrived and can fill itself in. */
+  var night = document.querySelector('.night');
+  var covered = false;
+
+  function coverage() {
+    // its top edge past the top of the window means the sheet owns the viewport
+    var over = night.getBoundingClientRect().top <= 0;
+    if (over === covered) return;
+    covered = over;
+    // reduced motion runs no loop to park, and calling start() would hand it
+    // one it deliberately never had
+    if (reduced) return;
+    if (covered) field.stop(); else if (!document.hidden) field.start();
+  }
+
   function onScroll() {
     var vh = innerHeight || 1;
     var t = (scrollY / vh - LO) / (HI - LO);
@@ -451,8 +483,17 @@ h1{
     } else {
       frozenAt = null;
     }
+
+    coverage();
   }
   addEventListener('scroll', onScroll, { passive: true });
+
+  /* The sheet's blocks are built before they are watched: the schedule and the
+     gallery do not exist as markup until tour.js has been walked, and an
+     observer pointed at an empty div never fires. */
+  PAGES.schedule(document.getElementById('sked'));
+  PAGES.gallery(document.getElementById('gal'));
+  PAGES.reveal();
 
   addEventListener('resize', function () {
     field.resize();
@@ -462,7 +503,8 @@ h1{
   /* A hidden tab renders nothing; coming back should not jump the field
      forward by however long you were away. */
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) field.stop(); else field.start();
+    if (document.hidden) field.stop();
+    else if (!covered) field.start();   // still parked behind the sheet
   });
 
   /* ---------- the REGISTER slab ----------
@@ -488,7 +530,9 @@ h1{
   if (document.fonts) document.fonts.ready.then(function () { drawSlab(true); });
 
   onScroll();                       // honour a restored scroll position
-  field.start();
+  // a reload deep in the page lands with the sheet already up, and coverage()
+  // has just parked the loop — starting it here anyway would un-park it
+  if (!covered) field.start();
   if (reduced) field.stop(), field.draw();
 
   window.field = field;   // so the console can poke at it while tuning

@@ -1,4 +1,4 @@
-# Designing the Future — HP
+# HP USA College Tour 2026
 
 A one-screen animated site. The background is an infinite flight down a
 corridor of extruded bars, all converging on a single vanishing point.
@@ -52,11 +52,47 @@ the field visibly separates from its own wash.
 stops it too, so returning doesn't jump the field forward by however long you
 were away.
 
+## The pages
+
+`tour.js` is the tour. Twelve stops, each with a slug, and every other surface
+is a view onto that array — the schedule on the index, the gallery's groups,
+the stop filter on a speaker card, and the twelve registration pages. Adding a
+stop is one entry; it appears on all four. Typing them into four files by hand
+is how a stop ends up on the schedule with no registration page behind it.
+
+`status` carries the colour coding off the planning sheet, because on that sheet
+the colour *is* the information — half these dates are not agreed. There is one
+ink here, so the same three states are drawn by weight instead: a filled chip is
+agreed, an outlined one is aimed at, a dashed one is booked but already moving.
+A second hue would be a second brand.
+
+| file | what it is |
+| --- | --- |
+| `index.html` | the corridor, the hero, and the sheet that swipes up over it |
+| `speakers.html` | the bill — photo, position, company, stops, description |
+| `register.html` | one page per stop, addressed as `?stop=<slug>` |
+| `site.css` | the ink, the band, the gutters, the type — everything shared |
+| `pages.js` | everything that draws itself out of `tour.js` |
+
+The schedule is grouped by school rather than by date: UPenn and NYU each host
+two chapters on different days, and a flat date list splits those pairs across
+the page — which is the one thing someone scanning for their own campus is
+looking for. Date order survives inside each group.
+
+Speakers and photos are slots, drawn empty. A placeholder that looks like
+content is the kind that ships by accident, so an unfilled field renders as its
+own greyed label and the gap stays visible. The registration form has no
+endpoint behind it and says so on submit rather than showing a success state for
+something that did not happen.
+
 ## Colour
 
-One ink: `#024AD8`, sampled from `hp-logo.png`, which is a single-colour asset
-with the letterforms knocked out as transparency. The header filters it to white,
-so the band shows through the glyphs and the mark needs no second file.
+One ink: `#024AD8`, sampled from `hp-logo.png` — a single-colour asset with the
+letterforms knocked out as transparency, now used only as the favicon. The header
+carries `hp-lockup.svg` instead: mark, wordmark, leading and the space between
+the two are all inside the one file, so the lockup cannot drift out of its own
+proportions the way a mark-plus-span pair can. Its paths ship white, so the band
+needs no filter to knock them out.
 
 ## Run
 
