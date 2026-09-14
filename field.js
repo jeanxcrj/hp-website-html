@@ -99,7 +99,7 @@
     // view
     fov: 62, vpX: 0.86, vpY: 0.52,
     // style
-    col: '#1E44D6', bg: '#ffffff', wash: 0.34, washCol: '#5C7BE6', washR: 0.55,
+    col: '#024AD8', bg: '#ffffff', wash: 0.34, washCol: '#5C7BE6', washR: 0.55,
     /* Falloff of the bloom. A plain 2-stop gradient has a flat core and a hard
        shoulder; this is a gaussian normalised to reach exactly zero at washR,
        so the light disperses instead of stopping. Lower = softer and wider. */

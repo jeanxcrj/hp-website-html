@@ -27,7 +27,7 @@
   var NS = 'http://www.w3.org/2000/svg';
 
   var DEF = {
-    col: '#1E44D6',
+    col: '#024AD8',
     bg: '#ffffff',
     edgeCol: '#ffffff',
     edge: 1,
