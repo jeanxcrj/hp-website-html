@@ -6,23 +6,107 @@
    still carries its own <style> for the things only it has — the corridor, the
    hero card, the sponsor plate, the swipe. */
 
+/* ---------- the missing weight ----------
+   Kit yxt3aqw serves forma-djr-mono at 400 and 700 only, so every
+   font-weight:500 on this site was resolving DOWN to Regular. These two faces
+   add the 500 to the same family name, and the browser merges them with the
+   kit's — one family, four weights, no separate name to remember at the call
+   site.
+
+   This also switches the synthetic-medium fallback off by itself: the probe in
+   pages.js looks for a registered 500-weight forma-djr-mono face, finds these,
+   and drops .no-medium. Nothing else has to change.
+
+   The files are Forma DJR Mono Medium, converted OTF -> WOFF2. See the note in
+   README under Type before this goes anywhere public. */
+@font-face{
+  font-family:"forma-djr-mono";
+  src:url("fonts/forma-djr-mono-500.woff2") format("woff2");
+  font-weight:500;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:"forma-djr-mono";
+  src:url("fonts/forma-djr-mono-500i.woff2") format("woff2");
+  font-weight:500;font-style:italic;font-display:swap;
+}
+
 /* The blue is the logo's own — the asset is a single colour, #024AD8, so the
    mark, the type and the bars in the field are all literally one ink. */
 :root{
   --blue:#024AD8;
+  /* Blue is now a role, not the whole palette: headings, calls to action, the
+     band, the seam and the footer panel. Everything a reader actually reads is
+     ink or grey, which is what lets the blue mean something when it appears. */
+  --ink:#111318;
+  --slate:#63818E;       /* the swatch's third colour: subheads, captions,
+                            notes, anything subordinate to the body */
   --ground:#ffffff;      /* the ground the corridor sits on */
   --paper:#ffffff;
   --bar-h:60px;
   --edge:clamp(16px,3.2vw,46px);
   --hero-x:clamp(20px,8vw,118px);
   --card-w:min(430px,40vw);
+  /* The type stack, as specified. Kit yxt3aqw currently serves ONE family —
+     forma-djr-mono, in 400 and 700 — so Micro and Text fall through to the
+     platform grotesque and Medium (500) resolves to Regular. Add Forma DJR
+     Micro, Forma DJR Text, and the Mono's Medium weight to the kit and every
+     line below snaps into place with no code change.
+
+       title    mono, medium      the big lines and every section heading
+       subhead  micro, medium     the line under a title
+       body     text, regular     anything anyone actually reads at length
+       caption  mono, regular     labels, dates, status, nav, buttons */
+  /* One plate, two spellings of it: the bordered block and the bare one have
+     to put their headings on the same vertical axis, and they only do that
+     while the bare one's padding is the other's padding plus its border. */
+  /* One stroke for every box on the page. It was 3px on the plates, 2px on the
+     schedule cards and 1px on everything else, which read as three unrelated
+     systems of box rather than one. */
+  --bd:2px;
+  --plate-pad:clamp(22px,3vw,42px);
   --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --micro:"forma-djr-micro","forma-djr-text",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --text:"forma-djr-text","forma-djr-micro",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+/* overscroll-behavior kills the rubber band. It matters more here than on an
+   ordinary page: the corridor is a FIXED canvas, so bouncing past the end of
+   the document does not reveal the body's background — it reveals the white
+   corridor still sitting there behind the blue footer, which reads as the
+   footer having come unstuck. html gets the ink as a second line of defence
+   for any browser that bounces anyway. */
+html{scroll-behavior:smooth;overscroll-behavior:none;background:var(--blue)}
+body{overscroll-behavior:none}
+/* The page reads in the display face. The mono is kept as a deliberate voice
+   rather than the default one: labels, dates, status, navigation, buttons —
+   the machine-side of the page. Anything set in it keeps the negative
+   word-spacing those labels were tuned with; anything set in the display face
+   must not, because that tracking was compensating for a monospace's fixed
+   advance and in a proportional face it just crashes the words together. */
+/* Body copy is Regular, per the stack — 400, not the 500 everything else runs
+   at. It was medium for a while and read heavy at 13-16px, which is the usual
+   reason a text cut and a display cut are different fonts in the first place:
+   the weight that carries a 40px title is too much ink in a paragraph. Titles,
+   subheads and the mono labels stay at 500. */
 body{
-  margin:0;background:var(--ground);color:var(--blue);
-  font-family:var(--mono);-webkit-font-smoothing:antialiased;
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--text);font-weight:400;-webkit-font-smoothing:antialiased;
+}
+/* One weight across the whole site. The browser ships h1-h6, b, strong and
+   button at bold, so inheriting medium from body is not enough — they have to
+   be brought down explicitly or the page runs at two weights by accident.
+
+   Note the kit: forma-djr-mono is served at 400 and 700 only, so 500 currently
+   resolves DOWN to Regular. Adding the Medium weight to kit yxt3aqw is what
+   makes this line true rather than aspirational. */
+h1,h2,h3,h4,h5,h6,b,strong,button{font-weight:500}
+input,select,textarea{font-weight:400}
+/* Every title is mono, so every title keeps the negative word-spacing the mono
+   was tuned with. Body and subheads are proportional and must NOT have it —
+   that tracking was compensating for a monospace's fixed advance, and in a
+   proportional face it just crashes the words together. */
+h1,h2,.rcard__name,.spk__name{
+  font-family:var(--mono);font-weight:500;word-spacing:-.3em;color:var(--blue);
 }
 
 /* ---------- header ----------
@@ -43,7 +127,7 @@ body{
 
 .nav{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
 .nav a{
-  font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
+  font-family:var(--mono);font-size:11px;letter-spacing:.0375em;word-spacing:-.3em;font-weight:500;
   color:#fff;text-decoration:none;white-space:nowrap;opacity:.78;
   transition:opacity .18s ease;
 }
@@ -52,94 +136,180 @@ body{
    is only one ink on the band and it is the band. */
 .nav a[aria-current]{box-shadow:0 3px 0 -1px #fff}
 .host{
-  font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;color:#fff;text-decoration:none;
+  font-family:var(--mono);font-size:11px;letter-spacing:.0375em;word-spacing:-.3em;font-weight:500;color:#fff;text-decoration:none;
   border:1px solid #fff;padding:6px 12px;opacity:1;
   transition:background .18s ease,color .18s ease;
 }
 .host:hover{background:#fff;color:var(--blue)}
 .host[aria-current]{background:#fff;color:var(--blue);box-shadow:none}
+.host[aria-expanded="true"]{background:#fff;color:var(--blue)}
+
+/* ---------- the register menu ----------
+   Hangs off the band, which is fixed, so the panel is fixed with it. Every rule
+   here has to out-specify .nav a above — the menu lives inside .nav, so its
+   links inherit the band's white-on-blue and would be invisible on paper.
+
+   Flush under the button, no gap: the panel opens on hover, and a gap between
+   the two is a strip the pointer crosses where nothing is hovered. */
+.nav__wrap{position:relative}
+.navdrop{
+  position:absolute;top:100%;right:0;z-index:4;min-width:250px;
+  background:var(--paper);border:var(--bd) solid var(--blue);padding:8px;
+  max-height:min(72vh,540px);overflow:auto;
+  /* no drop shadow: the panel already separates from the page by being white
+     inside a 2px rule, and a soft blue bloom under a hard-edged box is the one
+     piece of depth on a site whose depth is drawn in perspective */
+}
+.navdrop a{
+  display:block;padding:9px 12px;text-decoration:none;
+  /* blue at rest, not ink: these are navigation, and blue is what the site uses
+     for anything you can click */
+  color:var(--blue);opacity:1;white-space:nowrap;
+  font-family:var(--text);font-weight:400;font-size:13px;
+  letter-spacing:0;word-spacing:0;
+}
+.navdrop a:hover,.navdrop a:focus-visible{background:var(--blue);color:#fff;outline:none}
+
+/* ---------- the field ----------
+   One canvas behind everything, sized to the window in CSS pixels; field.js
+   handles the device-pixel scaling itself. On the index it flies and then
+   freezes; on a sub-page it opens already frozen, because there is no hero to
+   fly through — what the two share is the still wireframe the plates sit on. */
+#field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;
+  -webkit-user-select:none;user-select:none}
 
 /* ---------- the sheet and the sub-pages ----------
    index.html arrives at its sheet by swiping it up over the corridor; a
    sub-page simply is the sheet, opened at the top. Same gutters, same type,
    so moving between them is moving within one surface. */
-.night__in,.page__in{padding:clamp(64px,9vw,120px) var(--edge) 0 var(--hero-x)}
-.page{position:relative;z-index:2;min-height:100vh;
-  padding:var(--bar-h) 0 clamp(70px,10vw,140px)}
-.blk + .blk{margin-top:clamp(70px,10vw,150px)}
+/* Symmetric. The lopsided version — hero-x on the left, edge on the right —
+   came from when this was a left-aligned column of type under a left-aligned
+   hero card. The blocks are centred plates now, and a plate with 115px of gutter
+   on one side and 46px on the other just reads as misaligned. */
+.night__in,.page__in{padding:clamp(48px,6vw,86px) var(--hero-x) 0}
+/* No bottom padding: the footer is the last thing on every page and bleeds to
+   the bottom edge. Its own margin-top is the gap above it. */
+.page{position:relative;z-index:2;min-height:100vh;padding:var(--bar-h) 0 0}
+/* Each block is a plate, not a stretch of page. On the index that is what lets
+   the corridor show between them; everywhere else it keeps the two surfaces
+   reading as one system. The border is heavy on purpose — a hairline plate on a
+   hairline field is two drawings at the same weight and neither wins. */
+.blk{background:var(--paper);border:var(--bd) solid var(--blue);
+  padding:clamp(24px,3.2vw,44px) var(--plate-pad) clamp(28px,3.6vw,50px)}
+.blk + .blk{margin-top:clamp(26px,3.2vw,46px)}
+/* The schedule is already a grid of plates. Wrapping them in one more is a
+   plate of plates — two borders doing the same job, the outer one just making
+   the inner ones look inset. Only the heading sits loose on the corridor, and
+   the cards below are opaque enough to carry the section on their own. */
+/* The bare block has no padding, so its cards sit on exactly the margin the
+   bordered plate's OUTER edge sits on — the boxes line up down the page whatever
+   is inside them. The heading alone is pushed in by the plate's own inset, so
+   it still shares an axis with the headings inside the plates. Padding the
+   whole block would align the headings and misalign every card by the same
+   amount; this way both land. */
+.blk--bare{background:none;border:0;padding:0}
+/* No inset on the heading either: everything in a bare block — heading and cards
+   alike — sits on the page's left margin, the same line the bordered plate's
+   outer edge sits on. The heading was pushed in to share an axis with the
+   headings inside the plates, which lined up the type but left every heading
+   hanging over its own cards. */
+.blk--bare + .blk{margin-top:clamp(34px,4.2vw,58px)}
+/* anchored from the band's menu, so they must not land under the fixed band */
+.blk[id],.rcard{scroll-margin-top:calc(var(--bar-h) + 22px)}
 
-.eyebrow{font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
-  margin:0 0 clamp(18px,3vw,30px)}
-.night h2,.page h2{margin:0;font-size:clamp(24px,3.4vw,44px);line-height:1.18;
-  font-weight:700;letter-spacing:-.02em;word-spacing:-.34em;max-width:17ch}
-.lede{margin:clamp(20px,3vw,32px) 0 0;font-size:13px;line-height:1.75;
-  letter-spacing:.01em;max-width:64ch}
+.night h2,.page h2{margin:0;font-size:clamp(23px,3.1vw,42px);line-height:1.12;
+  letter-spacing:-.03em;max-width:20ch}
+/* No single-word last lines. text-wrap:pretty is the fix rather than hand-placed
+   &nbsp; before the last word: the browser reflows the closing lines to avoid an
+   orphan, and it keeps working when the copy or the column width changes, which
+   a hard-coded non-breaking space does not. Degrades to normal wrapping where
+   it is unsupported. */
+p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
 
-/* ---------- schedule ----------
-   Grouped by school, not by date. Two schools host two chapters each on
-   different days, and a flat date list splits those pairs across the page —
-   which is exactly the thing someone scanning for their own campus is looking
-   for. Date order survives inside each group. */
-.sked{margin-top:clamp(30px,4.5vw,54px);max-width:920px}
-.sked__grp{border-top:1px solid var(--blue);padding:clamp(16px,2vw,22px) 0}
-.sked__grp:last-child{border-bottom:1px solid var(--blue)}
-.sked__school{font-size:clamp(15px,1.5vw,19px);font-weight:700;letter-spacing:-.01em;
-  word-spacing:-.2em;margin:0 0 14px}
-.sked__row{
-  display:grid;grid-template-columns:106px minmax(0,1fr) auto auto;
-  align-items:center;gap:clamp(12px,1.8vw,26px);
-  padding:9px 0;font-size:12px;letter-spacing:.02em;
-}
-.sked__row + .sked__row{border-top:1px solid rgba(2,74,216,.16)}
-.sked__date{font-weight:700;letter-spacing:.03em;word-spacing:-.2em}
-.sked__what{opacity:.8}
-/* The planning sheet says all of this in green, cream and orange. There is one
-   ink here, so the same three states are carried by weight instead: filled is
-   agreed, outlined is aimed at, dashed is booked but moving. Never by colour —
-   a second hue would be a second brand. */
-.chip{
-  display:inline-block;font-size:9.5px;letter-spacing:.07em;word-spacing:-.2em;
-  font-weight:700;padding:4px 7px;border:1px solid var(--blue);text-align:center;
-  /* a fixed floor so the three states line up as a column down the schedule
-     instead of each row's chip being as wide as its own word */
-  min-width:84px;justify-self:start;
-}
-.chip.is-set{background:var(--blue);color:#fff}
-.chip.is-target{background:none;color:var(--blue)}
-.chip.is-hold{background:none;color:var(--blue);border-style:dashed}
-.sked__go{
-  font-size:10px;letter-spacing:.07em;word-spacing:-.2em;font-weight:700;
-  text-decoration:none;color:var(--blue);border-bottom:1px solid var(--blue);
-  padding-bottom:2px;justify-self:start;
-}
-.sked__go:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
-/* A staging day is on the sheet because the trucks move that day, not because
-   anyone can come to it. It stays visible and is struck out of the offer. */
-.sked__row.is-staging{opacity:.52}
-.sked__row.is-staging .sked__go{display:none}
-.sked__note{grid-column:1/-1;margin:2px 0 0;font-size:11px;line-height:1.6;opacity:.62}
 
 /* ---------- speakers ----------
    Slots, not people. Everything a real entry needs is drawn empty rather than
    filled with a plausible stranger — a placeholder that looks like content is
    the one kind that ships by accident. */
-.spk{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(272px,100%),1fr));
-  gap:clamp(14px,1.8vw,24px);margin-top:clamp(30px,4.5vw,54px);max-width:1300px}
-.spk__card{border:1px solid var(--blue);display:flex;flex-direction:column}
-.spk__photo{position:relative;aspect-ratio:4/5;border-bottom:1px solid var(--blue);
+/* Five, explicitly. auto-fill decides the count from the available width, which
+   would be right if the count were open-ended, but the bill is five people
+   and it reads
+   as one row or it reads as a ragged grid. It steps down by breakpoint instead
+   of by whatever happens to fit. */
+.spk{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:clamp(12px,1.4vw,20px);margin-top:clamp(30px,4.5vw,54px)}
+/* Its own white ground. While these sat inside a bordered plate the plate was
+   the background; without one the corridor comes straight through the card and
+   the hatch, and the type ends up on wireframe. .rcard carries its own for the
+   same reason. */
+.spk__card{background:var(--paper);border:var(--bd) solid var(--blue);
+  display:flex;flex-direction:column}
+/* the hatch is the empty state; a filled plate drops it or it shows through the
+   portrait's own transparent edges */
+.spk__photo.has-photo{background:var(--paper)}
+.spk__photo{position:relative;aspect-ratio:4/5;border-bottom:var(--bd) solid var(--blue);
   display:flex;align-items:flex-end;padding:12px;
   background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
 .spk__photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.spk__photo span{font-size:10px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;opacity:.65}
+.spk__photo span{font-family:var(--mono);font-size:10px;letter-spacing:.0375em;word-spacing:-.3em;font-weight:500;color:var(--slate)}
 .spk__body{padding:clamp(14px,1.6vw,20px);display:flex;flex-direction:column;gap:9px;flex:1}
-.spk__name{font-size:16px;font-weight:700;letter-spacing:-.01em;word-spacing:-.2em;margin:0}
-.spk__role{font-size:11px;letter-spacing:.04em;word-spacing:-.2em;font-weight:700;margin:0}
-.spk__bio{font-size:12px;line-height:1.7;margin:0;opacity:.78;flex:1}
-.spk__stops{margin:0;font-size:10px;letter-spacing:.05em;word-spacing:-.2em;font-weight:700;
-  padding-top:10px;border-top:1px solid rgba(2,74,216,.22)}
+.spk__name{font-size:16px;letter-spacing:-.02em;margin:0}
+.spk__role{font-family:var(--micro);font-weight:500;font-size:13.5px;line-height:1.4;
+  margin:0;color:var(--slate)}
+.spk__bio{font-family:var(--text);font-size:13.5px;line-height:1.6;margin:0;color:var(--ink);flex:1}
 /* An unfilled field is a labelled gap, not blank space: you can see which one
    is missing without opening tour.js. */
 .tbc{opacity:.42}
+
+/* ---------- the campus cards ----------
+   The plate is the poster's: a heavy rule, the date up top in the machine voice,
+   the name on the floor, and slabs breaking out through the border so the card
+   has a silhouette rather than being a rectangle. The breakouts are xbox.js —
+   the same object as the hero's REGISTER button — which is what keeps them in
+   the same perspective as everything else instead of being a drop shadow's idea
+   of depth. Hence no border on them and no background: the SVG is the shape. */
+/* Three, explicitly, and no max-width. auto-fill picked the column count from
+   whatever happened to fit, and the 1340px cap meant that on a wide window the
+   grid stopped short of the plate above it — the cards have to land on the same
+   two margins the About plate does, at every width, which they only do if the
+   count is fixed and the grid is free to fill. */
+.rcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:start;
+  gap:clamp(30px,3.6vw,56px) clamp(30px,3.4vw,52px);
+  margin-top:clamp(34px,4.5vw,58px)}
+.rcard{
+  position:relative;display:flex;flex-direction:column;
+  min-height:clamp(232px,20vw,286px);
+  background:var(--paper);border:var(--bd) solid var(--blue);
+  padding:clamp(18px,2vw,26px);
+}
+.rcard__top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.rcard__date{margin:0;font-family:var(--mono);font-weight:500;color:var(--blue);
+  font-size:clamp(19px,1.95vw,28px);line-height:1;letter-spacing:-.02em;word-spacing:-.3em}
+/* Pushes the name to the floor of the plate however tall the card ends up. The
+   right padding is not optical: it is the corridor the breakouts live in, so a
+   long name wraps before it reaches them instead of running underneath. */
+.rcard__foot{margin-top:auto}
+.rcard__eyebrow{margin:0 0 9px;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.075em;word-spacing:-.25em;font-weight:500;color:var(--slate)}
+.rcard__name{margin:0;font-family:var(--mono);font-weight:500;color:var(--blue);
+  font-size:clamp(21px,2.25vw,32px);line-height:1.04;letter-spacing:-.035em;word-spacing:-.3em}
+
+.rcard__note{margin:10px 0 0;font-family:var(--text);font-weight:400;font-size:12px;
+  line-height:1.55;color:var(--slate)}
+
+/* The card is a plate and the link sits on it. This was two extruded slabs
+   breaking out through the right border for a while; off the card they read as
+   debris floating in the gutter rather than as part of it, and the extrusion
+   motif is already carrying the hero and the stats. One plate, one button. */
+.rcard__go{
+  display:inline-block;margin-top:clamp(16px,1.9vw,24px);align-self:flex-start;
+  color:#fff;background:var(--blue);text-decoration:none;font-family:var(--mono);
+  font-size:10.5px;letter-spacing:.0975em;word-spacing:-.2em;font-weight:500;
+  padding:11px 17px;transition:background .18s ease,color .18s ease;
+  border:var(--bd) solid var(--blue);
+}
+.rcard__go:hover{background:var(--paper);color:var(--blue)}
 
 /* ---------- registration ----------
    One page per stop, addressed by slug. Everything on it — the school, the
@@ -147,73 +317,141 @@ body{
    twelve pages cannot disagree with the schedule they came from. */
 .reg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:clamp(26px,4vw,64px);margin-top:clamp(30px,4.5vw,54px);max-width:1180px;align-items:start}
-.reg__meta{border:1px solid var(--blue);padding:clamp(18px,2.2vw,28px)}
-.reg__line{display:flex;justify-content:space-between;gap:18px;padding:11px 0;font-size:12px}
+.reg__meta{border:var(--bd) solid var(--blue);padding:clamp(18px,2.2vw,28px)}
+/* The stop page is already two columns, so its form stays one. .field--wide is
+   what the textarea, the checkbox and the button use to break out of a
+   multi-column form; here there is only the one column to break out of. */
+.rform{display:grid;grid-template-columns:minmax(0,1fr)}
+.field--wide{grid-column:1/-1}
+.reg__line{display:flex;justify-content:space-between;gap:18px;padding:11px 0;
+  font-family:var(--text);font-size:13.5px;color:var(--ink)}
 .reg__line + .reg__line{border-top:1px solid rgba(2,74,216,.18)}
-.reg__line b{font-weight:700;letter-spacing:.04em;word-spacing:-.2em;opacity:.62}
+.reg__line b{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.03em;word-spacing:-.2em;color:var(--slate)}
 .reg__line span{text-align:right}
 .field{display:block;margin-bottom:clamp(14px,1.8vw,20px)}
-.field > span{display:block;font-size:10px;letter-spacing:.07em;word-spacing:-.2em;
-  font-weight:700;margin-bottom:7px;opacity:.7}
+.field > span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.0525em;word-spacing:-.2em;
+  font-weight:500;margin-bottom:7px;color:var(--slate)}
 .field input,.field textarea,.field select{
-  width:100%;font:inherit;font-size:13px;color:var(--blue);
-  background:var(--paper);border:1px solid var(--blue);border-radius:0;
+  width:100%;font:inherit;font-size:14px;color:var(--ink);
+  background:var(--paper);border:var(--bd) solid rgba(2,74,216,.45);border-radius:0;
   padding:11px 12px;appearance:none;
 }
 .field textarea{min-height:104px;resize:vertical}
 .field input:focus,.field textarea:focus,.field select:focus{
   outline:none;box-shadow:inset 0 0 0 1px var(--blue)
 }
-.check{display:flex;gap:10px;align-items:flex-start;font-size:11.5px;line-height:1.6;
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55;color:var(--slate);
   margin-bottom:clamp(16px,2vw,22px)}
 .check input{width:15px;height:15px;margin:2px 0 0;accent-color:var(--blue);flex:none}
 .send{
-  font:inherit;font-size:12px;letter-spacing:.13em;word-spacing:-.2em;font-weight:700;
-  color:#fff;background:var(--blue);border:1px solid var(--blue);border-radius:0;
+  font-family:var(--mono);font-size:12px;letter-spacing:.0975em;word-spacing:-.2em;font-weight:500;
+  color:#fff;background:var(--blue);border:var(--bd) solid var(--blue);border-radius:0;
   padding:14px 26px;cursor:pointer;transition:background .18s ease,color .18s ease;
 }
 .send:hover{background:var(--paper);color:var(--blue)}
 /* Nothing is wired to a backend yet, so the form says so on submit instead of
    swallowing the entry and showing a success state for something that did not
    happen. Point the <form> at a real endpoint and delete this. */
-.sent{margin:16px 0 0;font-size:11.5px;line-height:1.65;
+.sent{margin:16px 0 0;font-size:13px;line-height:1.6;color:var(--ink);
   border-left:2px solid var(--blue);padding-left:12px}
 
-/* ---------- gallery ---------- */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(240px,100%),1fr));
-  gap:10px;margin-top:clamp(18px,2.4vw,26px);max-width:1300px}
-.shot{position:relative;aspect-ratio:4/3;border:1px solid var(--blue);
-  overflow:hidden;background:var(--paper)}
-.shot img{width:100%;height:100%;object-fit:cover;display:block}
-/* Placeholder until real photography lands — deliberately empty rather than a
-   stock image standing in for something that does not exist yet. The slot is
-   the deliverable: drop a file in photos/ and point the tile at it. */
-.shot--empty{display:flex;align-items:flex-end;padding:12px;
-  background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
-.shot--empty span{font-size:10px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;opacity:.65}
-/* The groups need the same air under the lede that the schedule gets; the
-   per-group margin only applies between groups, never before the first. */
-.gal{margin-top:clamp(30px,4.5vw,54px)}
-/* One "coming soon" per school, laid over the group rather than repeated on
-   every tile — twelve copies of the same two words is noise, one is a caption. */
-.gal__grp + .gal__grp{margin-top:clamp(34px,4.5vw,56px)}
-.gal__head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;
-  border-bottom:1px solid var(--blue);padding-bottom:10px}
-.gal__school{font-size:clamp(14px,1.4vw,17px);font-weight:700;letter-spacing:-.01em;
-  word-spacing:-.2em;margin:0}
-.gal__soon{font-size:10px;letter-spacing:.07em;word-spacing:-.2em;font-weight:700;opacity:.55;
-  white-space:nowrap}
-
 /* ---------- footer ----------
-   The band is the only navigation on a phone, and it cannot hold four links at
-   that width. This is where they go instead. */
-.foot{border-top:1px solid var(--blue);margin-top:clamp(64px,9vw,120px);
-  padding:clamp(22px,3vw,30px) var(--edge) 0 var(--hero-x);
-  display:flex;flex-wrap:wrap;gap:14px 26px;align-items:baseline}
-.foot a{font-size:11px;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;
-  color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
-.foot a:hover{border-bottom-color:var(--blue)}
-.foot small{font-size:10px;letter-spacing:.05em;word-spacing:-.2em;opacity:.5;margin-left:auto}
+   The page inverts here. Everything above is blue on white; the footer is the
+   same corridor seen the other way round — white hairlines on the ink — which
+   is only possible because a slab's fill and the ground are the same colour, so
+   the fills vanish and the outlines are all that is left. The frozen wireframe
+   at the top of the sheet works by exactly that trick in reverse.
+
+   It is also where the navigation lives on a phone: the band cannot hold four
+   links at 430px, so the columns here are not decoration. */
+.foot{
+  position:relative;overflow:hidden;isolation:isolate;
+  background:var(--blue);color:#fff;
+  margin-top:clamp(64px,9vw,120px);
+  min-height:clamp(430px,44vw,620px);display:flex;
+}
+/* Its own canvas and its own instance of the engine. Reusing the page's field
+   is not an option: that one is fixed to the viewport and painted for a white
+   ground, and this one has to sit in the flow and run inverted. */
+.foot__field{
+  position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;
+  /* The corridor converges off the right edge, so its lines radiate back across
+     the whole panel — including the half the navigation sits on. Tightening the
+     cloud would not fix it (the near slabs are the long ones), so the canvas is
+     faded out toward the left instead and the columns get clean ink to sit on.
+
+     Eased, not linear, and running the full width. A straight alpha ramp reads
+     as a cut on work this thin: a 1px hairline at 30% over saturated blue is
+     already invisible, so with a linear gradient everything vanishes inside the
+     top third of the ramp and the remaining two thirds do nothing. The stops
+     below spend most of their length in the low alphas, where the eye can
+     actually follow a line going. */
+  --fade:linear-gradient(90deg,
+    rgba(0,0,0,0) 0%,rgba(0,0,0,.02) 18%,rgba(0,0,0,.06) 30%,rgba(0,0,0,.13) 41%,
+    rgba(0,0,0,.26) 52%,rgba(0,0,0,.45) 63%,rgba(0,0,0,.68) 75%,
+    rgba(0,0,0,.89) 88%,#000 100%);
+  -webkit-mask-image:var(--fade);
+  mask-image:var(--fade);
+}
+.foot__in{
+  position:relative;z-index:1;flex:1;display:grid;
+  grid-template-rows:auto 1fr auto;
+  /* the middle row is empty now, so it cannot be what separates the columns
+     from the lockup when the panel stops being tall */
+  row-gap:clamp(46px,6vw,84px);
+  padding:clamp(34px,4.6vw,64px) var(--edge) clamp(28px,3.6vw,52px) var(--hero-x);
+}
+/* The panel itself arrives by scrolling — it is in flow. What animates is what
+   is ON it: the columns and the lockup slide up as the corridor behind them
+   comes into view, so the footer reads as a place you arrive at rather than a
+   block that was always sitting below the fold. The lockup trails the columns,
+   which is what makes it feel like one move settling rather than two things
+   appearing at once. */
+.foot__cols,.foot__mark{opacity:0;transform:translateY(28px);
+  transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.foot.is-up .foot__cols,.foot.is-up .foot__mark{opacity:1;transform:none}
+.foot.is-up .foot__mark{transition-delay:.12s}
+
+.foot__cols{display:flex;gap:clamp(32px,6vw,96px);flex-wrap:wrap}
+.foot__col{display:flex;flex-direction:column;gap:10px}
+.foot__col h3{margin:0 0 5px;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;word-spacing:-.2em;
+  font-weight:500;opacity:.5}
+.foot__col a{font-family:var(--mono);font-size:11px;letter-spacing:.0375em;word-spacing:-.3em;font-weight:500;
+  color:#fff;text-decoration:none;opacity:.86;transition:opacity .18s ease;width:max-content}
+.foot__col a:hover{opacity:1;box-shadow:0 3px 0 -1px #fff}
+/* The lockup sits on the floor of the panel, at the gutter, the way it does in
+   the band — the two are the same mark at two sizes, not two lockups. */
+.foot__mark{grid-row:3;height:clamp(42px,5.6vw,76px);width:auto;align-self:end;
+  justify-self:start;display:block}
+
+/* ---------- synthetic medium ----------
+   Kit yxt3aqw serves forma-djr-mono in four faces — n4, i4, n7, i7. There is no
+   n5, so every font-weight:500 on the page resolves DOWN to Regular (CSS font
+   matching tries weights at or below the target first). Figma shows Medium
+   because the desktop sync has it; the web kit does not.
+
+   The real fix is one checkbox: Adobe Fonts -> Web Projects -> this kit ->
+   Forma DJR Mono -> tick Medium, and while you are in there add Forma DJR Micro
+   and Forma DJR Text, which are not in the kit either. Until then this thickens
+   the stems optically to sit between Regular and Bold.
+
+   Scoped to the mono only: the platform faces standing in for Micro and Text
+   have a real 500 already and would come out double-weighted. In em, not px, so
+   a 38px title and an 11px label thicken by the same proportion.
+
+   pages.js adds .no-medium ONLY when no 500-weight forma-djr-mono face is
+   registered, so this switches itself off the moment the kit is fixed. */
+.no-medium h1,.no-medium h2,
+.no-medium .rcard__name,.no-medium .spk__name,
+.no-medium .rcard__date,.no-medium .rcard__eyebrow,
+.no-medium .nav a,.no-medium .host,
+.no-medium .rcard__go,
+.no-medium .spk__photo span,
+.no-medium .reg__line b,.no-medium .field > span,.no-medium .send,
+.no-medium .foot__col h3,.no-medium .foot__col a,
+.no-medium .card__eyebrow,.no-medium .register{
+  -webkit-text-stroke:.03em currentColor;
+}
 
 /* ---------- arrival ----------
    On index.html the sheet's own entrance is the scroll, so its contents cannot
@@ -227,24 +465,45 @@ body{
 .blk.is-up>.rise:nth-child(3){transition-delay:.24s}
 .blk.is-up>.rise:nth-child(4){transition-delay:.32s}
 
+@media (max-width:1180px){
+  .spk{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:980px){
+  .rcards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media (max-width:860px){
   .reg{grid-template-columns:minmax(0,1fr)}
+  .spk{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:720px){
   :root{--bar-h:52px}
+  /* narrower than the button's own offset allows, so a panel cannot hang off
+     the right edge of a 360px screen */
+  .navdrop{min-width:0;width:min(78vw,290px)}
   .brand img{height:28px}
   /* Four items will not fit beside the lockup at this width. The band keeps the
      one that is a call to action; the rest are in the footer, which is why the
      footer is on every page and not only on the index. */
-  .nav a:not(.host){display:none}
-  .night__in,.page__in,.foot{padding-left:var(--edge)}
-  /* The four-column row collapses rather than compresses: at 360px the date and
-     the status would each be a two-line stack of their own. */
-  .sked__row{grid-template-columns:1fr auto;row-gap:6px}
-  .sked__what{grid-column:1/-1;order:3}
-  .sked__go{grid-column:1/-1;order:4;margin-top:4px}
-  .sked__note{order:5}
+  /* child combinator: the menu's own links are .nav a too, and hiding them
+     here would empty the dropdown on exactly the width that needs it most */
+  .nav > a:not(.host){display:none}
+  .night__in,.page__in{padding-left:var(--edge);padding-right:var(--edge)}
+  .foot__in{padding-left:var(--edge)}
+  /* the corridor converges off the right edge, so at this width almost none of
+     it is on screen — the panel has nothing to be tall for */
+  .foot{min-height:0}
+}
+@media (max-width:720px){
+  /* two columns of 40 characters is worse than one of 80 */
+  .about__body{columns:1}
+}
+@media (max-width:620px){
+  .rcards{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:520px){
+  .spk{grid-template-columns:minmax(0,1fr)}
 }
 @media (prefers-reduced-motion:reduce){
   .rise{opacity:1;transform:none;transition:none}
+  .foot__cols,.foot__mark{opacity:1;transform:none;transition:none}
 }

@@ -54,41 +54,100 @@ were away.
 
 ## The pages
 
-`tour.js` is the tour. Twelve stops, each with a slug, and every other surface
-is a view onto that array — the schedule on the index, the gallery's groups,
-the stop filter on a speaker card, and the twelve registration pages. Adding a
-stop is one entry; it appears on all four. Typing them into four files by hand
-is how a stop ends up on the schedule with no registration page behind it.
+The whole site is `index.html`: the corridor, the hero, then three plates —
+About, Schedule, Speakers. `register.html?stop=<slug>` is the one other real
+page, the form for a single stop; reached without a slug it hands you back to
+the schedule. `speakers.html` is a redirect left behind so links already given
+out still land.
 
-`status` carries the colour coding off the planning sheet, because on that sheet
-the colour *is* the information — half these dates are not agreed. There is one
-ink here, so the same three states are drawn by weight instead: a filled chip is
-agreed, an outlined one is aimed at, a dashed one is booked but already moving.
-A second hue would be a second brand.
+`tour.js` is the tour. Twelve stops, each with a slug, and every other surface is
+a view onto that array — the schedule cards, the campus menu under REGISTER in
+the band, and the per-stop forms. Adding a stop is one entry; it appears on all
+three. Typing them into three files by hand is how a stop ends up on the
+schedule with no registration page behind it.
+
+`status` and `note` are still in there and are no longer rendered anywhere.
+CONFIRMED / TARGETING / ON HOLD and "the chapter has asked to move to Oct 31"
+are how the tour is tracked internally; a student reading a schedule needs the
+date, not the state of the negotiation behind it. They stay because they are the
+truth about each date.
 
 | file | what it is |
 | --- | --- |
-| `index.html` | the corridor, the hero, and the sheet that swipes up over it |
-| `speakers.html` | the bill — photo, position, company, stops, description |
-| `register.html` | one page per stop, addressed as `?stop=<slug>` |
+| `index.html` | the corridor, the hero, and the plates that ride up over it |
+| `register.html` | the form for one stop, addressed as `?stop=<slug>` |
+| `speakers.html` | a redirect to `index.html#speakers` |
 | `site.css` | the ink, the band, the gutters, the type — everything shared |
 | `pages.js` | everything that draws itself out of `tour.js` |
+| `tour.js` | the twelve stops and the bill |
 
-The schedule is grouped by school rather than by date: UPenn and NYU each host
-two chapters on different days, and a flat date list splits those pairs across
-the page — which is the one thing someone scanning for their own campus is
-looking for. Date order survives inside each group.
+A card per **stop**, not per campus, so UPenn and NYU appear twice, told apart by
+chapter. The page's job is one registration per stop, and a card that cannot map
+to exactly one form is a click with no answer. The band's menu is the exception:
+it lists campuses, one each, because without the chapter beside it a second
+UPenn is the same words twice.
 
-Speakers and photos are slots, drawn empty. A placeholder that looks like
-content is the kind that ships by accident, so an unfilled field renders as its
-own greyed label and the gap stays visible. The registration form has no
-endpoint behind it and says so on submit rather than showing a success state for
-something that did not happen.
+## Layout
+
+Every block is a plate: a white box with one stroke, floating on the frozen
+wireframe, which keeps scrubbing behind them as you scroll. Two shapes of block,
+and the difference matters:
+
+- `.blk` — bordered. For prose. About is the only one.
+- `.blk--bare` — no border, no padding. For a grid of cards, which are plates
+  themselves; a plate of plates is two borders doing one job.
+
+Everything lands on the same left margin: a bare block's heading and its cards,
+and a bordered block's outer edge. Only a bordered block's *heading* sits inset,
+because it is inside the box and cannot reach the margin without sitting on the
+border.
+
+One stroke weight for every box — `--bd`. It was 3px on plates, 2px on cards and
+1px on everything else, which read as three unrelated systems.
+
+## Type
+
+| role | face |
+| --- | --- |
+| title | Forma DJR Mono, Medium |
+| subhead | Forma DJR Micro, Medium |
+| body | Forma DJR Text, Regular |
+| caption | Forma DJR Mono, Regular |
+
+Typekit kit `yxt3aqw` serves **one** family — `forma-djr-mono`, in four faces
+(`n4`, `i4`, `n7`, `i7`). Two consequences, one fixed and one not:
+
+- **Medium.** There is no `n5` in the kit, so every `font-weight:500` on the site
+  was resolving *down* to Regular — CSS font matching tries weights at or below
+  the target before going up. Figma shows Medium because the desktop Adobe Fonts
+  sync has it; the web kit does not. `fonts/forma-djr-mono-500.woff2` now adds
+  the weight to the same family name and the browser merges it with the kit's.
+- **Micro and Text are still missing**, so every subhead and all body copy is
+  rendering in the platform grotesque, not Forma. Add both families to the kit
+  and `--micro` / `--text` pick them up with no code change.
+
+`.no-medium` in `site.css` is a synthetic weight — it thickens stems optically
+with `-webkit-text-stroke` when no real 500 is available. It is dormant now, and
+deliberately kept: `pages.js` asks `document.fonts` whether a 500-weight
+`forma-djr-mono` face is actually registered and only applies it when none is, so
+if the self-hosted file is ever pulled the site still reads medium instead of
+silently dropping to Regular.
+
+> **Licensing.** `fonts/` came from a befonts.com download whose licence reads
+> *Personal Use Only*, and the files are the `-Testing` trial cuts. That is fine
+> for working out the design locally and is **not** fine on an HP-branded site.
+> Before this ships, either add Medium to kit `yxt3aqw` — at which point the
+> probe switches the self-hosted face off on its own and `fonts/` can be deleted
+> — or buy a webfont licence from DJR. The same applies to the Micro and Text
+> families when they are added.
 
 ## Colour
 
-One ink: `#024AD8`, sampled from `hp-logo.png` — a single-colour asset with the
-letterforms knocked out as transparency, now used only as the favicon. The header
+Blue is a role, not the palette: headings, calls to action, the band, and the
+footer panel. Body copy is `--ink`, anything subordinate is `--slate` — the
+third colour on the specimen. `#024AD8` is sampled from `hp-logo.png`, a
+single-colour asset with the letterforms knocked out as transparency, now used
+only as the favicon. The header
 carries `hp-lockup.svg` instead: mark, wordmark, leading and the space between
 the two are all inside the one file, so the lockup cannot drift out of its own
 proportions the way a mark-plus-span pair can. Its paths ship white, so the band

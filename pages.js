@@ -1,6 +1,6 @@
 /* Everything that draws itself out of tour.js.
 
-   The schedule, the gallery groups, the speaker slots and the registration
+   The schedule, the speaker slots, the band's campus menu and the registration
    page are all the same twelve rows seen from different angles, so they are
    built here rather than typed into three files by hand. Typing them by hand
    is how a stop ends up on the schedule with no registration page behind it. */
@@ -21,140 +21,384 @@
     return v ? esc(v) : '<span class="tbc">' + esc(placeholder) + '</span>';
   }
 
-  function chip(s) {
-    var st = T.status[s.status];
-    return '<span class="chip ' + st.cls + '">' + st.label + '</span>';
+  /* ---------- the schedule, as cards ----------
+     The schedule and the registration list were the same twelve rows printed
+     twice — one as a table you read, one as cards you clicked. They are one
+     thing now: one grid of cards carrying the date and the campus, each linking
+     at its own registration page. The band's REGISTER opens the same list as a
+     menu, so the campus you want is one click from anywhere on the site.
+
+     The staging day has no card. It is on the planning sheet because the trucks
+     move that day, not because anyone can come to it. */
+  function fields(stop) {
+    return '<form class="rform" novalidate data-stop="' + esc(stop.slug) + '">' +
+      '<label class="field"><span>FULL NAME</span>' +
+        '<input name="name" autocomplete="name" required></label>' +
+      '<label class="field"><span>EMAIL</span>' +
+        '<input name="email" type="email" autocomplete="email" required></label>' +
+      '<label class="field"><span>SCHOOL</span>' +
+        '<input name="school" value="' + esc(stop.school) + '"></label>' +
+      '<label class="field"><span>YEAR AND PROGRAMME</span>' +
+        '<input name="year" placeholder="e.g. 3rd year, B.Arch"></label>' +
+      '<label class="field field--wide"><span>WHAT ARE YOU BRINGING?</span>' +
+        '<textarea name="project" placeholder="A project and an idea of where it is ' +
+        'stuck. Optional."></textarea></label>' +
+      '<label class="check field--wide"><input type="checkbox" name="updates">' +
+        '<span>Email me if this date moves. Half the calendar is still being agreed.</span>' +
+        '</label>' +
+      '<div class="field--wide"><button class="send" type="submit">REGISTER</button>' +
+        '<p class="sent" hidden></p></div>' +
+      '</form>';
   }
 
-  /* ---------- schedule ---------- */
-  function schedule(el) {
+  function cards(el) {
     if (!el) return;
-    el.innerHTML = T.bySchool().map(function (g) {
-      return '<div class="sked__grp">' +
-        '<h3 class="sked__school">' + esc(g.school) + '</h3>' +
-        g.stops.map(function (s) {
-          return '<div class="sked__row' + (s.staging ? ' is-staging' : '') + '">' +
-            '<span class="sked__date">' + esc(s.date) + '</span>' +
-            '<span class="sked__what">' + esc(s.chapter || 'Main stop') + '</span>' +
-            chip(s) +
-            '<a class="sked__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">REGISTER →</a>' +
-            (s.note ? '<p class="sked__note">' + esc(s.note) + '</p>' : '') +
-            '</div>';
-        }).join('') +
-        '</div>';
+    var open = T.stops.filter(function (s) { return !s.staging; });
+    /* add, not assign: on the index this container already carries .rise, and
+       overwriting className would silently drop it out of the reveal */
+    el.classList.add('rcards');
+    el.innerHTML = open.map(function (s) {
+      return '<article class="rcard" id="stop-' + esc(s.slug) + '">' +
+        '<div class="rcard__top"><p class="rcard__date">' + esc(numDate(s.date)) + '</p></div>' +
+        '<div class="rcard__foot">' +
+          /* The chapter alone. "USA COLLEGE TOUR 2026" sat above every campus
+             name on every card — eleven repetitions of the thing the band
+             already says, pushing the one piece of information the line
+             actually carries out to the right of it. A stop with no chapter
+             gets no line rather than an empty one. */
+          (s.chapter ? '<p class="rcard__eyebrow">' + esc(s.chapter) + '</p>' : '') +
+          '<h3 class="rcard__name">' + esc(s.school) + '</h3>' +
+        '</div>' +
+        '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
+          'REGISTER</a>' +
+        '</article>';
     }).join('');
+
   }
 
-  /* ---------- gallery ----------
-     Grouped by school and empty on purpose. Each group is a drop zone: put the
-     files in photos/ and swap the tile's inner markup for an <img>. The tile
-     count is fixed at four per school so the grid has a shape to hold. */
-  function gallery(el) {
-    if (!el) return;
-    el.innerHTML = T.bySchool({ skipStaging: true }).map(function (g) {
-      return '<section class="gal__grp">' +
-        '<div class="gal__head">' +
-          '<h3 class="gal__school">' + esc(g.school) + '</h3>' +
-          '<p class="gal__soon">PHOTOS COMING SOON</p>' +
-        '</div>' +
-        '<div class="grid">' +
-          [1, 2, 3, 4].map(function (n) {
-            return '<div class="shot shot--empty"><span>' +
-              esc(g.school.split(' ')[0].toUpperCase()) + ' 0' + n + '</span></div>';
-          }).join('') +
-        '</div>' +
-        '</section>';
-    }).join('');
+  /* No endpoint exists yet. Saying so beats a success state for something that
+     did not happen — point the form at a real action and delete this. Delegated
+     from a container rather than bound per form, because the cards build their
+     forms from tour.js and there is no moment where all of them exist to bind. */
+  function wireSubmit(scope) {
+    scope.addEventListener('submit', function (e) {
+      var form = e.target.closest('.rform');
+      if (!form) return;
+      e.preventDefault();
+      var stop = T.bySlug(form.dataset.stop);
+      var out = form.querySelector('.sent');
+      out.hidden = false;
+      out.textContent = 'Not submitted — this form has no endpoint behind it yet. ' +
+        'Registration for ' + (stop ? T.stopName(stop) : 'this stop') +
+        ' opens once the date is confirmed.';
+    });
   }
 
   /* ---------- speakers ---------- */
   function speakers(el) {
     if (!el) return;
     el.innerHTML = T.speakers.map(function (p) {
-      var where = !p.stops || !p.stops.length
-        ? 'ALL STOPS'
-        : p.stops.map(function (slug) {
-            var s = T.bySlug(slug);
-            return s ? T.stopName(s).toUpperCase() : slug.toUpperCase();
-          }).join(' · ');
       var n = p.id < 10 ? '0' + p.id : '' + p.id;
       return '<article class="spk__card">' +
-        '<div class="spk__photo">' +
-          (p.photo ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name || '') + '">' : '') +
-          '<span>PHOTO ' + n + '</span>' +
+        '<div class="spk__photo' + (p.photo ? ' has-photo' : '') + '">' +
+          (p.photo
+            ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name || '') + '">'
+            /* the slot number is the label on an EMPTY plate; over a portrait it
+               is a watermark on someone's face */
+            : '<span>PHOTO ' + n + '</span>') +
         '</div>' +
         '<div class="spk__body">' +
           '<h3 class="spk__name">' + or(p.name, 'Speaker ' + n) + '</h3>' +
-          '<p class="spk__role">' + or(p.role, 'Position') + ' · ' + or(p.company, 'Company') + '</p>' +
+          /* Company alone. The role is null on every one of these and a card
+             reading "Position · KPF" is a placeholder shown to the public. */
+          '<p class="spk__role">' +
+            (p.role ? esc(p.role) + ' · ' : '') + or(p.company, 'Company') + '</p>' +
           '<p class="spk__bio">' + or(p.bio, 'Description to come — one short paragraph on what they work on and what they are bringing to the bench.') + '</p>' +
-          '<p class="spk__stops">' + esc(where) + '</p>' +
         '</div>' +
         '</article>';
     }).join('');
   }
 
+  /* The planning sheet writes dates as "Oct 18–19"; the cards want them numeric,
+     the way a ticket does. Derived rather than stored as a second field — two
+     spellings of the same date in tour.js is two things to keep in step. */
+  var MON = { Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12 };
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function numDate(str) {
+    var month = 0;
+    return str.split('/').map(function (part) {
+      part = part.trim();
+      var m = part.match(/^([A-Za-z]{3})[a-z]*\s*(.*)$/);
+      if (m && MON[m[1]]) { month = MON[m[1]]; part = m[2]; }
+      if (!month) return part;
+      return part.split(/[–-]/).map(function (d) {
+        d = d.trim();
+        return d ? pad(month) + '.' + pad(parseInt(d, 10)) : '';
+      }).filter(Boolean).join('–');
+    }).join(' / ');
+  }
+
   /* ---------- registration ----------
-     ?stop=<slug> selects the school. With no slug — or one that does not match
-     anything, which is what a stale link looks like — the page becomes the
-     chooser instead of erroring, so the link still lands somewhere useful. */
+     ?stop=<slug> opens one stop on its own, which is what a link shared into a
+     chapter's group chat needs. With no slug — or one that does not match
+     anything, which is what a stale link looks like — the page falls back to
+     the same card grid the schedule uses, so the link still lands somewhere. */
   function register(root) {
     if (!root) return;
     var slug = new URLSearchParams(location.search).get('stop');
     var stop = slug ? T.bySlug(slug) : null;
 
-    if (!stop) {
-      root.innerHTML =
-        '<p class="eyebrow">REGISTRATION</p>' +
-        '<h2>Pick your campus.</h2>' +
-        '<p class="lede">One registration per stop, because the dates and the rooms are ' +
-        'different at each. Two schools host two chapters on separate days — those are ' +
-        'listed separately for the same reason.</p>' +
-        '<div class="sked" id="chooser"></div>';
-      schedule(document.getElementById('chooser'));
-      document.title = 'Register — HP USA College Tour 2026';
-      return;
-    }
+    /* There is no standalone registration page any more — the schedule IS the
+       registration list. This file survives only as the per-stop form a card
+       links at; reached without a stop, or with one that no longer exists,
+       it hands you back to the schedule rather than inventing a second list. */
+    if (!stop) { location.replace('index.html#schedule'); return; }
 
     var name = T.stopName(stop);
     document.title = 'Register · ' + name + ' — HP USA College Tour 2026';
-
     root.innerHTML =
-      '<p class="eyebrow">REGISTRATION</p>' +
       '<h2>' + esc(name) + '</h2>' +
       '<div class="reg">' +
         '<div class="reg__meta">' +
           '<div class="reg__line"><b>SCHOOL</b><span>' + esc(stop.school) + '</span></div>' +
           '<div class="reg__line"><b>CHAPTER</b><span>' + esc(stop.chapter || '—') + '</span></div>' +
           '<div class="reg__line"><b>DATE</b><span>' + esc(stop.date) + '</span></div>' +
-          '<div class="reg__line"><b>STATUS</b><span>' + chip(stop) + '</span></div>' +
-          (stop.note ? '<p class="sked__note">' + esc(stop.note) + '</p>' : '') +
-          '<p class="sked__note">Free, and open to any enrolled student. No portfolio ' +
+          '<p class="rcard__note">Free, and open to any enrolled student. No portfolio ' +
           'review and no prior experience with anything on the benches.</p>' +
         '</div>' +
-        '<form class="reg__form" novalidate>' +
-          '<label class="field"><span>FULL NAME</span><input name="name" autocomplete="name" required></label>' +
-          '<label class="field"><span>EMAIL</span><input name="email" type="email" autocomplete="email" required></label>' +
-          '<label class="field"><span>SCHOOL</span><input name="school" value="' + esc(stop.school) + '"></label>' +
-          '<label class="field"><span>YEAR AND PROGRAMME</span><input name="year" placeholder="e.g. 3rd year, B.Arch"></label>' +
-          '<label class="field"><span>WHAT ARE YOU BRINGING?</span>' +
-            '<textarea name="project" placeholder="A project and an idea of where it is stuck. Optional."></textarea></label>' +
-          '<label class="check"><input type="checkbox" name="updates">' +
-            '<span>Email me if this date moves. Half the calendar is still being agreed.</span></label>' +
-          '<button class="send" type="submit">REGISTER</button>' +
-          '<p class="sent" hidden></p>' +
-        '</form>' +
+        /* the same fields the cards open, from the same function — two spellings
+           of one form is two forms to keep in step */
+        '<div class="reg__fields">' + fields(stop) + '</div>' +
+      '</div>';
+    wireSubmit(root);
+  }
+
+  /* ---------- the corridor, on a sub-page ----------
+     The index flies down the corridor and freezes it; a sub-page has no hero to
+     fly through, so it opens on the frozen wireframe directly. These are the
+     values applyMorph() lands on at the end of the index's whiten — fills the
+     same white as the ground, hairline in the ink, every fade off — copied as a
+     starting state rather than run as an animation nobody would see.
+
+     Both fade ramps have to stay at 0. They mix the OUTLINE as well as the
+     fill, so a ramped slab gets an edge that dissolves partway along itself
+     while its white fill stays solid: a half-drawn shape.
+
+     No rAF: speedScale is 0 and nothing else moves, so a loop would redraw
+     identical geometry sixty times a second. Scroll drives travel and asks for
+     one frame. */
+  function backdrop(canvas) {
+    if (!canvas || !global.ExtrusionField) return;
+    var field = new global.ExtrusionField(canvas, {
+      count: 220, seed: 12,
+      spread: 1500, aspectXY: 1.15, clump: 0.55, hole: 0.13, cone: 0.55,
+      zNear: 620, zFar: 10000, zPow: 1.35,
+      lenMin: 900, lenMax: 5600, lenDepth: 0.8,
+      thick: 400, thickVar: 0.5, flat: 0.30, flatVar: 0.6,
+      faces: true, faceShade: 0,
+      fade: 0, grad: 0, wrapFade: 0, borderFade: 0,
+      minPx: 4, edge: 0.52, edgeCol: '#024AD8', edgeFade: true,
+      chips: 0,
+      fov: 28, vpX: 0.37, vpY: 0.58,
+      col: '#ffffff', bg: '#ffffff', wash: 0,
+      speed: 0, parallax: 0, ease: 0.05
+    });
+    field.speedScale = 0;
+
+    var SCRUB = 2.4;              // world units per pixel of scroll, as on the index
+    var base = field.travel, queued = false;
+    function paint() {
+      queued = false;
+      field.travel = base + scrollY * SCRUB;
+      field.draw();
+    }
+    function ask() { if (!queued) { queued = true; requestAnimationFrame(paint); } }
+    addEventListener('scroll', ask, { passive: true });
+    addEventListener('resize', function () { field.resize(); paint(); });
+    if (document.fonts) document.fonts.ready.then(paint);
+    paint();
+  }
+
+  /* ---------- the register menu ----------
+     REGISTER in the band opens the campus list rather than going to a page that
+     is itself only a list. The anchor keeps its href: with no JS it is still a
+     link to the registration page, and the menu is the enhancement on top.
+
+     Built here rather than written into three <header>s, because it is the tour
+     and the tour lives in tour.js — a stop added there appears in the menu on
+     every page without anyone remembering to update a nav. */
+  function nav(bar) {
+    if (!bar) return;
+    var btn = bar.querySelector('.host');
+    if (!btn) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'nav__wrap';
+    btn.parentNode.insertBefore(wrap, btn);
+    wrap.appendChild(btn);
+
+    /* One entry per campus, not per stop. Without the chapter beside it, UPenn
+       and NYU would each appear twice as the same words — so they collapse to
+       one, pointing at the first of their two dates. The schedule below still
+       shows both, which is where the difference actually matters. */
+    var seen = {}, campuses = [];
+    T.stops.forEach(function (st) {
+      if (st.staging || seen[st.school]) return;
+      seen[st.school] = true;
+      campuses.push(st);
+    });
+
+    var menu = document.createElement('div');
+    menu.className = 'navdrop';
+    menu.id = 'nav-register';
+    menu.hidden = true;
+    /* Straight to that campus's form. The menu is a shortcut past the schedule,
+       not a way of scrolling to a card in it — someone who already knows their
+       campus should not have to find it in a grid first. */
+    menu.innerHTML = campuses.map(function (st) {
+      return '<a href="register.html?stop=' + encodeURIComponent(st.slug) + '">' +
+        esc(st.school) + '</a>';
+    }).join('');
+    wrap.appendChild(menu);
+
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', menu.id);
+
+    var shutTimer = null;
+    function open(on) {
+      clearTimeout(shutTimer);
+      menu.hidden = !on;
+      btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+
+    /* Hover on a pointer that can hover; tap and keyboard still toggle, because
+       a menu that only opens on hover is a menu a phone cannot open at all.
+       The close is delayed: the panel sits flush under the button, but a
+       diagonal path to the far column still leaves the wrap for a frame or two
+       and an immediate close makes the menu impossible to reach. */
+    if (matchMedia('(hover:hover)').matches) {
+      wrap.addEventListener('pointerenter', function () { open(true); });
+      wrap.addEventListener('pointerleave', function () {
+        shutTimer = setTimeout(function () { open(false); }, 220);
+      });
+    }
+    btn.addEventListener('click', function (e) {
+      /* The href is #schedule — a real destination, and the no-JS fallback. On
+         a pointer device the menu is already open, so let the click through and
+         go there; on touch the first tap opens the menu instead. */
+      if (matchMedia('(hover:hover)').matches) return;
+      e.preventDefault();
+      open(menu.hidden);
+    });
+    addEventListener('pointerdown', function (e) {
+      if (!wrap.contains(e.target)) open(false);
+    });
+    addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { open(false); btn.focus(); }
+    });
+    menu.addEventListener('click', function () { open(false); });
+    /* it is anchored to a fixed band, so a scroll leaves it hanging over
+       content it no longer belongs to */
+    addEventListener('scroll', function () { open(false); }, { passive: true });
+  }
+
+  /* ---------- footer ----------
+     One builder for all three pages. It was three copies of the same markup for
+     about a day, which is one day longer than three copies of anything stays
+     identical.
+
+     The panel inverts the page: white hairlines on the ink instead of blue
+     hairlines on white. That is the engine's own trick, used the other way
+     round — a slab's fill is mixed toward whatever is behind it, so setting the
+     fill colour and the ground to the same blue makes every fill disappear and
+     leaves nothing but the outline. */
+  var LINKS = {
+    NAVIGATE: [
+      ['ABOUT', 'index.html#about'],
+      ['SCHEDULE', 'index.html#schedule'],
+      ['SPEAKERS', 'index.html#speakers'],
+      ['REGISTER', 'index.html#schedule']
+    ],
+    /* Placeholders. Nobody has given us the real handles, and a social link
+       that goes to the wrong account is worse than one that goes nowhere. */
+    FOLLOW: [
+      ['INSTAGRAM', '#'],
+      ['LINKEDIN', '#'],
+      ['YOUTUBE', '#'],
+      ['X', '#']
+    ]
+  };
+
+  function footer(el) {
+    if (!el) return;
+    el.className = 'foot';
+    el.innerHTML =
+      '<canvas class="foot__field" aria-hidden="true"></canvas>' +
+      '<div class="foot__in">' +
+        '<div class="foot__cols">' +
+          Object.keys(LINKS).map(function (head) {
+            return '<nav class="foot__col"><h3>' + head + '</h3>' +
+              LINKS[head].map(function (l) {
+                return '<a href="' + l[1] + '">' + l[0] + '</a>';
+              }).join('') + '</nav>';
+          }).join('') +
+        '</div>' +
+        '<img class="foot__mark" src="hp-lockup.svg" alt="HP USA College Tour 2026">' +
       '</div>';
 
-    /* No endpoint exists yet. Saying so beats a success state for something
-       that did not happen — point the form at a real action and delete this. */
-    var form = root.querySelector('.reg__form');
-    var out = root.querySelector('.sent');
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      out.hidden = false;
-      out.textContent = 'Not submitted — this form has no endpoint behind it yet. ' +
-        'Registration for ' + name + ' opens once the date is confirmed.';
+    /* Fires once, when a quarter of the panel is up. Once, because a footer
+       that re-animates every time it scrolls back into view is a tic, and this
+       is the last thing on the page — you will cross it more than once. */
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || !global.IntersectionObserver) {
+      el.classList.add('is-up');
+    } else {
+      new IntersectionObserver(function (e, o) {
+        if (!e[0].isIntersecting) return;
+        el.classList.add('is-up');
+        o.disconnect();
+      }, { threshold: 0.25 }).observe(el);
+    }
+
+    if (!global.ExtrusionField) return;   // no engine on this page; panel stays flat
+    var f = new global.ExtrusionField(el.querySelector('.foot__field'), {
+      count: 150, seed: 21,
+      spread: 1500, aspectXY: 1.15, clump: 0.55, hole: 0.13, cone: 0.55,
+      zNear: 620, zFar: 10000, zPow: 1.35,
+      lenMin: 900, lenMax: 5600, lenDepth: 0.8,
+      thick: 400, thickVar: 0.5, flat: 0.30, flatVar: 0.6,
+      /* Fill and ground are the same blue, so every face vanishes into the
+         panel and the hairline is the whole drawing.
+
+         Which is exactly why wrapFade and borderFade belong ON here, though
+         they are off in the frozen wireframe. There the worry is that a fade
+         mixes the OUTLINE as well as the fill, so a ramped slab gets an edge
+         that dissolves partway along itself while its white fill stays solid —
+         a half-drawn shape. Here there is no fill to disagree with: fading the
+         hairline fades the entire shape, evenly, which is the only way a bar
+         can leave the panel without being guillotined at the canvas edge.
+         faceShade stays off — it is a tonal step between faces, and there are
+         no faces. */
+      faces: true, faceShade: 0,
+      fade: 0, grad: 0, wrapFade: 0.22, borderFade: 0.44,
+      minPx: 4, edge: 0.5, edgeCol: '#ffffff', edgeFade: false,
+      chips: 0,
+      fov: 40, vpX: 0.97, vpY: 0.62,
+      col: '#024AD8', bg: '#024AD8', wash: 0,
+      /* A tenth of the hero's pace. The footer is somewhere you arrive, not
+         somewhere you are travelling, so it drifts rather than flies. */
+      speed: 70, parallax: 0, ease: 0.05
     });
+    addEventListener('resize', function () { f.resize(); });
+
+    /* Off-screen it stops entirely. A second requestAnimationFrame loop running
+       under the fold for the whole visit is the kind of cost that never shows up
+       in a screenshot. */
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { f.draw(); return; }
+    if (global.IntersectionObserver) {
+      new IntersectionObserver(function (e) {
+        if (e[0].isIntersecting) f.start(); else f.stop();
+      }, { rootMargin: '120px' }).observe(el);
+    } else { f.start(); }
   }
 
   /* ---------- arrival ----------
@@ -176,8 +420,30 @@
     [].forEach.call(blocks, function (b) { io.observe(b); });
   }
 
+  /* Does the loaded kit actually carry a Medium? A font-weight:500 declaration
+     silently resolves to Regular when it does not, which looks like a CSS bug
+     and is not one — so ask the font set directly rather than trusting the
+     declaration. document.fonts is populated from the kit's @font-face rules,
+     which have parsed by the time this script runs; the fonts.ready re-probe is
+     for the case where they have not. */
+  function weightProbe() {
+    var has = false;
+    try {
+      global.document.fonts.forEach(function (f) {
+        if (f.family.replace(/["']/g, '') === 'forma-djr-mono' && String(f.weight) === '500') has = true;
+      });
+    } catch (e) { has = false; }
+    document.documentElement.classList.toggle('no-medium', !has);
+  }
+  if (global.document.fonts) {
+    weightProbe();
+    global.document.fonts.ready.then(weightProbe);
+  } else {
+    document.documentElement.classList.add('no-medium');
+  }
+
   global.PAGES = {
-    schedule: schedule, gallery: gallery, speakers: speakers,
-    register: register, reveal: reveal
+    cards: cards, speakers: speakers, nav: nav, backdrop: backdrop,
+    register: register, reveal: reveal, footer: footer
   };
 })(window);

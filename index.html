@@ -11,18 +11,14 @@
 <link rel="stylesheet" href="site.css">
 <style>
 /* Only what the index has. The ink, the band, the gutters, the sheet type, the
-   schedule, the gallery and the arrival all live in site.css now — three pages
+   schedule, the cards and the arrival all live in site.css now — three pages
    share them, and three copies of a header band drift within a week. What is
    left here is the corridor and the things that sit on it. */
 
 /* Only the corridor is a drag surface, so only it suppresses the text caret —
-   the prose below has to stay selectable. */
-.hero,#field{-webkit-user-select:none;user-select:none}
-
-/* ---------- the field ----------
-   One canvas behind everything, sized to the window in CSS pixels; field.js
-   handles the device-pixel scaling itself. */
-#field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+   the prose below has to stay selectable. (#field is handled in site.css, which
+   every page shares now that every page has one.) */
+.hero{-webkit-user-select:none;user-select:none}
 
 /* The band drops in rather than being there; site.css draws it, this is only
    where it starts from. */
@@ -33,20 +29,34 @@
   padding:calc(var(--bar-h) + clamp(40px,7vh,86px)) var(--edge) 0 var(--hero-x)}
 /* The field keeps running behind this while it whitens and freezes — nothing
    is painted over it, so the wireframe is the whole view for a beat. */
-.freeze{position:relative;z-index:2;height:70vh}
+.freeze{position:relative;z-index:2;height:45vh}
+/* The card is a plate, not a block of text: the mark sits at the top right and
+   the type sits on the floor, with the whole height of the box between them.
+   min-height rather than padding, so the gap holds when the title wraps to
+   three lines on a narrow window instead of collapsing to nothing. */
 .card{
-  position:relative;width:var(--card-w);min-width:290px;
-  background:var(--paper);border:1px solid var(--blue);
-  padding:clamp(26px,3vw,40px) clamp(26px,3vw,40px) clamp(58px,7vw,86px);
+  position:relative;width:var(--card-w);
+  min-height:clamp(206px,16.8vw,242px);
+  display:flex;flex-direction:column;
+  background:var(--paper);border:var(--bd) solid var(--blue);
+  padding:clamp(20px,2.2vw,28px) clamp(22px,2.5vw,32px) clamp(22px,2.5vw,30px);
   opacity:0;transform:translateY(18px);
 }
-h1{
-  margin:0;font-size:clamp(26px,3.1vw,44px);line-height:1.24;font-weight:700;
-  letter-spacing:-.02em;word-spacing:-.34em;color:var(--blue);
+/* hp-logo.png is a single-colour asset with the letterforms knocked out as
+   transparency, so it is already the blue disc — no filter, unlike the band,
+   which needs it knocked out white. */
+.card__mark{width:clamp(40px,4vw,56px);height:auto;align-self:flex-end;display:block}
+.card__eyebrow{
+  margin:auto 0 clamp(8px,.9vw,12px);font-family:var(--mono);font-weight:500;
+  font-size:clamp(9px,.78vw,11px);letter-spacing:.075em;word-spacing:-.25em;
+  color:var(--slate);
 }
-.tagline{
-  margin:clamp(14px,1.6vw,20px) 0 0;font-size:clamp(11px,.95vw,13px);
-  line-height:1.5;letter-spacing:.05em;word-spacing:-.3em;font-weight:700;color:var(--blue);
+/* Sized off the plate, not off the viewport: EXPLORING is the longest word and
+   the title only works while it and TOMORROW share a line, so the ceiling is
+   whatever the card's inner width allows at a 0.6em mono advance. */
+h1{
+  margin:0;font-size:clamp(15px,1.92vw,27px);line-height:1.2;
+  letter-spacing:-.025em;
 }
 /* the cursor blinks the way a prompt does; it is the one moving thing in the
    type, so it carries the "still running" note on its own */
@@ -57,9 +67,9 @@ h1{
    horizontally, but hanging past its border, so the two planes read as
    different depths rather than one panel. */
 .register{
-  position:absolute;right:clamp(-86px,-6vw,-40px);bottom:clamp(38px,5vw,64px);
+  position:absolute;font-family:var(--mono);right:clamp(-44px,-3vw,-20px);top:60%;
   display:inline-block;color:#fff;text-decoration:none;
-  font-size:clamp(12px,1.05vw,14px);letter-spacing:.13em;font-weight:700;
+  font-size:clamp(12px,1.05vw,14px);letter-spacing:.0975em;font-weight:500;
   padding:15px 27px;
   transition:transform .2s cubic-bezier(.22,1,.36,1);
   opacity:0;
@@ -79,8 +89,8 @@ h1{
    safe over a field this saturated. */
 .spon{
   position:relative;z-index:2;margin-top:10px;
-  width:var(--card-w);min-width:290px;
-  background:var(--paper);border:1px solid var(--blue);
+  width:var(--card-w);
+  background:var(--paper);border:var(--bd) solid var(--blue);
   overflow:hidden;opacity:0;
 }
 .spon__track{
@@ -108,7 +118,7 @@ h1{
     rgba(255,255,255,0) 91%,var(--paper) 100%);
 }
 
-.scrollspace{position:relative;z-index:1;height:120vh;pointer-events:none}
+.scrollspace{position:relative;z-index:1;height:70vh;pointer-events:none}
 
 /* ---------- the sheet ----------
    Everything above this is one continuous flight down a corridor. This is the
@@ -124,25 +134,27 @@ h1{
    the sheet reads as the corridor's own surface coming up to meet the camera
    rather than as a panel laid over it, and what it erases on the way up is the
    hairlines, one row at a time. */
-.night{position:relative;z-index:2;background:var(--paper);color:var(--blue);
-  min-height:100vh;padding-bottom:clamp(30px,4vw,60px)}
-/* The seam. It is the only edge the rise has, so it carries the whole move and
-   takes the header band's ink at a weight that survives a hairline field
-   behind it. */
-.night__edge{height:6px;background:var(--blue)}
+/* The sheet is not a sheet any more. It was one opaque white plane swiping up
+   over the corridor; now it is transparent and each block is its own bordered
+   plate floating on the frozen wireframe, so the corridor shows between them
+   and keeps scrubbing as you scroll. The swipe survives — what arrives over the
+   corridor is the plates rather than a surface. */
+.night{position:relative;z-index:2;color:var(--ink);min-height:100vh}
 
-.about__body{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));
-  gap:clamp(22px,3.4vw,54px);margin-top:clamp(26px,4vw,48px);max-width:1100px}
+/* One paragraph flowing through two columns, not three blocks sitting beside
+   each other. Three columns turned a single continuous thought into what looked
+   like three unrelated notes; one column across the full plate is 150 characters
+   a line, which nobody reads. columns:2 is the middle: the text is one piece and
+   reads top-left to bottom-right, and max-width keeps the measure near 70
+   characters instead of letting it grow with the plate. */
+.about__body{columns:2;column-gap:clamp(28px,4vw,64px);
+  margin-top:clamp(26px,4vw,48px);max-width:1080px}
+/* multicol will strand a line at the foot of the first column without these */
+.about__body p{orphans:2;widows:2}
 /* Over the corridor each column needed its own plate and border or the
    hairlines ran straight through 13px copy. The sheet is opaque, so nothing
    runs behind them now and the type sits directly on it. */
-.about__body p{margin:0;font-size:13px;line-height:1.75;letter-spacing:.01em}
-.stats{display:flex;flex-wrap:wrap;gap:clamp(24px,5vw,72px);margin-top:clamp(40px,6vw,72px)}
-.stat{padding-top:14px;border-top:1px solid rgba(2,74,216,.3)}
-.stat b{display:block;font-size:clamp(26px,3.6vw,46px);line-height:1;font-weight:700;letter-spacing:-.03em}
-.stat span{display:block;margin-top:8px;font-size:11px;letter-spacing:.05em;word-spacing:-.3em;
-  font-weight:700}
-
+.about__body p{margin:0;font-weight:400;font-size:15px;line-height:1.7;color:var(--slate)}
 /* ---------- entrance ----------
    Everything arrives after the field has already been flying for a moment, so
    the page reads as a window onto something that was running before you got
@@ -157,13 +169,13 @@ h1{
 @media (max-width:720px){
   /* the register button sits inside the card on this breakpoint; the tagline
      added below the h1 needs the floor raised or the two collide */
-  .card{width:min(100%,420px);padding-bottom:92px}
+  .card{width:min(100%,460px);min-height:0;padding-bottom:80px}
   /* must be .hero, not main: the base rule is a class, and a class outranks an
      element selector, so `main{...}` here silently lost and never applied */
   .hero{padding-left:var(--edge)}
-  .register{right:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
+  .register{right:auto;top:auto;left:clamp(26px,3vw,40px);bottom:clamp(20px,4vw,26px)}
   /* var(--card-w) is 40vw here, a sliver — track the card's own width instead */
-  .spon{width:min(100%,420px);min-width:0}
+  .spon{width:min(100%,460px);min-width:0}
   .spon__track{gap:26px;padding:12px 0 12px 26px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -184,17 +196,18 @@ h1{
   </a>
   <nav class="nav">
     <a href="#schedule">SCHEDULE</a>
-    <a href="speakers.html">SPEAKERS</a>
+    <a href="#speakers">SPEAKERS</a>
     <a href="#about">ABOUT</a>
-    <a class="host" href="register.html">REGISTER</a>
+    <a class="host" href="#schedule">REGISTER</a>
   </nav>
 </header>
 
 <main class="hero">
   <div class="card">
-    <h1>HP USA COLLEGE<br>TOUR 2026<i class="caret">_</i></h1>
-    <p class="tagline">Exploring Tomorrow.<br>Empowering Today.</p>
-    <a class="register" href="#"><span>REGISTER</span></a>
+    <img class="card__mark" src="hp-logo.png" alt="" aria-hidden="true">
+    <p class="card__eyebrow">USA COLLEGE TOUR 2026</p>
+    <h1>EXPLORING TOMORROW<br>EMPOWERING TODAY<i class="caret">_</i></h1>
+    <a class="register" href="register.html"><span>REGISTER</span></a>
   </div>
 
   <div class="spon">
@@ -226,61 +239,40 @@ h1{
      the header band stays above it on z-index 3 and holds the page still while
      the field is wiped out from under it. -->
 <section class="night" id="about">
-  <div class="night__edge" aria-hidden="true"></div>
   <div class="night__in">
 
     <div class="blk">
-      <p class="eyebrow rise">01 / ABOUT</p>
-      <h2 class="rise">A year of build nights, on the road.</h2>
+      <h2 class="rise">About the tour</h2>
       <div class="about__body rise">
         <p>The HP USA College Tour brings the workstation floor to campus. Bring a project
-        and an idea of where it is stuck; leave with it rendering on hardware you could
-        not otherwise get your hands on.</p>
-        <p>Every stop runs the same shape. A morning of short talks from people who ship,
-        an afternoon of open benches with engineers on the floor, and an evening where
-        the room shows what it made that day.</p>
-        <p>It is free, and it is open to any enrolled student. No portfolio review, no
-        application, no prior experience with any of the software on the benches.</p>
-      </div>
-      <div class="stats rise">
-        <div class="stat"><b>24</b><span>CAMPUSES</span></div>
-        <div class="stat"><b>6</b><span>MONTHS</span></div>
-        <div class="stat"><b>5</b><span>PARTNERS</span></div>
-        <div class="stat"><b>0</b><span>COST</span></div>
+        and an idea of where it is stuck; leave with it rendering on hardware you could not
+        otherwise get your hands on. Every stop runs the same shape: a morning of short
+        talks from people who ship, an afternoon of open benches with engineers on the
+        floor, and an evening where the room shows what it made that day. It is free, and
+        it is open to any enrolled student — no portfolio review, no application, no prior
+        experience with any of the software on the benches.</p>
       </div>
     </div>
 
-    <!-- Both of these are drawn from tour.js rather than typed here, so a stop
-         cannot appear on the schedule without a registration page behind it or
-         a gallery group in front of it. -->
-    <div class="blk" id="schedule">
-      <p class="eyebrow rise">02 / SCHEDULE</p>
-      <h2 class="rise">Twelve stops, six weeks.</h2>
-      <p class="lede rise">Grouped by campus. Half of these dates are agreed and half are
-      still being worked out with the chapters, and the schedule says which is which rather
-      than printing them all in the same weight — a date marked TARGETING has not been
-      confirmed, and one marked ON HOLD is already moving.</p>
-      <div class="sked rise" id="sked"></div>
+    <!-- Drawn from tour.js rather than typed here, so a stop cannot appear on
+         the schedule without a registration page behind it. -->
+    <div class="blk blk--bare" id="schedule">
+      <h2 class="rise">Schedule</h2>
+      <!-- The schedule and the registration list were the same twelve rows
+           printed twice — one as a table, one as cards. One grid now. -->
+      <div class="rise" id="sked"></div>
     </div>
 
-    <div class="blk" id="gallery">
-      <p class="eyebrow rise">03 / GALLERY</p>
-      <h2 class="rise">From the road.</h2>
-      <p class="lede rise">A group per campus, filling in as the tour runs. The tiles are
-      the template — drop the files into photos/ and point each tile at one.</p>
-      <div class="gal rise" id="gal"></div>
+    <div class="blk blk--bare" id="speakers">
+      <h2 class="rise">Speakers</h2>
+      <!-- Drawn from TOUR.speakers in tour.js, so a speaker's stops stay tied to
+           the same slugs the schedule uses. -->
+      <div class="spk rise" id="speakers-grid"></div>
     </div>
 
   </div>
 
-  <footer class="foot">
-    <a href="#about">ABOUT</a>
-    <a href="#schedule">SCHEDULE</a>
-    <a href="speakers.html">SPEAKERS</a>
-    <a href="#gallery">GALLERY</a>
-    <a href="register.html">REGISTER</a>
-    <small>EXPLORING TOMORROW. EMPOWERING TODAY.</small>
-  </footer>
+  <footer id="foot"></footer>
 </section>
 
 
@@ -325,7 +317,12 @@ h1{
     borderFade: 0.38,
     fov: 70, vpX: 0.37, vpY: 0.58,
     col: '#024AD8', bg: '#ffffff', wash: 0, washCol: '#ffffff', washR: 0.88, washSoft: 2.8,
-    speed: 760, parallax: 0.055, ease: 0.05
+    /* 760 originally, then 560, now this. The corridor should read as a flight
+       you are inside of rather than one you are being fired down — and it is
+       backdrop, so the moment you notice its pace it is too fast. The arrival
+       burst scales off this too (warp is a multiplier), so slowing the cruise
+       slows the way the page opens by the same proportion. */
+    speed: 340, parallax: 0.055, ease: 0.05
   });
 
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -378,7 +375,11 @@ h1{
      white to white slabs outlined in blue, and the flight decelerates to a halt.
      By the time the sheets below arrive it is a still wireframe, so the page
      reads as one continuous move rather than a hero and then a separate site. */
-  var LO = 0.10, HI = 1.25;      // in viewport heights
+  /* In viewport heights. HI came down with the runway below it: the whiten and
+     the freeze have to be finished before the first plate arrives, so the two
+     numbers move together — leave HI at 1.25 over a shorter scrollspace and the
+     corridor is still bleaching while About is already on screen. */
+  var LO = 0.10, HI = 0.95;
 
   function lerp(a, b, t) { return a + (b - a) * t; }
   function mixHex(a, b, t) {
@@ -451,25 +452,6 @@ h1{
   var SCRUB = 2.4;                 // world units per pixel of scroll
   var frozenAt = null;             // scrollY and travel at the moment it froze
 
-  /* ---------- the black screen ----------
-     The rise is the scroll — the sheet is in flow over a fixed canvas, so
-     nothing here moves it. What is left is the two things the CSS cannot know:
-     that the corridor is fully hidden and can stop painting, and that a block
-     has arrived and can fill itself in. */
-  var night = document.querySelector('.night');
-  var covered = false;
-
-  function coverage() {
-    // its top edge past the top of the window means the sheet owns the viewport
-    var over = night.getBoundingClientRect().top <= 0;
-    if (over === covered) return;
-    covered = over;
-    // reduced motion runs no loop to park, and calling start() would hand it
-    // one it deliberately never had
-    if (reduced) return;
-    if (covered) field.stop(); else if (!document.hidden) field.start();
-  }
-
   function onScroll() {
     var vh = innerHeight || 1;
     var t = (scrollY / vh - LO) / (HI - LO);
@@ -484,15 +466,16 @@ h1{
       frozenAt = null;
     }
 
-    coverage();
   }
   addEventListener('scroll', onScroll, { passive: true });
 
   /* The sheet's blocks are built before they are watched: the schedule and the
-     gallery do not exist as markup until tour.js has been walked, and an
+     speakers do not exist as markup until tour.js has been walked, and an
      observer pointed at an empty div never fires. */
-  PAGES.schedule(document.getElementById('sked'));
-  PAGES.gallery(document.getElementById('gal'));
+  PAGES.cards(document.getElementById('sked'));
+  PAGES.speakers(document.getElementById('speakers-grid'));
+  PAGES.nav(document.querySelector('.bar'));
+  PAGES.footer(document.getElementById('foot'));
   PAGES.reveal();
 
   addEventListener('resize', function () {
@@ -503,8 +486,7 @@ h1{
   /* A hidden tab renders nothing; coming back should not jump the field
      forward by however long you were away. */
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) field.stop();
-    else if (!covered) field.start();   // still parked behind the sheet
+    if (document.hidden) field.stop(); else field.start();
   });
 
   /* ---------- the REGISTER slab ----------
@@ -530,9 +512,7 @@ h1{
   if (document.fonts) document.fonts.ready.then(function () { drawSlab(true); });
 
   onScroll();                       // honour a restored scroll position
-  // a reload deep in the page lands with the sheet already up, and coverage()
-  // has just parked the loop — starting it here anyway would un-park it
-  if (!covered) field.start();
+  field.start();
   if (reduced) field.stop(), field.draw();
 
   window.field = field;   // so the console can poke at it while tuning

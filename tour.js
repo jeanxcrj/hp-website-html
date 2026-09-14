@@ -1,21 +1,25 @@
 /* The tour, in one place.
 
-   Every surface reads from here: the schedule on the index, the stop filter on
-   the speakers page, the per-school registration pages, and the gallery's
-   school groups. Adding a stop is one entry in STOPS and it appears on all four
+   Every surface reads from here: the schedule on the index, the campus menu in
+   the band, and the per-stop registration pages. Adding a stop is one entry in
+   STOPS and it appears on all three
    — which is the whole reason this file exists rather than four copies of the
    same twelve rows drifting apart.
 
-   `status` carries the colour coding off the planning sheet, because on that
-   sheet the colour IS the information — half these dates are not agreed yet and
-   a schedule that prints them all in the same weight would be lying:
+   `status` is the colour coding off the planning sheet. It is kept as data but
+   no longer rendered: CONFIRMED / TARGETING / ON HOLD is how the tour is tracked
+   internally, not something a student needs on a schedule. It stays because it
+   is the truth about each date, and it is the source if the labels come back:
 
      set     the date is agreed with the chapter
      target  a date we are aiming at, not yet confirmed
      hold    booked but being moved; treat the date as wrong
 
-   `note` is the sheet's own wording where it says more than the date does.
-   Leave it null when the date speaks for itself. */
+   `note` is the sheet's own wording where it says more than the date does. Like
+   `status` it is kept but no longer rendered — "Targeting Oct 20-22, exact day
+   TBD" and "On hold, the chapter has asked to move" are how the tour is tracked
+   internally, and a student reading a schedule needs the date, not the state of
+   the negotiation behind it. */
 (function (global) {
   'use strict';
 
@@ -60,24 +64,26 @@
       note: 'Oct 30 or Nov 6, both TBD.' }
   ];
 
-  var STATUS = {
-    set:    { label: 'CONFIRMED', cls: 'is-set' },
-    target: { label: 'TARGETING', cls: 'is-target' },
-    hold:   { label: 'ON HOLD',   cls: 'is-hold' }
-  };
+  /* Names, companies and portraits lifted from the earlier HP USA Tour deck, so
+     these are the real bill rather than placeholders. `role` is still null on
+     every one: that file carried a name and an organisation and nothing else,
+     and a job title is not something to fill in on someone's behalf — it renders
+     is not rendered at all until someone supplies it.
 
-  /* Speakers are slots, not people. Every field a real entry needs is here and
-     empty, so filling one in is typing over a blank rather than reverse
-     engineering the card from its CSS. `photo` takes a path under photos/;
-     null draws the empty plate instead. `stops` takes slugs from STOPS, and
-     an empty array reads as "all stops" on the card. */
+     `stops` is kept but not shown: the bill is the same at every campus for
+     now, so a line saying so on all five cards was five repetitions of nothing.
+     Fill it with slugs from STOPS once it is split campus by campus. */
   var SPEAKERS = [
-    { id: 1, name: null, role: null, company: null, stops: [], bio: null, photo: null },
-    { id: 2, name: null, role: null, company: null, stops: [], bio: null, photo: null },
-    { id: 3, name: null, role: null, company: null, stops: [], bio: null, photo: null },
-    { id: 4, name: null, role: null, company: null, stops: [], bio: null, photo: null },
-    { id: 5, name: null, role: null, company: null, stops: [], bio: null, photo: null },
-    { id: 6, name: null, role: null, company: null, stops: [], bio: null, photo: null }
+    { id: 1, name: 'Mariana Cabugueira', role: null, company: '[MC] Studio',
+      stops: [], bio: null, photo: 'photos/mariana-cabugueira.jpg' },
+    { id: 2, name: 'Greg Demchek', role: null, company: 'Bentley Labs',
+      stops: [], bio: null, photo: 'photos/greg-demchek.jpg' },
+    { id: 3, name: 'Andy Christoforou', role: null, company: 'KPF',
+      stops: [], bio: null, photo: 'photos/andy-christoforou.jpg' },
+    { id: 4, name: 'Show It Better', role: null, company: '816K followers',
+      stops: [], bio: null, photo: 'photos/show-it-better.jpg' },
+    { id: 5, name: 'Learn Upstairs', role: null, company: '700K followers',
+      stops: [], bio: null, photo: 'photos/learn-upstairs.jpg' }
   ];
 
   /* The chapter is what separates two stops at the same school, so a stop's
@@ -107,7 +113,7 @@
   }
 
   global.TOUR = {
-    stops: STOPS, speakers: SPEAKERS, status: STATUS,
+    stops: STOPS, speakers: SPEAKERS,
     stopName: stopName, bySlug: bySlug, bySchool: bySchool
   };
 })(window);
