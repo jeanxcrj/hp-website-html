@@ -55,7 +55,14 @@
 .bar{transform:translateY(-100%)}
 
 /* ---------- hero ---------- */
-.hero{position:relative;z-index:2;min-height:100vh;
+/* 86vh, not 100. The plate and the strip finish about 58vh down, so a full
+   screen of hero leaves forty-odd more of empty corridor under them before the
+   freeze even starts — and that tail, not the freeze, is most of what you scroll
+   past between the poster and the sheet. Cut to 86 the hero still fills the
+   frame on arrival (86 + the 14 below it come to exactly one screen, so the
+   sheet's top edge sits on the fold and nothing peeks), and the dead stretch
+   comes down by a third. */
+.hero{position:relative;z-index:2;min-height:86vh;
   padding:calc(var(--bar-h) + clamp(40px,7vh,86px)) var(--edge) 0 var(--hero-x)}
 /* The field keeps running behind this while it whitens and freezes — nothing
    is painted over it, so the wireframe is the whole view for a beat.
@@ -65,7 +72,7 @@
    below, About was a screen and a half down: three or four flicks of a wheel
    past a corridor you have already looked at. The pair now comes to 20vh, and
    the whiten was compressed to match — see LO/HI in the script. */
-.freeze{position:relative;z-index:2;height:14vh}
+.freeze{position:relative;z-index:2;height:10vh}
 /* The card is a plate, not a block of text: the mark sits at the top right and
    the type sits on the floor, with the whole height of the box between them.
    min-height rather than padding, so the gap holds when the title wraps to
@@ -166,7 +173,7 @@ h1{
 /* The gap between the wireframe and the sheet's top edge. Long enough that the
    sheet arrives rather than being already there, short enough that it is not a
    second empty screen after the freeze. */
-.scrollspace{position:relative;z-index:1;height:6vh;pointer-events:none}
+.scrollspace{position:relative;z-index:1;height:4vh;pointer-events:none}
 
 /* ---------- the sheet ----------
    Everything above this is one continuous flight down a corridor. This is the
@@ -490,10 +497,11 @@ h1{
 
          Not "Building hype": that named the marketing job these do rather than
          what they are, and it was a heading written for the people making the
-         page instead of the student reading it. The id stays #hype because the
+         page instead of the student reading it. "More about HP" says what is
+         through the link and nothing else. The id stays #hype because the
          data, the builder and the footer link all use that name. -->
     <div class="blk blk--bare blk--mid" id="hype">
-      <h2 class="rise">Learn more about HP</h2>
+      <h2 class="rise">More about HP</h2>
       <div class="rise" id="hypestrip"></div>
     </div>
 
@@ -673,7 +681,7 @@ h1{
      of the way up the frame by then. That is the same overlap as before —
      a transition continuing, rather than a wireframe held up for inspection —
      at a little over half the scrolling. */
-  var LO = 0.08, HI = 0.48;
+  var LO = 0.06, HI = 0.34;
 
   function lerp(a, b, t) { return a + (b - a) * t; }
   function mixHex(a, b, t) {

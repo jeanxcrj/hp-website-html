@@ -470,7 +470,7 @@
       ['SCHEDULE', 'index.html#schedule'],
       ['SPEAKERS', 'index.html#speakers'],
       ['GALLERY', 'index.html#gallery'],
-      ['LEARN MORE', 'index.html#hype'],
+      ['MORE ABOUT HP', 'index.html#hype'],
       ['REGISTER', 'index.html#schedule']
     ],
     /* Instagram is the real account — it is where the tour's own cuts are
