@@ -96,6 +96,28 @@
     chipDrift: 0.012,                  // viewport widths per second
     // 0 = behind every bar, 1 = in front of every bar
     chipDepthMin: 0.12, chipDepthMax: 0.95,
+    /* Words: lines of type flying down the same corridor. They live in the
+       field proper, not on top of it — same cloud, same wrap, same depth fade,
+       projected through the same point — so each one is spliced into the bar
+       order at its own depth and slabs pass in front of it and behind it.
+
+       Every word is laid along the line from the vanishing point out through
+       its own position, which is the axis the bars converge on, so the type
+       streams out of the knot rather than lying flat across the frame.
+
+       White fill, hairline in the ink: over the white ground the outline is
+       what carries it, over a blue slab the fill is. Either way it reads, which
+       a single-colour word cannot do on a field that is both. */
+    words: [], wordCount: 0,
+    wordFill: '#ffffff', wordStroke: '#024AD8', wordEdge: 1,
+    wordFamily: '"forma-djr-mono",ui-monospace,monospace', wordWeight: 500,
+    wordSize: 150,        // cap height in world units; screen px = wordSize * f/z
+    wordSpread: 1,        // radius multiplier against the bar cloud
+    /* Below the floor the outline is thicker than the letter it is drawing and
+       the word turns to grit; above the ceiling it is a wall of type crossing
+       the frame. Outside both it is simply not drawn — it is about to wrap
+       either way. */
+    wordMinPx: 13, wordMaxPx: 320,
     // view
     fov: 62, vpX: 0.86, vpY: 0.52,
     // style
@@ -148,7 +170,8 @@
       next.thick != null || next.thickVar != null || next.flat != null || next.flatVar != null ||
       next.chips != null || next.chipMinW != null || next.chipMaxW != null ||
       next.chipMinH != null || next.chipMaxH != null ||
-      next.chipDepthMin != null || next.chipDepthMax != null)) {
+      next.chipDepthMin != null || next.chipDepthMax != null ||
+      next.words != null || next.wordCount != null || next.wordSpread != null)) {
       this.bars = null;
     }
     return this;
@@ -161,6 +184,8 @@
     this.WASH = hex(P.washCol);
     this.EDGE = hex(P.edgeCol);
     this.CHIP = hex(P.chipCol);
+    this.WFILL = hex(P.wordFill);
+    this.WSTROKE = hex(P.wordStroke);
     // one base tone per face step, precomputed so the hot loop only lerps toward bg
     this.faceCol = FACE.map(function (F) {
       return mix(this.COL, this.BG, (1 - F.s) * P.faceShade);
@@ -211,6 +236,25 @@
       });
     }
     this.chips = chips;
+
+    /* Drawn from the same generator AFTER the bars and the chips, so adding
+       words cannot move a single slab: a seed still reproduces the corridor it
+       always did, and the type is a new stream on the end of it. */
+    var words = [], src = P.words || [];
+    for (var q = 0; src.length && q < Math.round(P.wordCount); q++) {
+      words.push({
+        th: r() * TAU,
+        /* Floored well outside the bars' own hole. A word that spawns on the
+           view axis sits ON the vanishing point, where its own perspective
+           scale is smallest and the wash is brightest — it arrives as a smudge
+           in the middle of the knot and grows into the reader's face. */
+        rad: lerp(Math.max(P.hole, 0.18), 1, Math.pow(r(), Math.max(0.05, P.clump))),
+        base: lerp(P.zNear, P.zFar, Math.pow(r(), Math.max(0.05, P.zPow))),
+        text: src[Math.floor(r() * src.length) % src.length],
+        x: 0, y: 0, z0: 0
+      });
+    }
+    this.words = words;
     return out;
   };
 
@@ -275,7 +319,7 @@
     }
 
     // advance every bar, wrapping far→near so the stream never runs out
-    var bars = this.bars, travel = this.travel, i, b;
+    var bars = this.bars, travel = this.travel, i, b, wi;
     for (i = 0; i < bars.length; i++) {
       b = bars[i];
       var z0 = P.zNear + (((b.base - travel - P.zNear) % span) + span) % span;
@@ -298,6 +342,29 @@
         var cch = this.chips[ci];
         var slot = clamp(Math.floor(cch.layer * bars.length), 0, bars.length - 1);
         (chipAt[slot] || (chipAt[slot] = [])).push(cch);
+      }
+    }
+
+    /* Words ride the same loop as the bars, then merge into their draw order.
+       Both lists are sorted far-to-near, so one walk down the bars is enough to
+       find, for each word, the first bar standing in front of it — that index
+       is the word's slot. A word nearer than every bar lands in the slot past
+       the end of the array and is painted after the loop. */
+    var words = this.words, wordAt = null;
+    if (words && words.length) {
+      for (i = 0; i < words.length; i++) {
+        var wd = words[i];
+        var wz = P.zNear + (((wd.base - travel - P.zNear) % span) + span) % span;
+        var wopen = lerp(1, P.cone, (wz - P.zNear) / span);
+        wd.z0 = wz;
+        wd.x = Math.cos(wd.th) * wd.rad * P.spread * P.aspectXY * wopen * P.wordSpread;
+        wd.y = Math.sin(wd.th) * wd.rad * P.spread * wopen * P.wordSpread;
+      }
+      words.sort(function (a, c) { return c.z0 - a.z0; });
+      wordAt = {};
+      for (i = 0, wi = 0; i < words.length; i++) {
+        while (wi < bars.length && bars[wi].z > words[i].z0) wi++;
+        (wordAt[wi] || (wordAt[wi] = [])).push(words[i]);
       }
     }
     function paintChips(list) {
@@ -334,10 +401,57 @@
       return t * t * (3 - 2 * t);
     }
     ctx.lineJoin = 'round';
+
+    /* One word. The angle is the ray from the vanishing point out through the
+       word's own position — the same line its neighbouring bars are drawn
+       along — flipped by half a turn on the left of the frame so the type is
+       never upside down. Everything else is the bar's own treatment: the depth
+       fade, the wrap ramp, the border ramp, and a fill mixed toward whatever
+       the wash has put behind it, so a word dissolves into the corridor rather
+       than floating over it. */
+    function paintWords(list) {
+      for (var q = 0; q < list.length; q++) {
+        var wd = list[q], sc = f / wd.z0, size = P.wordSize * sc;
+        if (size < P.wordMinPx || size > P.wordMaxPx) continue;
+        var sx = px + wd.x * sc, sy = py + wd.y * sc;
+
+        var a = clamp(1 - P.fade * Math.pow(clamp((wd.z0 - P.zNear) / span, 0, 1), pw), 0, 1);
+        if (wf > 0) {
+          var wr = Math.min((wd.z0 - P.zNear) / wf, (P.zFar - wd.z0) / wf);
+          if (wr <= 0) continue;
+          if (wr < 1) a *= wr * wr * (3 - 2 * wr);
+        }
+        if (ef > 0) a *= edgeAt(sx, sy);
+        if (a <= 0.02) continue;
+
+        var ang = Math.atan2(sy - py, sx - px);
+        if (ang > Math.PI / 2 || ang < -Math.PI / 2) ang += Math.PI;
+        var behind = bgAt(sx, sy);
+
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.rotate(ang);
+        ctx.font = P.wordWeight + ' ' + size.toFixed(1) + 'px ' + P.wordFamily;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        /* Stroke first, fill over it: the other way round the outline eats into
+           the letterform and a word at 14px closes up into a blue smear. */
+        if (P.wordEdge > 0) {
+          ctx.lineWidth = P.wordEdge;
+          ctx.strokeStyle = css(mix(self.WSTROKE, behind, 1 - a));
+          ctx.strokeText(wd.text, 0, 0);
+        }
+        ctx.fillStyle = css(mix(self.WFILL, behind, 1 - a));
+        ctx.fillText(wd.text, 0, 0);
+        ctx.restore();
+      }
+    }
+
     var drawn = 0;
 
     for (i = 0; i < bars.length; i++) {
       if (chipAt && chipAt[i]) paintChips(chipAt[i]);
+      if (wordAt && wordAt[i]) paintWords(wordAt[i]);
       b = bars[i];
       if (b.z0 < 24) continue;
 
@@ -441,6 +555,8 @@
         }
       }
     }
+    // nearer than every bar, so nothing was left to paint them in front of
+    if (wordAt && wordAt[bars.length]) paintWords(wordAt[bars.length]);
     this.drawn = drawn;
   };
 

@@ -30,6 +30,32 @@
   font-weight:500;font-style:italic;font-display:swap;
 }
 
+/* ---------- the proportional face ----------
+   HP Forma DJR Office: HP's own cut of the same Forma the mono belongs to, and
+   the missing half of the type stack. Every subhead and every paragraph on the
+   site was rendering in the platform grotesque, because the kit carries neither
+   Micro nor Text — so the page read as Forma on the labels and San Francisco
+   everywhere else, which is two type systems, not one.
+
+   Both roles come out of this one family rather than two: Medium for subheads
+   and notes, Regular for body copy. The 400 matters as much as the 500 — with
+   only a Medium registered, every paragraph on the site matches up to it and
+   runs a weight too heavy, which is the thing the body-copy note below is
+   about.
+
+   Converted TTF -> WOFF2 from the desktop files. Same caveat as the mono: see
+   README under Type before this goes anywhere public. */
+@font-face{
+  font-family:"hp-forma-office";
+  src:url("fonts/hp-forma-office-400.woff2") format("woff2");
+  font-weight:400;font-style:normal;font-display:swap;
+}
+@font-face{
+  font-family:"hp-forma-office";
+  src:url("fonts/hp-forma-office-500.woff2") format("woff2");
+  font-weight:500;font-style:normal;font-display:swap;
+}
+
 /* The blue is the logo's own — the asset is a single colour, #024AD8, so the
    mark, the type and the bars in the field are all literally one ink. */
 :root{
@@ -45,7 +71,7 @@
   --bar-h:60px;
   --edge:clamp(16px,3.2vw,46px);
   --hero-x:clamp(20px,8vw,118px);
-  --card-w:min(430px,40vw);
+  --card-w:min(580px,47vw);
   /* The type stack, as specified. Kit yxt3aqw currently serves ONE family —
      forma-djr-mono, in 400 and 700 — so Micro and Text fall through to the
      platform grotesque and Medium (500) resolves to Regular. Add Forma DJR
@@ -65,8 +91,14 @@
   --bd:2px;
   --plate-pad:clamp(22px,3vw,42px);
   --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --micro:"forma-djr-micro","forma-djr-text",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
-  --text:"forma-djr-text","forma-djr-micro",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  /* HP Forma DJR Office leads both roles: it is the face the tour is set in,
+     it is served from this repo rather than waited on, and one family covering
+     subheads and body is what the page had been missing. Micro and Text are
+     kept behind it as a record of the spec — putting Office first means adding
+     them to the kit no longer changes anything, so if the two cuts are wanted
+     apart again, this is the line to reorder. */
+  --micro:"hp-forma-office","forma-djr-micro","forma-djr-text",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --text:"hp-forma-office","forma-djr-text","forma-djr-micro",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
 /* overscroll-behavior kills the rubber band. It matters more here than on an
@@ -91,6 +123,12 @@ body{overscroll-behavior:none}
 body{
   margin:0;background:var(--ground);color:var(--ink);
   font-family:var(--text);font-weight:400;-webkit-font-smoothing:antialiased;
+  /* A hair of tracking on the display face. Forma sets tight by default, which
+     is right at a headline's size and closes the words up at a paragraph's — the
+     same reason the titles carry NEGATIVE tracking a few rules down. Everything
+     with its own letter-spacing (the mono labels, the headings, the nav, the
+     notes) is unaffected; this is only the default. */
+  letter-spacing:.012em;
 }
 /* One weight across the whole site. The browser ships h1-h6, b, strong and
    button at bold, so inheriting medium from body is not enough — they have to
@@ -122,7 +160,7 @@ h1,h2,.rcard__name,.spk__name{
    space between mark and type are all inside the SVG, so the lockup cannot
    drift out of its own proportions the way a mark-plus-span pair can. Its paths
    ship white, which is why the filter that used to knock the PNG out is gone.
-   Height is the only handle here — width follows the 551:135 box. */
+   Height is the only handle here — width follows the 553:140 box. */
 .brand img{height:34px;width:auto;display:block}
 
 .nav{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
@@ -219,12 +257,104 @@ h1,h2,.rcard__name,.spk__name{
 
 .night h2,.page h2{margin:0;font-size:clamp(23px,3.1vw,42px);line-height:1.12;
   letter-spacing:-.03em;max-width:20ch}
+/* A block whose contents are centred in the sheet rather than hung off its left
+   edge, for the one section held to a column narrower than the sheet: the
+   heading has to come with the grid under it, or the two sit on different axes
+   and the block reads as half-aligned. The 20ch measure above is what keeps a
+   centred heading from being centred in a box of its own. */
+.blk--mid h2{max-width:none;text-align:center}
+/* ---------- the laptop band ----------
+   The one thing on this page a reader can WIN, given the width of the sheet and
+   the ink instead of the paper. It is a band rather than a plate because it is
+   an offer rather than a passage: no border, no white, nothing about it shaped
+   like the reading above it.
+
+   The drawing is the same laptop being given away, in the same hairline the
+   corridor is drawn in — one ink, one line weight, which is what keeps it from
+   reading as a stock photograph dropped into a layout. It bleeds off the left
+   edge on purpose: cropped, it is a thing passing through the band; contained,
+   it is a product shot.
+
+   Two columns of a grid rather than a background image, so the art has a real
+   width the type is laid out against. The art column is the smaller half — the
+   words are what has to be read. */
+.promo{
+  display:grid;grid-template-columns:minmax(0,.44fr) minmax(0,.56fr);
+  align-items:center;
+  margin-top:clamp(26px,3.2vw,46px);
+  background:var(--blue);color:#fff;overflow:hidden;
+}
+/* Stretched and cropped rather than fitted: the drawing carries its own field of
+   blue, the same blue as the band, so what the crop leaves is a laptop coming in
+   from off the page and no seam where one ends and the other begins. */
+/* Clipped to its own column, not just to the band: the drawing is scaled past
+   the cell so the laptop arrives at a size worth looking at, and without this it
+   runs straight under the first two words of every line of the copy. */
+.promo__art{position:relative;align-self:stretch;overflow:hidden;
+  min-height:clamp(200px,22vw,360px)}
+/* The drawing needs air around it as much as the type does. Sized off the band's
+   height rather than fitted to it: at 100% the laptop touches the top and bottom
+   edges and the band reads as a crop of a bigger picture instead of a thing with
+   a drawing in it.
+
+   Flush to the LEFT edge, though, not centred. The export is cropped — the
+   keyboard runs off the side of its own canvas and one line stops in mid-air —
+   and centred, that crop lands in the middle of the band as a hard vertical cut
+   with blue on both sides of it, which reads as a rendering fault. Sitting the
+   canvas's cut edge on the band's own edge is the difference between a drawing
+   that has been damaged and one that carries on past the page. */
+.promo__art img{
+  position:absolute;top:50%;left:0;transform:translateY(-50%);
+  /* Sized off the column's WIDTH, not the band's height: the drawing's own
+     empty margins have been trimmed out of its viewBox, so its box is the
+     laptop, and letting it run the width of the column is what closes the gap
+     between it and the copy. max-height is the guard for a very wide column —
+     nothing here may crop the drawing. */
+  width:97%;height:auto;max-height:86%;max-width:none;display:block;
+}
+.promo__body{padding:clamp(38px,4.4vw,68px) clamp(30px,4.4vw,72px)}
+/* The band's own floor and ceiling. A band this wide with the copy tight against
+   its edges reads as a strip that has been cut out of something; the room is
+   what makes it a panel. */
+.promo{min-height:clamp(300px,30vw,500px)}
+/* Nothing in site.css pairs an <aside> with the block after it, so the schedule
+   was sitting straight on the band's bottom edge — a heading with no room above
+   it, against a full-width field of ink. It takes more than the gap between two
+   plates, not less. */
+.promo + .blk{margin-top:clamp(44px,5.4vw,80px)}
+/* The title carries the band on its own, so it is sized against the section
+   headings rather than against the copy under it — a step below an h2, which is
+   what an offer inside a page should be. */
+.promo__title{
+  margin:0 0 clamp(18px,1.8vw,26px);
+  font-family:var(--mono);font-weight:500;word-spacing:-.3em;
+  font-size:clamp(21px,2.5vw,38px);line-height:1.12;letter-spacing:-.02em;
+}
+.promo p{margin:0 0 1.05em;font-size:14px;line-height:1.7;color:rgba(255,255,255,.88);
+  max-width:62ch}
+/* The quiz's own title inside the sentence. On the ink it cannot be blue, so it
+   is the one thing in the band at full white. */
+.promo em{font-style:normal;font-weight:500;color:#fff}
+/* Same voice as the disclaimers on the plates — mono, subordinate — inverted. */
+/* `.promo p` is a class AND a type, so it outranks a bare class and this rule
+   had been losing to it silently — the disclaimer was sitting at the copy's own
+   colour. Two classes settles it. */
+.promo .promo__note{
+  margin:clamp(18px,2vw,28px) 0 0;
+  font-family:var(--mono);font-weight:500;
+  font-size:11.5px;line-height:1.6;letter-spacing:.005em;word-spacing:-.2em;
+  /* Quieter than the copy above it by a wide margin. A disclaimer is a
+     condition on the offer, not part of it — it has to be legible to someone
+     who goes looking and invisible to everyone else. */
+  color:rgba(255,255,255,.5);max-width:76ch;
+}
+.promo p:last-child{margin-bottom:0}
 /* No single-word last lines. text-wrap:pretty is the fix rather than hand-placed
    &nbsp; before the last word: the browser reflows the closing lines to avoid an
    orphan, and it keeps working when the copy or the column width changes, which
    a hard-coded non-breaking space does not. Degrades to normal wrapping where
    it is unsupported. */
-p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
+p,.spk__bio,.check span,.sent{text-wrap:pretty}
 
 
 /* ---------- speakers ----------
@@ -260,6 +390,7 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
 /* An unfilled field is a labelled gap, not blank space: you can see which one
    is missing without opening tour.js. */
 .tbc{opacity:.42}
+.spk__dot{opacity:.42}
 
 /* ---------- the campus cards ----------
    The plate is the poster's: a heavy rule, the date up top in the machine voice,
@@ -295,8 +426,12 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
 .rcard__name{margin:0;font-family:var(--mono);font-weight:500;color:var(--blue);
   font-size:clamp(21px,2.25vw,32px);line-height:1.04;letter-spacing:-.035em;word-spacing:-.3em}
 
-.rcard__note{margin:10px 0 0;font-family:var(--text);font-weight:400;font-size:12px;
-  line-height:1.55;color:var(--slate)}
+/* Who is actually standing in THIS room. The speaker grid further down is the
+   whole tour's bill; without this line the card cannot say that Cornell and
+   CMU are not the same evening. */
+.rcard__bill{margin:10px 0 0;font-family:var(--text);font-weight:400;font-size:12px;
+  line-height:1.5;color:var(--slate)}
+
 
 /* The card is a plate and the link sits on it. This was two extruded slabs
    breaking out through the right border for a while; off the card they read as
@@ -507,7 +642,7 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
    nothing to swipe, so the blocks simply come in as they are reached. */
 .rise{opacity:0;transform:translateY(22px);
   transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
-.blk.is-up .rise{opacity:1;transform:none}
+.blk.is-up .rise,.promo.is-up{opacity:1;transform:none}
 .blk.is-up>.rise:nth-child(1){transition-delay:.08s}
 .blk.is-up>.rise:nth-child(2){transition-delay:.16s}
 .blk.is-up>.rise:nth-child(3){transition-delay:.24s}
@@ -540,6 +675,20 @@ p,.spk__bio,.rcard__note,.check span,.sent{text-wrap:pretty}
   /* the corridor converges off the right edge, so at this width almost none of
      it is on screen — the panel has nothing to be tall for */
   .foot{min-height:0}
+}
+@media (max-width:820px){
+  /* Side by side, the art column is down to a couple of hundred pixels and the
+     laptop is a detail of a laptop. Stacked, it is a band across the top of the
+     band — which is what the drawing was cropped for in the first place.
+
+     The row is deep enough here for the drawing to reach across it at its own
+     ratio. Sized any shallower, the laptop sits in the left third with the rest
+     of the row empty, and the band reads as a picture that failed to load. */
+  .promo{grid-template-columns:minmax(0,1fr)}
+  /* the drawing is 1.82:1, so a full-width column needs about 55% of its own
+     width in height to hold it without either cropping or leaving a band of
+     empty blue under it */
+  .promo__art{min-height:min(47vw,420px)}
 }
 @media (max-width:720px){
   /* two columns of 40 characters is worse than one of 80 */
