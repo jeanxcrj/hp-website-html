@@ -39,63 +39,68 @@ into the gradient. `bgAt()` uses the identical curve — if the two ever disagre
 every bar is mixed toward a background colour that is not the one behind it and
 the field visibly separates from its own wash.
 
-## Interaction
+## The words in the corridor
 
-| gesture | what it does |
-| --- | --- |
-| move the pointer | the vanishing point drifts toward it |
-| press and drag | steers ten times harder, for aiming the corridor |
-| wheel | a throttle, not a scroll — always decays back to cruise |
-| load | the flight arrives at 5.5× and settles, so the page opens mid-journey |
+**Off.** `wordCount` is 0 in `index.html` and in `backdrop()`; the list and the
+tuning are kept the way the chips are, so putting the counts back (24 and 10)
+switches the type on again without retuning it. Switch both or a sub-page's
+frozen corridor stops matching the index's. The rest of this section is what it
+does when it is on.
 
-`prefers-reduced-motion` draws one still frame and stops the loop. A hidden tab
-stops it too, so returning doesn't jump the field forward by however long you
-were away.
+`words` is type flying down the field with the slabs — the tour's phrases, the
+sponsor marks, the campus names and the speaker names, built in `index.html` out
+of `tour.js` so a stop added to the schedule starts appearing in the corridor
+too. They are part of the field, not a layer on it: same cloud, same wrap, same
+depth fade, spliced into the same far-to-near draw order, so slabs pass in front
+of some and behind others.
 
-## The pages
+Each one is laid along the ray from the vanishing point out through its own
+position — the axis its neighbouring bars converge on — so the type streams out
+of the knot rather than lying flat across the frame, and it is flipped half a
+turn on the left of the frame so it is never upside down.
 
-The whole site is `index.html`: the corridor, the hero, then three plates —
-About, Schedule, Speakers. `register.html?stop=<slug>` is the one other real
-page, the form for a single stop; reached without a slug it hands you back to
-the schedule. `speakers.html` is a redirect left behind so links already given
-out still land.
+White fill, hairline in the ink. That is the one combination that survives a
+field which is both white ground and blue slab: over the ground the outline
+carries the word, over a slab the fill does. `wordMaxPx` is the real tuning —
+a word keeps growing right up to the near plane, and past about a quarter of the
+frame it stops being type flying past and becomes a headline competing with the
+one on the card, so it is dropped at that size rather than faded.
 
-`tour.js` is the tour. Twelve stops, each with a slug, and every other surface is
-a view onto that array — the schedule cards, the campus menu under REGISTER in
-the band, and the per-stop forms. Adding a stop is one entry; it appears on all
-three. Typing them into three files by hand is how a stop ends up on the
-schedule with no registration page behind it.
+## The laptop band
 
-`status` and `note` are still in there and are no longer rendered anywhere.
-CONFIRMED / TARGETING / ON HOLD and "the chapter has asked to move to Oct 31"
-are how the tour is tracked internally; a student reading a schedule needs the
-date, not the state of the negotiation behind it. They stay because they are the
-truth about each date.
+The competition is a band across the sheet under About, not a plate: ink where
+everything above it is paper, no border, nothing about it shaped like the reading
+it follows. It is the one thing on the page a reader can win, and it should read
+as an offer.
 
-| file | what it is |
-| --- | --- |
-| `index.html` | the corridor, the hero, and the plates that ride up over it |
-| `register.html` | the form for one stop, addressed as `?stop=<slug>` |
-| `speakers.html` | a redirect to `index.html#speakers` |
-| `site.css` | the ink, the band, the gutters, the type — everything shared |
-| `pages.js` | everything that draws itself out of `tour.js` |
-| `tour.js` | the twelve stops and the bill |
+`hp-laptop.svg` is the same laptop being given away, drawn in the same hairline
+the corridor is drawn in — one ink, one line weight. It ships with its own field
+of blue, recoloured to `--blue` on the way into the repo so there is no seam
+where the drawing ends and the band begins, and it is scaled past its column and
+clipped, so the laptop arrives from off the page rather than sitting in the
+middle of a panel like a product shot.
 
-A card per **stop**, not per campus, so UPenn and NYU appear twice, told apart by
-chapter. The page's job is one registration per stop, and a card that cannot map
-to exactly one form is a click with no answer. The band's menu is the exception:
-it lists campuses, one each, because without the chapter beside it a second
-UPenn is the same words twice.
+Two grid columns, art then words, the art the smaller half. Under 820px the art
+column is a couple of hundred pixels wide and the laptop is a detail of a laptop,
+so the band stacks.
 
-## Layout
+## Layout## Layout
 
 Every block is a plate: a white box with one stroke, floating on the frozen
 wireframe, which keeps scrubbing behind them as you scroll. Two shapes of block,
 and the difference matters:
 
-- `.blk` — bordered. For prose. About is the only one.
+- `.blk` — bordered. For prose: About, the competition, Questions.
 - `.blk--bare` — no border, no padding. For a grid of cards, which are plates
-  themselves; a plate of plates is two borders doing one job.
+  themselves; a plate of plates is two borders doing one job. The schedule, the
+  speakers, the gallery and the socials strip.
+
+Prose sits in `.about__body`, two columns across the plate — one column at this
+width is a 150-character line. `.about__body--one` is the single-column variant
+for a block short enough that two columns would be a layout rather than a
+paragraph. A `.note` under a plate is the line that qualifies what the plate just
+said; it lives outside `.about__body` on purpose, or the columns can strand it at
+the foot of the first one where it reads as a footnote to half the section.
 
 Everything lands on the same left margin: a bare block's heading and its cards,
 and a bordered block's outer edge. Only a bordered block's *heading* sits inset,
@@ -110,9 +115,15 @@ One stroke weight for every box — `--bd`. It was 3px on plates, 2px on cards a
 | role | face |
 | --- | --- |
 | title | Forma DJR Mono, Medium |
-| subhead | Forma DJR Micro, Medium |
-| body | Forma DJR Text, Regular |
+| subhead | HP Forma DJR Office, Medium |
+| body | HP Forma DJR Office, Regular |
 | caption | Forma DJR Mono, Regular |
+| disclaimer | Forma DJR Mono, Medium |
+
+A disclaimer is the machine-side of the page — a condition on an offer, in the
+same voice as the dates, the labels and the buttons — so `.note` is mono, and its
+measure is computed from `--body-w` and `--body-gap` rather than guessed in `ch`,
+so it wraps on exactly the line the column above it wraps on.
 
 Typekit kit `yxt3aqw` serves **one** family — `forma-djr-mono`, in four faces
 (`n4`, `i4`, `n7`, `i7`). Two consequences, one fixed and one not:
@@ -122,9 +133,18 @@ Typekit kit `yxt3aqw` serves **one** family — `forma-djr-mono`, in four faces
   the target before going up. Figma shows Medium because the desktop Adobe Fonts
   sync has it; the web kit does not. `fonts/forma-djr-mono-500.woff2` now adds
   the weight to the same family name and the browser merges it with the kit's.
-- **Micro and Text are still missing**, so every subhead and all body copy is
-  rendering in the platform grotesque, not Forma. Add both families to the kit
-  and `--micro` / `--text` pick them up with no code change.
+- **Micro and Text are still missing from the kit**, and that used to mean every
+  subhead and all body copy rendered in the platform grotesque — the page read as
+  Forma on the labels and San Francisco everywhere else, which is two type
+  systems rather than one. **HP Forma DJR Office** now fills both roles from
+  `fonts/hp-forma-office-{400,500}.woff2`: Medium for subheads and notes, Regular
+  for body copy. It leads `--micro` and `--text`, so adding Micro and Text to the
+  kit no longer changes anything by itself — reorder those two stacks in
+  `site.css` if the cuts are wanted apart again.
+
+Both weights matter. With only the Medium registered, `font-weight:400` copy
+matches up to it and every paragraph runs a weight too heavy, which is the whole
+reason a text cut and a display cut are different fonts.
 
 `.no-medium` in `site.css` is a synthetic weight — it thickens stems optically
 with `-webkit-text-stroke` when no real 500 is available. It is dormant now, and
@@ -140,6 +160,10 @@ silently dropping to Regular.
 > probe switches the self-hosted face off on its own and `fonts/` can be deleted
 > — or buy a webfont licence from DJR. The same applies to the Micro and Text
 > families when they are added.
+>
+> `fonts/hp-forma-office-*.woff2` are converted from the desktop TTFs of HP's own
+> brand face. On an HP site that is the right typeface and the wrong delivery:
+> confirm with HP that the webfont is licensed for this domain before it ships.
 
 ## Colour
 

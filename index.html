@@ -15,6 +15,36 @@
    share them, and three copies of a header band drift within a week. What is
    left here is the corridor and the things that sit on it. */
 
+/* ---------- the plate's size ----------
+   One number drives the whole thing. The plate and the sponsor strip under it
+   are a block that has to hold about 45% of the window's height, and the plate
+   keeps its proportion while it does — a box that grows taller without growing
+   wider stops being the landscape plate the identity is built on and turns into
+   a panel.
+
+   So the HEIGHT is the free variable and everything else is derived from it:
+   the width is the height times the plate's ratio, and the title is sized off
+   it too, so the type grows with the box rather than sitting in a corner of it.
+
+   The second term in the min() is the guard for a tall narrow window, where
+   45% of the height would be wider than the window itself. There the width
+   leads instead and the height follows it down — the pair falls short of 45%,
+   which is the right trade: the proportion is the thing being protected.
+
+   --spon-h is what the strip costs the plate: its own height (25px tallest mark
+   + 30px padding + 4px border) plus the 10px gap above it, so plate + gap +
+   strip comes to exactly 45vh. It is a constant because the strip is — the
+   marks are sized in px, not off the viewport — and it is subtracted rather
+   than measured, which is what lets the plate be a single calc instead of a
+   layout that has to settle before anything can be sized off it. */
+:root{
+  --plate-ar:1.78;
+  --spon-h:69px;
+  --plate-h:min(calc(45vh - var(--spon-h)),calc(52vw / 1.78));
+  /* both the plate and the strip read this, so they cannot drift apart */
+  --card-w:calc(var(--plate-h) * var(--plate-ar));
+}
+
 /* Only the corridor is a drag surface, so only it suppresses the text caret —
    the prose below has to stay selectable. (#field is handled in site.css, which
    every page shares now that every page has one.) */
@@ -28,15 +58,23 @@
 .hero{position:relative;z-index:2;min-height:100vh;
   padding:calc(var(--bar-h) + clamp(40px,7vh,86px)) var(--edge) 0 var(--hero-x)}
 /* The field keeps running behind this while it whitens and freezes — nothing
-   is painted over it, so the wireframe is the whole view for a beat. */
-.freeze{position:relative;z-index:2;height:45vh}
+   is painted over it, so the wireframe is the whole view for a beat.
+
+   A beat, now, rather than the half-screen it was. Everything above the sheet is
+   scrolling you do before the site says anything, and at 45vh here and 25vh
+   below, About was a screen and a half down: three or four flicks of a wheel
+   past a corridor you have already looked at. The pair now comes to 20vh, and
+   the whiten was compressed to match — see LO/HI in the script. */
+.freeze{position:relative;z-index:2;height:14vh}
 /* The card is a plate, not a block of text: the mark sits at the top right and
    the type sits on the floor, with the whole height of the box between them.
    min-height rather than padding, so the gap holds when the title wraps to
    three lines on a narrow window instead of collapsing to nothing. */
 .card{
   position:relative;width:var(--card-w);
-  min-height:clamp(206px,16.8vw,242px);
+  /* height, not min-height: the box is a shape at a size, and a min lets the
+     content push it out of its own proportion */
+  height:var(--plate-h);min-height:190px;
   display:flex;flex-direction:column;
   background:var(--paper);border:var(--bd) solid var(--blue);
   padding:clamp(20px,2.2vw,28px) clamp(22px,2.5vw,32px) clamp(22px,2.5vw,30px);
@@ -45,17 +83,18 @@
 /* hp-logo.png is a single-colour asset with the letterforms knocked out as
    transparency, so it is already the blue disc — no filter, unlike the band,
    which needs it knocked out white. */
-.card__mark{width:clamp(40px,4vw,56px);height:auto;align-self:flex-end;display:block}
+.card__mark{width:clamp(40px,calc(var(--plate-h) * .13),70px);height:auto;
+  align-self:flex-end;display:block}
 .card__eyebrow{
-  margin:auto 0 clamp(8px,.9vw,12px);font-family:var(--mono);font-weight:500;
-  font-size:clamp(9px,.78vw,11px);letter-spacing:.075em;word-spacing:-.25em;
+  margin:auto 0 clamp(9px,1vw,14px);font-family:var(--mono);font-weight:500;
+  font-size:clamp(10px,.88vw,13px);letter-spacing:.075em;word-spacing:-.25em;
   color:var(--slate);
 }
 /* Sized off the plate, not off the viewport: EXPLORING is the longest word and
    the title only works while it and TOMORROW share a line, so the ceiling is
    whatever the card's inner width allows at a 0.6em mono advance. */
 h1{
-  margin:0;font-size:clamp(15px,1.92vw,27px);line-height:1.2;
+  margin:0;font-size:clamp(15px,calc(var(--plate-h) * .105),48px);line-height:1.2;
   letter-spacing:-.025em;
 }
 /* the cursor blinks the way a prompt does; it is the one moving thing in the
@@ -93,9 +132,15 @@ h1{
   background:var(--paper);border:var(--bd) solid var(--blue);
   overflow:hidden;opacity:0;
 }
+/* The gap scales with the plate. The set is five marks duplicated once, so a
+   strip wide enough to show six shows the first one twice — which reads as a
+   mistake rather than as a loop. Spacing them by a fifth of the plate's height
+   keeps one copy wider than the window it runs in at every size, so the repeat
+   is always off screen. */
 .spon__track{
-  display:flex;align-items:center;gap:38px;width:max-content;
-  padding:15px 0 15px 38px;
+  display:flex;align-items:center;gap:max(26px,calc(var(--plate-h) * .2));
+  width:max-content;
+  padding:15px 0 15px max(26px,calc(var(--plate-h) * .2));
   animation:slide 26s linear infinite;
 }
 .spon:hover .spon__track{animation-play-state:paused}
@@ -118,7 +163,10 @@ h1{
     rgba(255,255,255,0) 91%,var(--paper) 100%);
 }
 
-.scrollspace{position:relative;z-index:1;height:70vh;pointer-events:none}
+/* The gap between the wireframe and the sheet's top edge. Long enough that the
+   sheet arrives rather than being already there, short enough that it is not a
+   second empty screen after the freeze. */
+.scrollspace{position:relative;z-index:1;height:6vh;pointer-events:none}
 
 /* ---------- the sheet ----------
    Everything above this is one continuous flight down a corridor. This is the
@@ -147,14 +195,107 @@ h1{
    a line, which nobody reads. columns:2 is the middle: the text is one piece and
    reads top-left to bottom-right, and max-width keeps the measure near 70
    characters instead of letting it grow with the plate. */
-.about__body{columns:2;column-gap:clamp(28px,4vw,64px);
-  margin-top:clamp(26px,4vw,48px);max-width:1080px}
+/* The two numbers are shared with .note below, which has to wrap on the same
+   line length the columns do — see there. */
+.blk{--body-w:1080px;--body-gap:clamp(28px,4vw,64px)}
+.about__body{columns:2;column-gap:var(--body-gap);
+  margin-top:clamp(26px,4vw,48px);max-width:var(--body-w)}
 /* multicol will strand a line at the foot of the first column without these */
 .about__body p{orphans:2;widows:2}
+/* Rag. The browser's default line breaker takes each line as far as it will go
+   and leaves whatever is left to the next one, which is what put a 3-word last
+   line under a 90-character paragraph here. `pretty` costs a few passes of
+   layout on a handful of paragraphs and evens the shape of the block out. */
+.about__body p,.note{text-wrap:pretty}
 /* Over the corridor each column needed its own plate and border or the
    hairlines ran straight through 13px copy. The sheet is opaque, so nothing
    runs behind them now and the type sits directly on it. */
-.about__body p{margin:0;font-weight:400;font-size:15px;line-height:1.7;color:var(--slate)}
+/* About is five paragraphs rather than the one it was written for, so they
+   need a gap between them: set-solid, the column is a wall of text and the
+   break between "what the sponsors bring" and "what the students bring" is
+   invisible. A blank line rather than an indent — the plate's type is flush
+   left everywhere else. */
+.about__body p{margin:0 0 1.15em;font-weight:400;font-size:15px;line-height:1.7;color:var(--slate)}
+.about__body p:last-child{margin-bottom:0}
+/* A paragraph split across the column break loses the shape of its own
+   argument, and these are short enough that keeping each one whole costs
+   nothing. */
+.about__body p{break-inside:avoid}
+/* The quiz's own title, inside the sentence. Blue and medium rather than
+   italic: the body face is the fallback grotesque until the kit carries Text,
+   and a synthetic italic in a paragraph reads as a rendering fault. */
+.about__body em{font-style:normal;font-weight:500;color:var(--blue)}
+
+/* ---------- the line under a plate ----------
+   What qualifies whatever the plate just said. Slate, under the body size —
+   subordinate, and visibly so. It sits outside .about__body in the markup as
+   well, or the columns can strand it at the foot of the FIRST one, where it
+   reads as a footnote to half the section.
+
+   Mono, not micro: a disclaimer is the machine-side of the page — a condition
+   on an offer, in the same voice as the dates, the labels and the buttons —
+   and setting it in the body face makes it read as more prose, only smaller.
+
+   The measure is the COLUMN's, computed rather than guessed. It was 76ch of
+   micro, which lands about twenty pixels past where the column above it wraps:
+   close enough to look like a mistake rather than a different measure, since
+   the two blocks are flush left and the eye reads the right edge as one. */
+.note{
+  margin:clamp(18px,2.2vw,28px) 0 0;
+  font-family:var(--mono);font-weight:500;
+  /* the mono runs wide, so the same measure holds fewer words — 11.5 sets the
+     line at roughly the count the micro was making at 12 */
+  font-size:11.5px;line-height:1.6;letter-spacing:.005em;word-spacing:-.2em;
+  /* A step quieter than --slate, which is the voice of a subhead or a caption:
+     a disclaimer is a condition on what the plate just said, and it should be
+     legible to someone who goes looking and invisible to everyone else. */
+  color:color-mix(in srgb,var(--slate) 78%,var(--paper));
+  max-width:calc((min(var(--body-w),100%) - var(--body-gap)) / 2);
+}
+
+/* ---------- asks ----------
+   The two ways out of the last plate. Same box as a card's REGISTER at the
+   size a line of its own deserves: solid for the one we want pressed, hollow
+   for the one beside it, both inverting on hover so neither is inert. */
+.asks{display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(20px,2.6vw,32px)}
+.ask{
+  display:inline-block;text-decoration:none;font-family:var(--mono);font-weight:500;
+  font-size:clamp(11px,.95vw,12.5px);letter-spacing:.0975em;word-spacing:-.2em;
+  padding:14px 26px;background:var(--blue);color:#fff;
+  border:var(--bd) solid var(--blue);transition:background .18s ease,color .18s ease;
+}
+.ask:hover{background:var(--paper);color:var(--blue)}
+.ask--ghost{background:var(--paper);color:var(--blue)}
+.ask--ghost:hover{background:var(--blue);color:#fff}
+
+/* ---------- socials ----------
+   Three vertical cuts under the gallery. They were held to a 700px column on the
+   argument that three 9:16 videos at full width are a wall you scroll past
+   rather than a strip you glance at — true of the full width of a 1200px sheet,
+   and it made the reels small enough that a phone-shaped video read as a
+   thumbnail of one. The column is the body's own measure now: a third of it is a
+   reel about the size of a phone held at arm's length, which is what these are. */
+.hype{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,1.6vw,24px);margin-top:clamp(30px,4.5vw,54px);
+  /* Centred in the sheet rather than hung off its left edge. Everything else on
+     the page is flush left against a measure, but this strip is held to a column
+     narrower than the sheet — left-aligned, the space it does not use all piles
+     up on one side and the block reads as having slipped. The heading stays on
+     the page's own axis with every other heading. */
+  max-width:min(100%,1040px);margin-inline:auto}
+.hype__slot{position:relative;display:block;aspect-ratio:9/16;overflow:hidden;
+  background:var(--paper);border:var(--bd) solid var(--blue);text-decoration:none}
+.hype__slot video{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block}
+/* the slot number labels an EMPTY plate, the same way the speaker slots do */
+/* Both labels grew with the plate. At 9.5px on a reel this size they read as
+   something left in by accident rather than as the plate's own caption. */
+.hype__empty{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-weight:500;font-size:11.5px;
+  letter-spacing:.0375em;word-spacing:-.3em;color:var(--slate)}
+.hype__cap{position:absolute;left:0;bottom:0;padding:10px 15px;background:var(--blue);
+  color:#fff;font-family:var(--mono);font-weight:500;font-size:11px;
+  letter-spacing:.0525em;word-spacing:-.3em}
 /* ---------- entrance ----------
    Everything arrives after the field has already been flying for a moment, so
    the page reads as a window onto something that was running before you got
@@ -166,10 +307,17 @@ h1{
 @keyframes drop{to{transform:translateY(0)}}
 @keyframes rise{to{opacity:1;transform:translateY(0)}}
 
+@media (max-width:620px){
+  /* three 9:16 slots across a phone is three 100px-wide videos */
+  .hype{grid-template-columns:minmax(0,1fr);max-width:330px}
+}
 @media (max-width:720px){
   /* the register button sits inside the card on this breakpoint; the tagline
      added below the h1 needs the floor raised or the two collide */
-  .card{width:min(100%,460px);min-height:0;padding-bottom:80px}
+  /* The plate spans the column here rather than holding a ratio, so its height
+     goes back to being a floor: the pair still clears 45% of the window. */
+  .card{width:min(100%,460px);height:auto;min-height:calc(45vh - var(--spon-h));
+    padding-bottom:80px}
   /* must be .hero, not main: the base rule is a class, and a class outranks an
      element selector, so `main{...}` here silently lost and never applied */
   .hero{padding-left:var(--edge)}
@@ -177,6 +325,10 @@ h1{
   /* var(--card-w) is 40vw here, a sliver — track the card's own width instead */
   .spon{width:min(100%,460px);min-width:0}
   .spon__track{gap:26px;padding:12px 0 12px 26px}
+  /* site.css drops the body to one column here, so the note's measure is the
+     whole plate rather than half of it — it wraps where the copy does either
+     way, which is the point of computing it from the same two numbers */
+  .note{max-width:min(var(--body-w),100%)}
 }
 @media (prefers-reduced-motion:reduce){
   .bar,.card,.register,.spon{animation-duration:.01ms;animation-delay:0ms}
@@ -184,6 +336,7 @@ h1{
   .spon__track{animation:none}
   .caret{animation:none}
 }
+
 </style>
 </head>
 <body>
@@ -241,18 +394,74 @@ h1{
 <section class="night" id="about">
   <div class="night__in">
 
+    <!-- About runs first on the page now. It is the thing someone arriving
+         from a poster or a group chat is actually asking, and it was sitting
+         under the corridor's whole descent. -->
     <div class="blk">
       <h2 class="rise">About the tour</h2>
       <div class="about__body rise">
-        <p>The HP USA College Tour brings the workstation floor to campus. Bring a project
-        and an idea of where it is stuck; leave with it rendering on hardware you could not
-        otherwise get your hands on. Every stop runs the same shape: a morning of short
-        talks from people who ship, an afternoon of open benches with engineers on the
-        floor, and an evening where the room shows what it made that day. It is free, and
-        it is open to any enrolled student — no portfolio review, no application, no prior
-        experience with any of the software on the benches.</p>
+        <p>At a time of major change in how we interact with technical tools, the HP USA
+        College Tour aims to bring companies and students together to explore what new
+        technologies mean for how we create. The event will feature a series of software
+        workshops, inspirational talks from industry leaders, student exhibitions,
+        technical demonstrations, and interactive activations.</p>
+
+        <p>Brand sponsors will educate on the latest and greatest in hardware and
+        software, keeping students up to date with the best tools they can use to tackle
+        their work. Visitors can expect to meet industry Product Managers, Technical
+        Leads, Go-to-Market Managers, and Business Development Leaders available to
+        connect with students and educate on what&rsquo;s new.</p>
+
+        <p>On the student side, each school is curating its own vision for how these new
+        technologies are shaping the way we work. Whether architecture, engineering,
+        design, or tech clubs, each stop along the tour will add a new series of works to
+        the conversation.</p>
+
+        <p>The event will be split between two spaces: the gallery and the auditorium.
+        Each space will be open throughout the day to host various activities. We will
+        give away free merch, including HP mice, keyboards, stickers, t-shirts, and tote
+        bags.</p>
+
+        <p>Join us for a full day of talks, workshops, exhibitions, demos, giveaways, and
+        more!</p>
       </div>
+      <!-- Outside .about__body on purpose: the body is columned, and a
+           disclaimer that can fall to the foot of the FIRST column reads as a
+           footnote to half the section. -->
+      <p class="note rise">Disclaimer: speakers and company representatives will vary by
+      college.</p>
     </div>
+
+    <!-- A band rather than a plate. Ink where everything above it is paper, and
+         the width of the sheet, because this is the one thing on the page a
+         reader can WIN and it should read as an offer rather than as another
+         section of the reading.
+
+         The drawing is the same laptop the tour is giving away, in the same
+         hairline the corridor is drawn in — one ink, one line weight, so the
+         band belongs to the field behind it rather than to the stock-photo
+         department. It bleeds off the left edge on purpose: cropped, it is a
+         thing passing through the band; contained, it is a product shot. -->
+    <aside class="promo rise" id="competition">
+      <div class="promo__art" aria-hidden="true"><img src="hp-laptop.svg" alt=""></div>
+      <div class="promo__body">
+        <h3 class="promo__title">Win a HP laptop</h3>
+        <p>In addition to the demonstrations and exhibitions, the gallery space at each
+        school will feature an interactive competition. Visitors will walk up to a large
+        touchscreen display to tackle a quiz: <em>Which Photo Has Been Altered with
+        AI?</em> At a time when AI-generated content is increasingly called into question,
+        we are rewarding those with the best eye for spotting the difference.</p>
+
+        <p>Each question offers a choice between two options: an unaltered image and the
+        same image slightly tweaked with AI. Choose the altered image and move on. Choose
+        the unaltered image, and the quiz is over. A large LED display will showcase the
+        leaderboard for the highest scorers.</p>
+
+        <p class="promo__note">Disclaimer: ties between students will be settled by a
+        random pick. The exact number of laptop giveaways at each school is subject to
+        availability.</p>
+      </div>
+    </aside>
 
     <!-- Drawn from tour.js rather than typed here, so a stop cannot appear on
          the schedule without a registration page behind it. -->
@@ -273,6 +482,30 @@ h1{
     <div class="blk blk--bare" id="gallery">
       <h2 class="rise">Photo gallery</h2>
       <div class="rise" id="gal"></div>
+    </div>
+
+    <!-- Three vertical cuts, built from TOUR.hype. Bare like the gallery above
+         it: both are grids of plates, and a plate of plates is two borders
+         doing one job.
+
+         Not "Building hype": that named the marketing job these do rather than
+         what they are, and it was a heading written for the people making the
+         page instead of the student reading it. The id stays #hype because the
+         data, the builder and the footer link all use that name. -->
+    <div class="blk blk--bare blk--mid" id="hype">
+      <h2 class="rise">Learn more about HP</h2>
+      <div class="rise" id="hypestrip"></div>
+    </div>
+
+    <!-- Last thing before the footer panel. One question, two ways out of it. -->
+    <div class="blk" id="questions">
+      <h2 class="rise">Questions?</h2>
+      <!-- The line that was here said what the two buttons under it already
+           say. A heading, and the way out of it. -->
+      <div class="asks rise">
+        <a class="ask" href="mailto:andrew@non-studio.us">CONTACT US</a>
+        <a class="ask ask--ghost" href="#schedule">REGISTER</a>
+      </div>
     </div>
 
   </div>
@@ -299,6 +532,34 @@ h1{
      massive, fewer slabs at the same camera distance — not from moving the
      camera in. The bloom is wide and gaussian (washSoft) so the light
      disperses across the frame instead of stopping at a hard shoulder. */
+  /* ---------- what the corridor says ----------
+     OFF. wordCount is 0 below; everything here is kept the way the chips are,
+     so `wordCount: 24` switches the type straight back on without retuning it.
+
+     Lines of type flying down the field with the slabs. Most of it was built
+     out of tour.js rather than typed here, so a campus added to the schedule
+     starts appearing in the corridor as well; the rest is the handful of
+     phrases the tour leads with and a few bits of the About copy below, which
+     is what the type is FOR — you have read half the page before you reach it.
+
+     Kept short on purpose. A word has to be legible in the fraction of a
+     second between arriving at a readable size and leaving the frame, and a
+     clause of ten words crosses the screen as a line rather than as language. */
+  var WORDS = [
+    'WIN A FREE LAPTOP', 'STUDENT EXHIBITIONS', 'SOFTWARE WORKSHOPS',
+    'TECHNICAL DEMOS', 'FREE MERCH', 'OPEN BENCHES',
+    'EXPLORING TOMORROW', 'EMPOWERING TODAY', 'HOW WE CREATE',
+    'SOLIDWORKS', 'INTEL', 'BENTLEY', 'D5 RENDER', 'AMD'
+  ];
+  if (window.TOUR) {
+    TOUR.stops.forEach(function (st) {
+      /* The school, not the stop's full name: "University of Pennsylvania AIR"
+         is a label, and at this speed a label is a blur. */
+      WORDS.push(st.school.replace(/^University of /, '').toUpperCase());
+    });
+    TOUR.speakers.forEach(function (sp) { WORDS.push(sp.name.toUpperCase()); });
+  }
+
   var field = new ExtrusionField(canvas, {
     count: 220, seed: 12,
     spread: 1500, aspectXY: 1.15, clump: 0.55, hole: 0.13, cone: 0.55,
@@ -327,7 +588,23 @@ h1{
        backdrop, so the moment you notice its pace it is too fast. The arrival
        burst scales off this too (warp is a multiplier), so slowing the cruise
        slows the way the page opens by the same proportion. */
-    speed: 340, parallax: 0.055, ease: 0.05
+    speed: 340, parallax: 0.055, ease: 0.05,
+    /* Off. 24 was the tuning: in the air at once out of a list three times
+       that long — few enough that the corridor was still slabs with words in
+       it rather than a wall of type, and enough that you rarely saw the same
+       line twice on the way down. wordSpread pushes them a little wider than
+       the bar cloud so most of them arrive in the clear instead of inside a
+       slab.
+
+       wordMaxPx is the real tuning: a word keeps growing right up to the near
+       plane, and past about a quarter of the frame it stops being type flying
+       past and becomes a headline sitting on the page, competing with the one
+       on the card. It is dropped at that size rather than faded, because by
+       then it is a frame or two from wrapping anyway. */
+    words: WORDS, wordCount: 0, wordSize: 108, wordSpread: 1.12,
+    wordMinPx: 12, wordMaxPx: 230,
+    wordFill: '#ffffff', wordStroke: '#024AD8', wordEdge: 1,
+    wordFamily: '"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace'
   });
 
   var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -380,11 +657,23 @@ h1{
      white to white slabs outlined in blue, and the flight decelerates to a halt.
      By the time the sheets below arrive it is a still wireframe, so the page
      reads as one continuous move rather than a hero and then a separate site. */
-  /* In viewport heights. HI came down with the runway below it: the whiten and
-     the freeze have to be finished before the first plate arrives, so the two
-     numbers move together — leave HI at 1.25 over a shorter scrollspace and the
-     corridor is still bleaching while About is already on screen. */
-  var LO = 0.10, HI = 0.95;
+  /* In viewport heights, and this span is the PACE of the whiten — how much
+     corridor you cross per turn of the wheel.
+
+     The hold below the corridor was cut first and on its own, because that is
+     the part nobody is reading: the freeze and the scrollspace came down from
+     45vh and 25vh to 14 and 6. Once they had, this span had to come with them
+     or the point of it would be lost — at 95vh the wireframe would finish
+     forming a whole screen after the sheet had covered it over, which is a
+     transition nobody sees.
+
+     So both moved together, and the relationship between them is what was
+     actually held: the sheet's top edge crosses the bottom of the window at
+     20vh of scroll and the whiten finishes at 48, with the first plate a third
+     of the way up the frame by then. That is the same overlap as before —
+     a transition continuing, rather than a wireframe held up for inspection —
+     at a little over half the scrolling. */
+  var LO = 0.08, HI = 0.48;
 
   function lerp(a, b, t) { return a + (b - a) * t; }
   function mixHex(a, b, t) {
@@ -480,6 +769,7 @@ h1{
   PAGES.cards(document.getElementById('sked'));
   PAGES.speakers(document.getElementById('speakers-grid'));
   PAGES.gallery(document.getElementById('gal'));
+  PAGES.hype(document.getElementById('hypestrip'));
   PAGES.nav(document.querySelector('.bar'));
   PAGES.footer(document.getElementById('foot'));
   PAGES.reveal();
@@ -503,17 +793,27 @@ h1{
   var slab = new ExtrudedBox(document.querySelector('.register'), {
     col: '#024AD8', bg: '#ffffff', edgeCol: '#ffffff', edge: 0.5, faceShade: 0.36
   });
-  var lastVX = NaN, lastVY = NaN;
+  var lastVX = NaN, lastVY = NaN, lastScroll = NaN;
   function drawSlab(force) {
-    var moved = force || Math.abs(field.vp.x - lastVX) > 0.0004
+    /* Scroll counts as movement. The slab is drawn in the button's own
+       coordinates but aimed at a point fixed to the VIEWPORT, so scrolling
+       moves the two apart — the geometry is stale the moment the page moves,
+       and a stale slab drawn from halfway down the page is the elongated one
+       you come back to at the top. */
+    var moved = force || scrollY !== lastScroll
+                      || Math.abs(field.vp.x - lastVX) > 0.0004
                       || Math.abs(field.vp.y - lastVY) > 0.0004;
     if (!moved && Math.abs(slab.k - slab.kTarget) < 0.0004) return;
     slab.set({ vpX: field.vp.x, vpY: field.vp.y });
     slab.draw();
-    lastVX = field.vp.x; lastVY = field.vp.y;
+    lastVX = field.vp.x; lastVY = field.vp.y; lastScroll = scrollY;
   }
   (function slabTick() { drawSlab(false); requestAnimationFrame(slabTick); })();
   addEventListener('resize', function () { drawSlab(true); });
+  /* the button rises into place on load, so its box is only final once that
+     animation has finished */
+  document.querySelector('.register')
+    .addEventListener('animationend', function () { drawSlab(true); });
   /* the face changes width once the real mono lands, so re-lay the slab then */
   if (document.fonts) document.fonts.ready.then(function () { drawSlab(true); });
 

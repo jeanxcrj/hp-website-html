@@ -35,6 +35,14 @@
     depth: 0.055,      // how far the slab recedes, as a fraction of its own size
     hoverDepth: 0.105, // thicker on hover — the box leans toward you
     ease: 0.14,
+    /* Ceiling on the extrusion, as a fraction of the button's short side.
+       The contraction below is proportional to the button's DISTANCE from the
+       vanishing point — which is true perspective, and wrong for a control: the
+       same slab reads a few pixels deep beside the vanishing point and a
+       hundred deep once the page has scrolled the button far above it, so
+       scrolling appears to stretch the button. The cap keeps the direction the
+       field gives it while holding the depth to something a button can have. */
+    maxDepth: 0.36,
     // where the vanishing point sits, in viewport fractions. Overwritten live
     // by site.js so it tracks the field's own (parallaxed) vanishing point.
     vpX: 0.86, vpY: 0.5
@@ -94,7 +102,16 @@
 
     // uniform contraction toward the VP is exactly what perspective does to an
     // axis-aligned box receding along the view axis
-    var s = clamp(1 - this.k, 0.2, 0.999);
+    var k = this.k;
+    // ...but only up to a point: the offset it produces grows with the distance
+    // to the VP, so a button sitting far from it — a hero button after the page
+    // has scrolled, say — would draw a slab tens of times its own depth. Trade
+    // the exactness for a fixed ceiling in pixels; near the VP, where the slab
+    // is short anyway, nothing changes.
+    var d = Math.sqrt(Math.pow(w / 2 - vx, 2) + Math.pow(h / 2 - vy, 2));
+    var cap = P.maxDepth * Math.min(w, h);
+    if (d * k > cap) k = cap / d;
+    var s = clamp(1 - k, 0.2, 0.999);
     var N = [[0, 0], [w, 0], [w, h], [0, h]];
     var F = N.map(function (p) { return [vx + (p[0] - vx) * s, vy + (p[1] - vy) * s]; });
 

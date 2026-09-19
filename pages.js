@@ -58,6 +58,7 @@
        overwriting className would silently drop it out of the reveal */
     el.classList.add('rcards');
     el.innerHTML = open.map(function (s) {
+      var bill = T.speakersFor(s);
       return '<article class="rcard" id="stop-' + esc(s.slug) + '">' +
         '<div class="rcard__top"><p class="rcard__date">' + esc(numDate(s.date)) + '</p></div>' +
         '<div class="rcard__foot">' +
@@ -68,6 +69,13 @@
              gets no line rather than an empty one. */
           (s.chapter ? '<p class="rcard__eyebrow">' + esc(s.chapter) + '</p>' : '') +
           '<h3 class="rcard__name">' + esc(s.school) + '</h3>' +
+          /* The bill for this campus, under its name. The speaker grid below
+             is the whole tour's bill; this line is the only place the page
+             says who is actually standing in THIS room. A stop with nobody
+             assigned yet gets no line rather than an empty one. */
+          (bill.length
+            ? '<p class="rcard__bill">' + esc(bill.map(function (sp) { return sp.name; }).join(', ')) + '</p>'
+            : '') +
         '</div>' +
         '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
           'REGISTER</a>' +
@@ -199,6 +207,30 @@
     draw();
   }
 
+  /* ---------- socials ----------
+     Three vertical slots for the social cuts, under the gallery. They are
+     9:16 plates in the site's own border, not embeds: an Instagram iframe
+     brings its own chrome, its own fonts and a login wall on a good day, and
+     on a bad one it is a blank rectangle nobody notices has failed.
+
+     A slot with a `src` plays it inline, muted and looping, the way a reel
+     autoplays in a feed; a slot without one is an empty plate that still opens
+     the account. Dropping the files into tour.js HYPE is the whole job. */
+  function hype(el) {
+    if (!el) return;
+    el.classList.add('hype');
+    el.innerHTML = (T.hype || []).map(function (v, i) {
+      var n = i + 1;
+      return '<a class="hype__slot" href="' + esc(v.href || '#') + '"' +
+        (v.href ? ' target="_blank" rel="noopener"' : '') + '>' +
+        (v.src
+          ? '<video src="' + esc(v.src) + '" muted loop autoplay playsinline></video>'
+          : '<span class="hype__empty">VIDEO 0' + n + '</span>') +
+        '<span class="hype__cap">' + or(v.title, 'Reel 0' + n) + '</span>' +
+        '</a>';
+    }).join('');
+  }
+
   /* ---------- speakers ---------- */
   function speakers(el) {
     if (!el) return;
@@ -214,10 +246,12 @@
         '</div>' +
         '<div class="spk__body">' +
           '<h3 class="spk__name">' + or(p.name, 'Speaker ' + n) + '</h3>' +
-          /* Company alone. The role is null on every one of these and a card
-             reading "Position · KPF" is a placeholder shown to the public. */
-          '<p class="spk__role">' +
-            (p.role ? esc(p.role) + ' · ' : '') + or(p.company, 'Company') + '</p>' +
+          /* Role and company, always both. The role is null on every one of
+             these, so it draws as its own greyed slot rather than closing the
+             line up — the gap is the point, and it is one field to fill in
+             tour.js when the titles arrive. */
+          '<p class="spk__role">' + or(p.role, 'Role') +
+            '<span class="spk__dot"> · </span>' + or(p.company, 'Company') + '</p>' +
           '<p class="spk__bio">' + or(p.bio, 'Description to come — one short paragraph on what they work on and what they are bringing to the bench.') + '</p>' +
         '</div>' +
         '</article>';
@@ -268,8 +302,6 @@
           '<div class="reg__line"><b>SCHOOL</b><span>' + esc(stop.school) + '</span></div>' +
           '<div class="reg__line"><b>CHAPTER</b><span>' + esc(stop.chapter || '—') + '</span></div>' +
           '<div class="reg__line"><b>DATE</b><span>' + esc(stop.date) + '</span></div>' +
-          '<p class="rcard__note">Free, and open to any enrolled student. No portfolio ' +
-          'review and no prior experience with anything on the benches.</p>' +
         '</div>' +
         /* the same fields the cards open, from the same function — two spellings
            of one form is two forms to keep in step */
@@ -294,6 +326,16 @@
      one frame. */
   function backdrop(canvas) {
     if (!canvas || !global.ExtrusionField) return;
+    /* Off, with the index's. wordCount is 0 below and 10 was the tuning — fewer
+       than the hero carries, because this field is at fov 28, which magnifies
+       everything about the vanishing point, and the page's own plate is sitting
+       on top. Switch the two back on together or a sub-page's frozen corridor
+       stops being the index's frozen corridor. */
+    var words = ['WIN A FREE LAPTOP', 'STUDENT EXHIBITIONS', 'OPEN BENCHES',
+      'EXPLORING TOMORROW', 'EMPOWERING TODAY'];
+    T.stops.forEach(function (st) {
+      words.push(st.school.replace(/^University of /, '').toUpperCase());
+    });
     var field = new global.ExtrusionField(canvas, {
       count: 220, seed: 12,
       spread: 1500, aspectXY: 1.15, clump: 0.55, hole: 0.13, cone: 0.55,
@@ -306,6 +348,10 @@
       chips: 0,
       fov: 28, vpX: 0.37, vpY: 0.58,
       col: '#ffffff', bg: '#ffffff', wash: 0,
+      words: words, wordCount: 0, wordSize: 108, wordSpread: 1.12,
+      wordMinPx: 12, wordMaxPx: 230,
+      wordFill: '#ffffff', wordStroke: '#024AD8', wordEdge: 1,
+      wordFamily: '"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace',
       speed: 0, parallax: 0, ease: 0.05
     });
     field.speedScale = 0;
@@ -420,18 +466,23 @@
   var LINKS = {
     NAVIGATE: [
       ['ABOUT', 'index.html#about'],
+      ['COMPETITION', 'index.html#competition'],
       ['SCHEDULE', 'index.html#schedule'],
       ['SPEAKERS', 'index.html#speakers'],
       ['GALLERY', 'index.html#gallery'],
+      ['LEARN MORE', 'index.html#hype'],
       ['REGISTER', 'index.html#schedule']
     ],
-    /* Placeholders. Nobody has given us the real handles, and a social link
-       that goes to the wrong account is worse than one that goes nowhere. */
+    /* Instagram is the real account — it is where the tour's own cuts are
+       posted, and the socials strip links the same place. The rest are
+       still placeholders: a social link that goes to the wrong account is
+       worse than one that goes nowhere. */
     FOLLOW: [
-      ['INSTAGRAM', '#'],
+      ['INSTAGRAM', 'https://www.instagram.com/zbyhp/'],
       ['LINKEDIN', '#'],
       ['YOUTUBE', '#'],
-      ['X', '#']
+      ['X', '#'],
+      ['EMAIL US', 'mailto:andrew@non-studio.us']
     ]
   };
 
@@ -511,7 +562,9 @@
      Per block, fired once. A stagger that replays every time a block passes the
      fold turns into a tic. */
   function reveal() {
-    var blocks = document.querySelectorAll('.blk');
+    /* .promo is a plate too, for this purpose: it sits BESIDE a .blk rather
+       than inside one, so watching only .blk left it at opacity 0 forever. */
+    var blocks = document.querySelectorAll('.blk, .promo');
     if (!global.IntersectionObserver) {
       [].forEach.call(blocks, function (b) { b.classList.add('is-up'); });
       return;
@@ -549,7 +602,8 @@
   }
 
   global.PAGES = {
-    cards: cards, gallery: gallery, speakers: speakers, nav: nav, backdrop: backdrop,
+    cards: cards, gallery: gallery, speakers: speakers, hype: hype,
+    nav: nav, backdrop: backdrop,
     register: register, reveal: reveal, footer: footer
   };
 })(window);
