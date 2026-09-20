@@ -147,6 +147,7 @@ h1,h2,.rcard__name,.spk__name{
   font-family:var(--mono);font-weight:500;word-spacing:-.3em;color:var(--blue);
 }
 
+
 /* ---------- header ----------
    A solid band of the ink across the top, the way the reference cuts the
    corridor off rather than fading it out. */
@@ -161,7 +162,7 @@ h1,h2,.rcard__name,.spk__name{
    drift out of its own proportions the way a mark-plus-span pair can. Its paths
    ship white, which is why the filter that used to knock the PNG out is gone.
    Height is the only handle here — width follows the 553:140 box. */
-.brand img{height:34px;width:auto;display:block}
+.brand img{height:36px;width:auto;display:block}
 
 .nav{display:flex;align-items:center;gap:clamp(14px,2vw,26px)}
 .nav a{
@@ -374,7 +375,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    and it reads
    as one row or it reads as a ragged grid. It steps down by breakpoint instead
    of by whatever happens to fit. */
-.spk{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+.spk{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
   gap:clamp(12px,1.4vw,20px);margin-top:clamp(30px,4.5vw,54px)}
 /* Its own white ground. While these sat inside a bordered plate the plate was
    the background; without one the corridor comes straight through the card and
@@ -644,6 +645,8 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   -webkit-text-stroke:.03em currentColor;
 }
 
+
+
 /* ---------- arrival ----------
    On index.html the sheet's own entrance is the scroll, so its contents cannot
    also be the scroll or the whole thing lands at once. On a sub-page there is
@@ -671,7 +674,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   /* narrower than the button's own offset allows, so a panel cannot hang off
      the right edge of a 360px screen */
   .navdrop{min-width:0;width:min(78vw,290px)}
-  .brand img{height:28px}
+  .brand img{height:48px}
   /* Four items will not fit beside the lockup at this width. The band keeps the
      one that is a call to action; the rest are in the footer, which is why the
      footer is on every page and not only on the index. */

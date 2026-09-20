@@ -38,7 +38,7 @@
    than measured, which is what lets the plate be a single calc instead of a
    layout that has to settle before anything can be sized off it. */
 :root{
-  --plate-ar:1.78;
+  --plate-ar:3;
   --spon-h:69px;
   --plate-h:min(calc(45vh - var(--spon-h)),calc(52vw / 1.78));
   /* both the plate and the strip read this, so they cannot drift apart */
@@ -94,14 +94,17 @@
   align-self:flex-end;display:block}
 .card__eyebrow{
   margin:auto 0 clamp(9px,1vw,14px);font-family:var(--mono);font-weight:500;
-  font-size:clamp(10px,.88vw,13px);letter-spacing:.075em;word-spacing:-.25em;
+  font-size:24px;letter-spacing:.0;word-spacing:0;
   color:var(--slate);
 }
 /* Sized off the plate, not off the viewport: EXPLORING is the longest word and
    the title only works while it and TOMORROW share a line, so the ceiling is
    whatever the card's inner width allows at a 0.6em mono advance. */
 h1{
-  margin:0;font-size:clamp(15px,calc(var(--plate-h) * .105),48px);line-height:1.2;
+  margin:0;
+  /* font-size:clamp(15px,calc(var(--plate-h) * .105),48px);*/
+  font-size:64px;
+  line-height:1;
   letter-spacing:-.025em;
 }
 /* the cursor blinks the way a prompt does; it is the one moving thing in the
