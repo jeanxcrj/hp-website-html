@@ -781,10 +781,14 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
      width in height to hold it without either cropping or leaving a band of
      empty blue under it */
   .promo__art{min-height:min(47vw,420px)}
-}
-@media (max-width:720px){
-  /* two columns of 40 characters is worse than one of 80 */
-  .about__body{columns:1}
+  /* Centred here, unlike the side-by-side band. The reason it is flush left up
+     there is that the export's left edge is a crop, and centring puts that cut
+     in the middle of the band with blue on both sides of it. Stacked, the art
+     is a full-width strip and the drawing no longer fills it, so left-flush
+     reads as a drawing shoved into a corner instead of one carrying on past
+     the page — and the crop lands on the strip's own edge either way once the
+     width is this close to the drawing's. */
+  .promo__art img{left:50%;transform:translate(-50%,-50%)}
 }
 @media (max-width:620px){
   .gal{--gal-cols:2}
