@@ -30,8 +30,16 @@
 
      The staging day has no card. It is on the planning sheet because the trucks
      move that day, not because anyone can come to it. */
-  function fields(stop) {
-    return '<form class="rform" novalidate data-stop="' + esc(stop.slug) + '">' +
+  /* One form, two errands. Register and Workshop ask a student for exactly the
+     same six things; only the button and the one open question differ, so those
+     are arguments rather than a second copy of the form — the comment under
+     reg__fields already warns that two spellings of one form is two forms to
+     keep in step. data-kind rides along so the acknowledgement can name which
+     errand was sent without re-reading the URL. */
+  function fields(stop, kind) {
+    var ws = kind === 'workshop';
+    return '<form class="rform" novalidate data-stop="' + esc(stop.slug) + '"' +
+      ' data-kind="' + (ws ? 'workshop' : 'register') + '">' +
       '<label class="field"><span>FULL NAME</span>' +
         '<input name="name" autocomplete="name" required></label>' +
       '<label class="field"><span>EMAIL</span>' +
@@ -40,13 +48,17 @@
         '<input name="school" value="' + esc(stop.school) + '"></label>' +
       '<label class="field"><span>YEAR AND PROGRAMME</span>' +
         '<input name="year" placeholder="e.g. 3rd year, B.Arch"></label>' +
-      '<label class="field field--wide"><span>WHAT ARE YOU BRINGING?</span>' +
-        '<textarea name="project" placeholder="A project and an idea of where it is ' +
-        'stuck. Optional."></textarea></label>' +
+      '<label class="field field--wide"><span>' +
+        (ws ? 'WHAT DO YOU WANT TO WORK ON?' : 'WHAT ARE YOU BRINGING?') + '</span>' +
+        '<textarea name="project" placeholder="' + (ws
+          ? 'The thing you would put on a bench for two hours. Optional.'
+          : 'A project and an idea of where it is stuck. Optional.') +
+        '"></textarea></label>' +
       '<label class="check field--wide"><input type="checkbox" name="updates">' +
         '<span>Email me if this date moves. Half the calendar is still being agreed.</span>' +
         '</label>' +
-      '<div class="field--wide"><button class="send" type="submit">REGISTER</button>' +
+      '<div class="field--wide"><button class="send" type="submit">' +
+        (ws ? 'REGISTER FOR THE WORKSHOP' : 'REGISTER') + '</button>' +
         '<p class="sent" hidden></p></div>' +
       '</form>';
   }
@@ -61,27 +73,38 @@
       var bill = T.speakersFor(s);
       return '<article class="rcard" id="stop-' + esc(s.slug) + '">' +
         '<div class="rcard__top"><p class="rcard__date">' + esc(numDate(s.date)) + '</p></div>' +
-        '<div class="rcard__foot">' +
-          /* The chapter alone. "USA COLLEGE TOUR 2026" sat above every campus
-             name on every card — eleven repetitions of the thing the band
-             already says, pushing the one piece of information the line
-             actually carries out to the right of it. A stop with no chapter
-             gets no line rather than an empty one. */
-          (s.chapter ? '<p class="rcard__eyebrow">' + esc(s.chapter) + '</p>' : '') +
+        /* Where it is, as one block: the campus and the room it happens in are
+           one answer, so they sit tight together and the card's spacing treats
+           them as a single group. */
+        '<div class="rcard__where">' +
           '<h3 class="rcard__name">' + esc(s.school) + '</h3>' +
           (s.venue ? '<p class="rcard__venue">' + esc(s.venue) + '</p>' : '') +
-          /* The bill for this campus, under its name. The speaker grid below
-             is the whole tour's bill; this line is the only place the page
-             says who is actually standing in THIS room. A stop with nobody
-             assigned yet gets no line rather than an empty one. */
-          (bill.length
-            ? '<p class="rcard__bill">' + 'Speakers: ' + esc(bill.map(function (sp) { return sp.name; }).join(', ')) + '</p>'
-            : '') +
         '</div>' +
+          /* Chapter and bill, one line. The chapter used to sit above the
+             campus as its own eyebrow, which split the card into four loose
+             bands and put the host body further from the speakers it hosts
+             than from the date. Both of these say who is behind THIS evening —
+             the grid below is the whole tour's bill — so they read as one line
+             with a rule between them, and the name and its venue close up into
+             the single block they always were. Either half can be missing: a
+             stop with no chapter, or none assigned yet, drops its half and the
+             separator with it rather than leaving a dangling bar. */
+          (function () {
+            var meta = [];
+            if (s.chapter) meta.push(esc(s.chapter));
+            if (bill.length) {
+              meta.push('Speakers: ' +
+                esc(bill.map(function (sp) { return sp.name; }).join(', ')));
+            }
+            return meta.length
+              ? '<p class="rcard__bill">' +
+                  meta.join('<span class="rcard__sep">|</span>') + '</p>'
+              : '';
+          }()) +
         '<div class="rcard__actions">' +
           '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
             'REGISTER</a>' +
-          '<a class="rcard__go rcard__go--workshop" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">' +
+          '<a class="rcard__go rcard__go--workshop" href="workshop.html?stop=' + encodeURIComponent(s.slug) + '">' +
             'WORKSHOP REGISTRATION</a>' + 
         '</div>' +
         /** 
@@ -112,9 +135,11 @@
       var stop = T.bySlug(form.dataset.stop);
       var out = form.querySelector('.sent');
       out.hidden = false;
+      var ws = form.dataset.kind === 'workshop';
       out.textContent = 'Not submitted — this form has no endpoint behind it yet. ' +
-        'Registration for ' + (stop ? T.stopName(stop) : 'this stop') +
-        ' opens once the date is confirmed.';
+        (ws ? 'Workshop places for ' : 'Registration for ') +
+        (stop ? T.stopName(stop) : 'this stop') +
+        (ws ? ' open once the date is confirmed.' : ' opens once the date is confirmed.');
     });
   }
 
@@ -302,7 +327,7 @@
           return '<div class="workshop__row">' +
             '<div><h3>' + esc(s.school) + '</h3>' +
               '<p>' + esc(s.exhibitionName || 'Workshop') + '</p></div>' +
-            '<a class="workshop__register" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">REGISTER</a>' +
+            '<a class="workshop__register" href="workshop.html?stop=' + encodeURIComponent(s.slug) + '">REGISTER</a>' +
           '</div>';
         }).join('') +
       '</div>';
@@ -332,33 +357,63 @@
      chapter's group chat needs. With no slug — or one that does not match
      anything, which is what a stale link looks like — the page falls back to
      the same card grid the schedule uses, so the link still lands somewhere. */
-  function register(root) {
+  /* The campus, with its chapter stepped back. stopName() stays the plain-text
+     join — it feeds document.title and the submit acknowledgement, where markup
+     would show up as literal angle brackets — so the marked-up spelling is
+     built here rather than by changing what stopName returns. */
+  function stopHeading(stop) {
+    return esc(stop.school) +
+      (stop.chapter ? ' <span class="reg__chapter">' + esc(stop.chapter) + '</span>' : '');
+  }
+
+  function signup(root, kind) {
     if (!root) return;
+    var ws = kind === 'workshop';
     var slug = new URLSearchParams(location.search).get('stop');
     var stop = slug ? T.bySlug(slug) : null;
 
     /* There is no standalone registration page any more — the schedule IS the
-       registration list. This file survives only as the per-stop form a card
+       registration list. These files survive only as the per-stop form a card
        links at; reached without a stop, or with one that no longer exists,
-       it hands you back to the schedule rather than inventing a second list. */
+       they hand you back to the schedule rather than inventing a second list. */
     if (!stop) { location.replace('index.html#schedule'); return; }
 
     var name = T.stopName(stop);
-    document.title = 'Register · ' + name + ' — HP USA College Tour 2026';
+    document.title = (ws ? 'Workshop' : 'Register') + ' · ' + name +
+      ' — HP USA College Tour 2026';
     root.innerHTML =
-      '<h2>' + esc(name) + '</h2>' +
+      '<h2>' + stopHeading(stop) + '</h2>' +
       '<div class="reg">' +
         '<div class="reg__meta">' +
           '<div class="reg__line"><b>SCHOOL</b><span>' + esc(stop.school) + '</span></div>' +
           '<div class="reg__line"><b>CHAPTER</b><span>' + esc(stop.chapter || '—') + '</span></div>' +
           '<div class="reg__line"><b>DATE</b><span>' + esc(stop.date) + '</span></div>' +
+          /* The session, as another row of the same panel. It was a kicker
+             beside the h2 for a moment; in the panel it sits with the school,
+             the chapter and the date — the four facts about this evening, read
+             the same way, instead of one of them being set apart as a
+             subtitle. The name and the blurb are already on the stop: they
+             were written for the schedule card and commented out of it, and
+             this is the page they describe. A stop with neither gets no row
+             rather than an empty one. */
+          (ws && (stop.exhibitionName || stop.exhibitionDescription)
+            ? '<div class="reg__line reg__line--ws"><b>WORKSHOP</b><span>' +
+                esc(stop.exhibitionName || 'Workshop') +
+                (stop.exhibitionDescription
+                  ? '<span class="reg__wsnote">' + esc(stop.exhibitionDescription) + '</span>'
+                  : '') +
+              '</span></div>'
+            : '') +
         '</div>' +
         /* the same fields the cards open, from the same function — two spellings
            of one form is two forms to keep in step */
-        '<div class="reg__fields">' + fields(stop) + '</div>' +
+        '<div class="reg__fields">' + fields(stop, kind) + '</div>' +
       '</div>';
     wireSubmit(root);
   }
+
+  function register(root) { signup(root, 'register'); }
+  function workshop(root) { signup(root, 'workshop'); }
 
   /* ---------- the corridor, on a sub-page ----------
      The index flies down the corridor and freezes it; a sub-page has no hero to
@@ -654,6 +709,6 @@
   global.PAGES = {
     cards: cards, gallery: gallery, speakers: speakers, workshops: workshops, hype: hype,
     nav: nav, backdrop: backdrop,
-    register: register, reveal: reveal, footer: footer
+    register: register, workshop: workshop, reveal: reveal, footer: footer
   };
 })(window);

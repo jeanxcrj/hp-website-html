@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workshop — HP USA College Tour 2026</title>
+<meta name="description" content="Register for the workshop at a stop on the HP USA College Tour 2026.">
+<link rel="icon" href="hp-logo.png">
+<link rel="preconnect" href="https://use.typekit.net" crossorigin>
+<link rel="stylesheet" href="https://use.typekit.net/yxt3aqw.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<canvas id="field" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <a class="brand" href="index.html"><img src="hp-lockup.svg" alt="HP USA College Tour 2026"></a>
+  <nav class="nav">
+    <a href="index.html#about">ABOUT</a>
+    <a href="index.html#schedule">SCHEDULE</a>
+    <a href="index.html#speakers">SPEAKERS</a>
+    <a class="host" href="index.html#schedule">REGISTER</a>
+  </nav>
+</header>
+
+<main class="page">
+  <div class="page__in">
+    <!-- The workshop twin of register.html, addressed as workshop.html?stop=<slug>.
+         Same shell, same form, same frozen corridor behind it: the two are one
+         page with a kind, built by PAGES.workshop rather than PAGES.register, so
+         the wording is the only thing that differs and there is no second layout
+         to keep in step. The schedule's WORKSHOP REGISTRATION links land here;
+         with no slug, or a stale one, it hands back to the schedule. -->
+    <div class="blk" id="reg"></div>
+  </div>
+
+  <footer id="foot"></footer>
+</main>
+
+<script src="field.js"></script>
+<script src="tour.js"></script>
+<script src="pages.js"></script>
+<script>
+  PAGES.workshop(document.getElementById('reg'));
+  PAGES.backdrop(document.getElementById('field'));
+  PAGES.nav(document.querySelector('.bar'));
+  PAGES.footer(document.getElementById('foot'));
+  PAGES.reveal();
+</script>
+</body>
+</html>
