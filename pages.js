@@ -81,6 +81,8 @@
         '<div class="rcard__actions">' +
           '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
             'REGISTER</a>' +
+          '<a class="rcard__go rcard__go--workshop" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">' +
+            'WORKSHOP REGISTRATION</a>' + 
         '</div>' +
         /** 
         '<div class="rcard__workshop">' +
@@ -92,8 +94,6 @@
                   : '') +
               '</div>'
             : '') +
-          '<a class="rcard__go rcard__go--workshop" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">' +
-            'WORKSHOP REGISTRATION</a>' +
         '</div>' + */
         '</article>';
     }).join('');
