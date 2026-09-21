@@ -443,8 +443,20 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    grid-auto-rows:1fr;align-items:stretch;
   gap:clamp(30px,3.6vw,56px) clamp(30px,3.4vw,52px);
   margin-top:clamp(34px,4.5vw,58px)}
+/* Four groups, and the space between them is the card's own. The date, the
+   campus with its room, the bill, and the two buttons are four answers to four
+   questions; spacing them with fixed margins meant the leftover height piled up
+   in whichever gap happened to carry the auto. space-between hands that height
+   to all three gaps instead, so a short card breathes evenly rather than
+   collapsing at the top and gaping at the bottom.
+
+   The gap is the floor, not the spacing. Cards in a row stretch to the tallest,
+   so the tallest one has no leftover to distribute and space-between alone
+   would butt its four groups together; this keeps them apart whatever the row
+   does to the height. */
 .rcard{
   position:relative;display:flex;flex-direction:column;
+  justify-content:space-between;gap:clamp(14px,1.6vw,22px);
   min-height:clamp(232px,20vw,286px);
   background:var(--paper);border:var(--bd) solid var(--blue);
   padding:clamp(18px,2vw,26px);
@@ -452,15 +464,15 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 .rcard__top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .rcard__date{margin:0;font-family:var(--mono);font-weight:500;color:var(--blue);
   font-size:clamp(19px,1.95vw,28px);line-height:1;letter-spacing:-.02em;word-spacing:-.3em}
-/* Pushes the name to the floor of the plate however tall the card ends up. The
-   right padding is not optical: it is the corridor the breakouts live in, so a
-   long name wraps before it reaches them instead of running underneath. */
-.rcard__foot{margin-top:auto}
-.rcard__eyebrow{margin:0 0 9px;font-family:var(--mono);font-size:9.5px;
-  letter-spacing:.075em;word-spacing:-.25em;font-weight:500;color:var(--slate)}
+/* The corridor the breakouts live in: not optical, it is why a long name wraps
+   before it reaches them instead of running underneath. */
 .rcard__name{margin:0;font-family:var(--mono);font-weight:500;color:var(--blue);
   font-size:clamp(21px,2.25vw,32px);line-height:1.04;letter-spacing:-.035em;word-spacing:-.3em}
-.rcard__venue{margin:9px 0 0;font-family:var(--text);font-size:21px;
+/* 3px, not 9. The venue is the second half of "where", so it belongs to the
+   campus above it rather than floating between it and the bill. At 9px, with
+   the venue's own 1.4 line-height on top, the pair read as two separate lines
+   that happened to land near each other. */
+.rcard__venue{margin:3px 0 0;font-family:var(--text);font-size:21px;
    line-height:1.4;color:var(--blue)}
 .rcard__workshop{margin-top:18px;padding:14px;border:var(--bd) solid var(--blue);
    background:var(--paper)}
@@ -474,8 +486,13 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 /* Who is actually standing in THIS room. The speaker grid further down is the
    whole tour's bill; without this line the card cannot say that Cornell and
    CMU are not the same evening. */
-.rcard__bill{margin:10px 0 0;font-family:var(--text);font-weight:400;font-size:12px;
+.rcard__bill{margin:0;font-family:var(--text);font-weight:400;font-size:12px;
   line-height:1.5;color:var(--slate)}
+/* The rule between the chapter and the bill. Thinned to 40% so it separates
+   without reading as a third item on a line that only has two, and spaced with
+   padding rather than spaces in the string so the gap does not collapse or
+   wrap away from the bar. */
+.rcard__sep{padding:0 .5em;opacity:.4}
 
 
 /* The card is a plate and the link sits on it. This was two extruded slabs
@@ -489,7 +506,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   padding:11px 17px;transition:background .18s ease,color .18s ease;
   border:var(--bd) solid var(--blue);
 }
-.rcard__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(16px,1.9vw,24px)}
+.rcard__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:0}
 .rcard__actions .rcard__go{margin-top:0}
 .rcard__go--workshop{background:var(--paper);color:var(--blue)}
 .rcard__go--workshop:hover{background:var(--blue);color:#fff}
@@ -499,6 +516,23 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    One page per stop, addressed by slug. Everything on it — the school, the
    chapter, the date, the caveat on the date — is read out of tour.js, so the
    twelve pages cannot disagree with the schedule they came from. */
+/* The chapter is part of the campus's name, not a line of its own, so it stays
+   in the h2 and steps back in colour instead of in size or weight — to the
+   grey the swatch already gives everything subordinate, which is what the
+   labels in the panel below use too. */
+.reg__chapter{color:var(--slate)}
+
+/* The workshop row. The other three rows are a label and a short value on one
+   line; this one carries a sentence under its value, so it is the only row
+   that has to align its label to the top rather than let flex centre it
+   against two lines of blurb. The value column is capped at a measure so the
+   sentence wraps into a block the width of a value rather than running the
+   whole panel and leaving the label alone on the far left. */
+.reg__line--ws{align-items:start}
+.reg__line--ws > span{display:block;max-width:38ch}
+.reg__wsnote{display:block;margin-top:5px;font-size:12px;line-height:1.5;
+  color:var(--slate)}
+
 .reg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:clamp(26px,4vw,64px);margin-top:clamp(30px,4.5vw,54px);max-width:1180px;align-items:start}
 .reg__meta{border:var(--bd) solid var(--blue);padding:clamp(18px,2.2vw,28px)}
@@ -507,11 +541,17 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    multi-column form; here there is only the one column to break out of. */
 .rform{display:grid;grid-template-columns:minmax(0,1fr)}
 .field--wide{grid-column:1/-1}
-.reg__line{display:flex;justify-content:space-between;gap:18px;padding:11px 0;
+/* A two-column grid, not space-between. Pushed apart, every value ended on the
+   panel's right edge and started wherever its own length put it — four ragged
+   left edges down the column. The label column is a fixed width rather than
+   auto because each row is its own grid: auto would size to that row's own
+   label and the four would not line up. */
+.reg__line{display:grid;grid-template-columns:clamp(78px,8.4vw,104px) minmax(0,1fr);
+  gap:18px;padding:11px 0;
   font-family:var(--text);font-size:13.5px;color:var(--ink)}
 .reg__line + .reg__line{border-top:1px solid rgba(2,74,216,.18)}
 .reg__line b{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.03em;word-spacing:-.2em;color:var(--slate)}
-.reg__line span{text-align:right}
+.reg__line span{text-align:left}
 .field{display:block;margin-bottom:clamp(14px,1.8vw,20px)}
 .field > span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.0525em;word-spacing:-.2em;
   font-weight:500;margin-bottom:7px;color:var(--slate)}
@@ -674,7 +714,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    registered, so this switches itself off the moment the kit is fixed. */
 .no-medium h1,.no-medium h2,
 .no-medium .rcard__name,.no-medium .spk__name,
-.no-medium .rcard__date,.no-medium .rcard__eyebrow,
+.no-medium .rcard__date,
 .no-medium .nav a,.no-medium .host,
 .no-medium .rcard__go,
 .no-medium .spk__photo span,
