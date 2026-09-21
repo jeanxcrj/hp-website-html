@@ -70,6 +70,20 @@
           (s.chapter ? '<p class="rcard__eyebrow">' + esc(s.chapter) + '</p>' : '') +
           '<h3 class="rcard__name">' + esc(s.school) + '</h3>' +
           (s.venue ? '<p class="rcard__venue">' + esc(s.venue) + '</p>' : '') +
+          /* The bill for this campus, under its name. The speaker grid below
+             is the whole tour's bill; this line is the only place the page
+             says who is actually standing in THIS room. A stop with nobody
+             assigned yet gets no line rather than an empty one. */
+          (bill.length
+            ? '<p class="rcard__bill">' + 'Speakers: ' + esc(bill.map(function (sp) { return sp.name; }).join(', ')) + '</p>'
+            : '') +
+        '</div>' +
+        '<div class="rcard__actions">' +
+          '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
+            'REGISTER</a>' +
+        '</div>' +
+        /** 
+        '<div class="rcard__workshop">' +
           (s.exhibitionName
             ? '<div class="rcard__exhibition">' +
                 '<p class="rcard__exhibition-name">' + esc(s.exhibitionName) + '</p>' +
@@ -78,20 +92,9 @@
                   : '') +
               '</div>'
             : '') +
-          /* The bill for this campus, under its name. The speaker grid below
-             is the whole tour's bill; this line is the only place the page
-             says who is actually standing in THIS room. A stop with nobody
-             assigned yet gets no line rather than an empty one. */
-          (bill.length
-            ? '<p class="rcard__bill">' + esc(bill.map(function (sp) { return sp.name; }).join(', ')) + '</p>'
-            : '') +
-        '</div>' +
-        '<div class="rcard__actions">' +
-          '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
-            'REGISTER</a>' +
           '<a class="rcard__go rcard__go--workshop" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">' +
             'WORKSHOP REGISTRATION</a>' +
-        '</div>' +
+        '</div>' + */
         '</article>';
     }).join('');
 

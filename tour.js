@@ -40,30 +40,30 @@
       note: 'Confirmed — Milstein Auditorium and the Milstein dome.' },
 
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
-      date: 'Oct 18', status: 'set', venue: "venue name", speakers: [3, 5],
+      date: 'Oct 18', status: 'set', venue: "Venue name", speakers: [3, 5],
       exhibitionName: 'Open Practice',
       exhibitionDescription: 'Projects that show how experimentation can move between design, technology, and culture.',
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
-      date: 'Oct 23–24', status: 'set', venue: "venue name", speakers: [3, 4],
+      date: 'Oct 23–24', status: 'set', venue: "Venue name", speakers: [3, 4],
       exhibitionName: 'Making Visible',
       exhibitionDescription: 'A showcase of work that turns research, process, and making into public form.', note: null },
 
     { slug: 'cmu', school: 'Carnegie Mellon University', chapter: null,
-      date: 'Oct 28', status: 'target', venue: "venue name", speakers: [5],
+      date: 'Oct 28', status: 'target', venue: "Venue name", speakers: [5],
       exhibitionName: 'Systems in Motion',
       exhibitionDescription: 'A look at the people and prototypes reshaping how built environments work.',
       note: 'Targeting Oct 28 — AIAS with ACM.' },
 
     { slug: 'nyu-tech', school: 'New York University', chapter: 'Tech',
-      date: 'Oct 30', status: 'set', venue: "venue name", speakers: [4, 5],
+      date: 'Oct 30', status: 'set', venue: "Venue name", speakers: [4, 5],
       exhibitionName: 'Next Signals',
       exhibitionDescription: 'Emerging ideas at the intersection of creative practice, technology, and everyday life.',
       note: '12pm to 6pm.' },
 
     { slug: 'harvard-recompute', school: 'Harvard University', chapter: 'Recompute',
-      date: 'Oct 31', status: 'set', venue: "venue name", speakers: [3],
+      date: 'Oct 31', status: 'set', venue: "Venue name", speakers: [3],
       exhibitionName: 'Recompute',
       exhibitionDescription: 'A collection of projects that question familiar systems and propose more responsive futures.',
       note: 'Lecture hall reserved; the gallery space is still being found.' },
@@ -76,7 +76,7 @@
       note: 'EMPAC, on hold with the dean.' },
 
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
-      date: 'Nov 1 / Nov 7', status: 'target', venue: "venue name", speakers: [5],
+      date: 'Nov 1 / Nov 7', status: 'target', venue: "Venue name", speakers: [5],
       exhibitionName: 'Ideas in Public',
       exhibitionDescription: 'A student-led exhibition about turning ambitious ideas into shared experiences.',
       note: 'A weekend date, Nov 1 or Nov 7 — TBD.' }
