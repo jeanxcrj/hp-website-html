@@ -38,9 +38,16 @@
    than measured, which is what lets the plate be a single calc instead of a
    layout that has to settle before anything can be sized off it. */
 :root{
-  --plate-ar:3;
+  --plate-ar:2.2;
   --spon-h:69px;
-  --plate-h:min(calc(45vh - var(--spon-h)),calc(52vw / 1.78));
+  /* The second term is the width ceiling turned back into a height: the plate
+     is never to exceed 52vw, so its height is never to exceed 52vw over its own
+     ratio. That divisor was written as the literal 1.78 back when the ratio was
+     1.78, which held only while the two matched — when --plate-ar went to 3 the
+     ratio moved and the divisor did not, so the ceiling silently became 52vw
+     * 3 / 1.78, or 88vw, and the plate grew to fill almost the whole frame.
+     Reading --plate-ar here is what the literal was standing in for. */
+  --plate-h:min(calc(45vh - var(--spon-h)),calc(52vw / var(--plate-ar)));
   /* both the plate and the strip read this, so they cannot drift apart */
   --card-w:calc(var(--plate-h) * var(--plate-ar));
 }
@@ -94,7 +101,11 @@
   align-self:flex-end;display:block}
 .card__eyebrow{
   margin:auto 0 clamp(9px,1vw,14px);font-family:var(--mono);font-weight:500;
-  font-size:24px;letter-spacing:.0;word-spacing:0;
+  /* Ceiling, not rule, for the same reason as h1: 24px flat put this
+     21-character line within 8px of a phone plate's inner edge, with nothing
+     left over. The tracking is deliberate and stays at zero — spelled 0 rather
+     than .0, which parses the same but reads as a typo. */
+  font-size:clamp(11px,1.667vw,24px);letter-spacing:0;word-spacing:0;
   color:var(--slate);
 }
 /* Sized off the plate, not off the viewport: EXPLORING is the longest word and
@@ -102,8 +113,14 @@
    whatever the card's inner width allows at a 0.6em mono advance. */
 h1{
   margin:0;
-  /* font-size:clamp(15px,calc(var(--plate-h) * .105),48px);*/
-  font-size:64px;
+  /* 64px is the ceiling, not the rule. Pinned flat it was 64px at every width,
+     and a phone's plate is 310px across: EMPOWERING alone wants 384 of them, so
+     the title ran out of the card and took the document with it — 408px of
+     scroll width against a 390px viewport, the whole page sliding sideways.
+     3.472vw is exactly 50 at 1440. 64 was set against a plate that ran almost
+     the full frame; on the narrower plate it is the whole card, and the title
+     stops being type on a poster and becomes the poster. */
+  font-size:clamp(20px,3.472vw,50px);
   line-height:1;
   letter-spacing:-.025em;
 }
@@ -597,7 +614,15 @@ h1{
     wrapFade: 0.16,
     /* dissolve at the frame border instead of being clipped by it */
     borderFade: 0.38,
-    fov: 70, vpX: 0.37, vpY: 0.58,
+    /* Left and low, as it was — nudged right. 0.37 put the convergence under
+       the card's left third; 0.44 walks it toward the middle of the plate so
+       more of the fan clears the box's bottom edge, without giving up the
+       long diagonal into the lower left that the composition is built on.
+       Tried 0.64 and 0.80 first: both read as a different picture rather than
+       the same one shifted, and past 0.75 the slabs pile into the right border
+       instead of flying past it. The REGISTER slab reads this same point (see
+       slab.set below), so it stays in perspective on its own. */
+    fov: 70, vpX: 0.44, vpY: 0.58,
     col: '#024AD8', bg: '#ffffff', wash: 0, washCol: '#ffffff', washR: 0.88, washSoft: 2.8,
     /* 760 originally, then 560, now this. The corridor should read as a flight
        you are inside of rather than one you are being fired down — and it is
