@@ -345,6 +345,25 @@ h1{
      goes back to being a floor: the pair still clears 45% of the window. */
   .card{width:min(100%,460px);height:auto;min-height:calc(45vh - var(--spon-h));
     padding-bottom:80px}
+  /* The base rule sizes the title at 3.472vw with a 20px floor. That floor was
+     set to stop the 64px flat size overflowing a phone, and it did — but below
+     about 580px the vw term is under it, so every phone got the same 20px
+     regardless of how much plate it had. On a 390 the line had 314px of inner
+     card and was using 207 of it.
+
+     Sized off the viewport again here, steeper, and capped: the plate stops
+     growing at 460px wide, so a vw that keeps climbing past that would run the
+     title into the padding. 6.8vw reaches the 33px ceiling at 486px, which is
+     where the plate itself stops. */
+  /* This belongs here, not in site.css. It lived there as
+     `@media (max-width:720px){.about__body{columns:1}}`, and never once
+     applied: this <style> block is loaded after site.css, the selectors are
+     the same weight, and a media query adds no specificity — so the columns:2
+     above simply won at every width. Two columns of forty characters is worse
+     than one of eighty, and on a phone it was two of twenty. */
+  .about__body{columns:1}
+  h1{font-size:min(6.8vw,33px)}
+  .card__eyebrow{font-size:clamp(11px,3.4vw,15px)}
   /* must be .hero, not main: the base rule is a class, and a class outranks an
      element selector, so `main{...}` here silently lost and never applied */
   .hero{padding-left:var(--edge)}
