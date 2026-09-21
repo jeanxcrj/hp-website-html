@@ -69,6 +69,15 @@
              gets no line rather than an empty one. */
           (s.chapter ? '<p class="rcard__eyebrow">' + esc(s.chapter) + '</p>' : '') +
           '<h3 class="rcard__name">' + esc(s.school) + '</h3>' +
+          (s.venue ? '<p class="rcard__venue">' + esc(s.venue) + '</p>' : '') +
+          (s.exhibitionName
+            ? '<div class="rcard__exhibition">' +
+                '<p class="rcard__exhibition-name">' + esc(s.exhibitionName) + '</p>' +
+                (s.exhibitionDescription
+                  ? '<p class="rcard__exhibition-description">' + esc(s.exhibitionDescription) + '</p>'
+                  : '') +
+              '</div>'
+            : '') +
           /* The bill for this campus, under its name. The speaker grid below
              is the whole tour's bill; this line is the only place the page
              says who is actually standing in THIS room. A stop with nobody
@@ -77,8 +86,12 @@
             ? '<p class="rcard__bill">' + esc(bill.map(function (sp) { return sp.name; }).join(', ')) + '</p>'
             : '') +
         '</div>' +
-        '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
-          'REGISTER</a>' +
+        '<div class="rcard__actions">' +
+          '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
+            'REGISTER</a>' +
+          '<a class="rcard__go rcard__go--workshop" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">' +
+            'WORKSHOP REGISTRATION</a>' +
+        '</div>' +
         '</article>';
     }).join('');
 
@@ -236,6 +249,7 @@
     if (!el) return;
     el.innerHTML = T.speakers.map(function (p) {
       var n = p.id < 10 ? '0' + p.id : '' + p.id;
+      var venues = T.stopsFor(p).map(function (stop) { return stop.venue; }).filter(Boolean);
       return '<article class="spk__card">' +
         '<div class="spk__photo' + (p.photo ? ' has-photo' : '') + '">' +
           (p.photo
@@ -256,6 +270,39 @@
         '</div>' +
         '</article>';
     }).join('');
+  }
+
+  /* ---------- workshops ---------- */
+  function workshops(el) {
+    if (!el) return;
+    var stops = T.stops.filter(function (s) { return !s.staging; });
+    el.innerHTML =
+      '<div class="workshop__speakers">' +
+        (T.workshopSpeakers || []).map(function (p) {
+          return '<article class="workshop__speaker">' +
+            '<div class="workshop__speaker-photo' + (p.photo ? ' has-photo' : '') + '">' +
+              (p.photo
+                ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '">' 
+                : '<span>WORKSHOP</span>') +
+            '</div>' +
+            '<div class="workshop__speaker-body">' +
+              '<h3>' + esc(p.name) + '</h3>' +
+              '<p class="workshop__speaker-role">' + esc(p.role || 'Workshop speaker') +
+                (p.company ? '<span> · ' + esc(p.company) + '</span>' : '') + '</p>' +
+              '<p>' + esc(p.bio) + '</p>' +
+            '</div>' +
+          '</article>';
+        }).join('') +
+      '</div>' +
+      '<div class="workshop__list">' +
+        stops.map(function (s) {
+          return '<div class="workshop__row">' +
+            '<div><h3>' + esc(s.school) + '</h3>' +
+              '<p>' + esc(s.exhibitionName || 'Workshop') + '</p></div>' +
+            '<a class="workshop__register" href="register.html?stop=' + encodeURIComponent(s.slug) + '&amp;type=workshop">REGISTER</a>' +
+          '</div>';
+        }).join('') +
+      '</div>';
   }
 
   /* The planning sheet writes dates as "Oct 18–19"; the cards want them numeric,
@@ -602,7 +649,7 @@
   }
 
   global.PAGES = {
-    cards: cards, gallery: gallery, speakers: speakers, hype: hype,
+    cards: cards, gallery: gallery, speakers: speakers, workshops: workshops, hype: hype,
     nav: nav, backdrop: backdrop,
     register: register, reveal: reveal, footer: footer
   };

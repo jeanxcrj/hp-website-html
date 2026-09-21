@@ -34,35 +34,51 @@
 
   var STOPS = [
     { slug: 'cornell-aias', school: 'Cornell University', chapter: 'AIAS',
-      date: 'Oct 17', status: 'set', speakers: [1, 4],
+      date: 'Oct 17', status: 'set', venue: 'Milstein Auditorium', speakers: [4],
+      exhibitionName: 'Material Futures',
+      exhibitionDescription: 'A gathering of speculative materials, spatial ideas, and new ways to build.' ,
       note: 'Confirmed — Milstein Auditorium and the Milstein dome.' },
 
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
-      date: 'Oct 18', status: 'set', speakers: [2, 3, 5],
+      date: 'Oct 18', status: 'set', venue: "venue name", speakers: [3, 5],
+      exhibitionName: 'Open Practice',
+      exhibitionDescription: 'Projects that show how experimentation can move between design, technology, and culture.',
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
-      date: 'Oct 23–24', status: 'set', speakers: [3, 4], note: null },
+      date: 'Oct 23–24', status: 'set', venue: "venue name", speakers: [3, 4],
+      exhibitionName: 'Making Visible',
+      exhibitionDescription: 'A showcase of work that turns research, process, and making into public form.', note: null },
 
     { slug: 'cmu', school: 'Carnegie Mellon University', chapter: null,
-      date: 'Oct 28', status: 'target', speakers: [1, 2, 5],
+      date: 'Oct 28', status: 'target', venue: "venue name", speakers: [5],
+      exhibitionName: 'Systems in Motion',
+      exhibitionDescription: 'A look at the people and prototypes reshaping how built environments work.',
       note: 'Targeting Oct 28 — AIAS with ACM.' },
 
     { slug: 'nyu-tech', school: 'New York University', chapter: 'Tech',
-      date: 'Oct 30', status: 'set', speakers: [4, 5],
+      date: 'Oct 30', status: 'set', venue: "venue name", speakers: [4, 5],
+      exhibitionName: 'Next Signals',
+      exhibitionDescription: 'Emerging ideas at the intersection of creative practice, technology, and everyday life.',
       note: '12pm to 6pm.' },
 
     { slug: 'harvard-recompute', school: 'Harvard University', chapter: 'Recompute',
-      date: 'Oct 31', status: 'set', speakers: [1, 3],
+      date: 'Oct 31', status: 'set', venue: "venue name", speakers: [3],
+      exhibitionName: 'Recompute',
+      exhibitionDescription: 'A collection of projects that question familiar systems and propose more responsive futures.',
       note: 'Lecture hall reserved; the gallery space is still being found.' },
 
     { slug: 'rpi-soa', school: 'Rensselaer Polytechnic Institute',
       chapter: 'School of Architecture',
-      date: 'Nov 3', status: 'target', speakers: [2, 4],
+      date: 'Nov 3', status: 'target', venue: 'EMPAC', speakers: [4],
+      exhibitionName: 'Prototype / Perform',
+      exhibitionDescription: 'Experiments in architecture, media, and performance developed through iterative making.',
       note: 'EMPAC, on hold with the dean.' },
 
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
-      date: 'Nov 1 / Nov 7', status: 'target', speakers: [5, 1],
+      date: 'Nov 1 / Nov 7', status: 'target', venue: "venue name", speakers: [5],
+      exhibitionName: 'Ideas in Public',
+      exhibitionDescription: 'A student-led exhibition about turning ambitious ideas into shared experiences.',
       note: 'A weekend date, Nov 1 or Nov 7 — TBD.' }
   ];
 
@@ -76,16 +92,21 @@
      Which campuses each of them takes is held on the STOPS side rather than
      here: one list, read in both directions by speakersFor() and stopsFor(). */
   var SPEAKERS = [
-    { id: 1, name: 'Mariana Cabugueira', role: null, company: '[MC] Studio',
-      bio: null, photo: 'photos/mariana-cabugueira.jpg' },
-    { id: 2, name: 'Greg Demchek', role: null, company: 'Bentley Labs',
-      bio: null, photo: 'photos/greg-demchek.jpg' },
     { id: 3, name: 'Andy Christoforou', role: null, company: 'KPF',
       bio: null, photo: 'photos/andy-christoforou.jpg' },
     { id: 4, name: 'Show It Better', role: null, company: '816K followers',
       bio: null, photo: 'photos/show-it-better.jpg' },
     { id: 5, name: 'Learn Upstairs', role: null, company: '700K followers',
       bio: null, photo: 'photos/learn-upstairs.jpg' }
+  ];
+
+  var WORKSHOP_SPEAKERS = [
+    { name: 'Greg Demchek', role: 'Workshop speaker', company: 'Bentley Labs',
+      bio: 'A practical session on turning complex ideas into clear, compelling work.',
+      photo: 'photos/greg-demchek.jpg' },
+    { name: 'Jessie Huang', role: 'Workshop speaker', company: "D5",
+      bio: 'A hands-on session for exploring new tools, workflows, and creative possibilities.',
+      photo: "photos/jessie-huang.jpeg" }
   ];
 
   /* Photographs, keyed to the school they were taken at. Empty until the tour
@@ -162,7 +183,8 @@
   }
 
   global.TOUR = {
-    stops: STOPS, speakers: SPEAKERS, photos: PHOTOS, hype: HYPE,
+    stops: STOPS, speakers: SPEAKERS, workshopSpeakers: WORKSHOP_SPEAKERS,
+    photos: PHOTOS, hype: HYPE,
     stopName: stopName, bySlug: bySlug, byId: byId,
     speakersFor: speakersFor, stopsFor: stopsFor, bySchool: bySchool
   };

@@ -375,7 +375,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    and it reads
    as one row or it reads as a ragged grid. It steps down by breakpoint instead
    of by whatever happens to fit. */
-.spk{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
+.spk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
   gap:clamp(12px,1.4vw,20px);margin-top:clamp(30px,4.5vw,54px)}
 /* Its own white ground. While these sat inside a bordered plate the plate was
    the background; without one the corridor comes straight through the card and
@@ -393,6 +393,8 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 .spk__photo span{font-family:var(--mono);font-size:10px;letter-spacing:.0375em;word-spacing:-.3em;font-weight:500;color:var(--slate)}
 .spk__body{padding:clamp(14px,1.6vw,20px);display:flex;flex-direction:column;gap:9px;flex:1}
 .spk__name{font-size:16px;letter-spacing:-.02em;margin:0}
+.spk__venue{font-family:var(--micro);font-weight:500;font-size:13.5px;line-height:1.4;
+   margin:0;color:var(--slate)}
 .spk__role{font-family:var(--micro);font-weight:500;font-size:13.5px;line-height:1.4;
   margin:0;color:var(--slate)}
 .spk__bio{font-family:var(--text);font-size:13.5px;line-height:1.6;margin:0;color:var(--ink);flex:1}
@@ -400,6 +402,30 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    is missing without opening tour.js. */
 .tbc{opacity:.42}
 .spk__dot{opacity:.42}
+
+.workshop__speakers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+   gap:clamp(16px,2vw,28px);margin-top:clamp(30px,4.5vw,54px)}
+.workshop__speaker{display:flex;background:var(--paper);border:var(--bd) solid var(--blue)}
+.workshop__speaker-photo{position:relative;flex:0 0 36%;aspect-ratio:4/5;display:flex;
+   align-items:flex-end;padding:10px;background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
+.workshop__speaker-photo.has-photo{background:var(--paper)}
+.workshop__speaker-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.workshop__speaker-photo span{font-family:var(--mono);font-size:10px;color:var(--slate)}
+.workshop__speaker-body{padding:clamp(14px,1.6vw,20px)}
+.workshop__speaker-body h3,.workshop__speaker-body p{margin:0}
+.workshop__speaker-body h3{font-family:var(--mono);font-size:16px;color:var(--blue)}
+.workshop__speaker-body p{margin-top:9px;font-family:var(--text);font-size:13px;line-height:1.5;color:var(--slate)}
+.workshop__speaker-body .workshop__speaker-role{font-family:var(--micro);font-weight:500}
+.workshop__list{margin-top:clamp(28px,4vw,48px);padding:0 clamp(16px,2.2vw,28px);
+   background:var(--paper);border:var(--bd) solid var(--blue)}
+.workshop__row{display:flex;align-items:center;justify-content:space-between;gap:20px;
+   padding:18px 0;border-bottom:1px solid rgba(2,74,216,.28)}
+.workshop__row h3,.workshop__row p{margin:0}
+.workshop__row h3{font-family:var(--mono);font-size:17px;color:var(--blue)}
+.workshop__row p{margin-top:5px;font-family:var(--text);font-size:13px;color:var(--slate)}
+.workshop__register{flex:none;color:var(--blue);border:var(--bd) solid var(--blue);padding:11px 15px;
+   font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;text-decoration:none}
+.workshop__register:hover{background:var(--blue);color:#fff}
 
 /* ---------- the campus cards ----------
    The plate is the poster's: a heavy rule, the date up top in the machine voice,
@@ -414,7 +440,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    two margins the About plate does, at every width, which they only do if the
    count is fixed and the grid is free to fill. */
 .rcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  align-items:start;
+   grid-auto-rows:1fr;align-items:stretch;
   gap:clamp(30px,3.6vw,56px) clamp(30px,3.4vw,52px);
   margin-top:clamp(34px,4.5vw,58px)}
 .rcard{
@@ -434,6 +460,13 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   letter-spacing:.075em;word-spacing:-.25em;font-weight:500;color:var(--slate)}
 .rcard__name{margin:0;font-family:var(--mono);font-weight:500;color:var(--blue);
   font-size:clamp(21px,2.25vw,32px);line-height:1.04;letter-spacing:-.035em;word-spacing:-.3em}
+.rcard__venue{margin:9px 0 0;font-family:var(--text);font-size:13px;
+   line-height:1.4;color:var(--blue)}
+.rcard__exhibition{margin-top:13px}
+.rcard__exhibition-name{margin:0;font-family:var(--mono);font-size:12px;
+   line-height:1.25;font-weight:500;color:var(--ink)}
+.rcard__exhibition-description{margin:4px 0 0;font-family:var(--text);font-size:12px;
+   line-height:1.45;color:var(--slate)}
 
 /* Who is actually standing in THIS room. The speaker grid further down is the
    whole tour's bill; without this line the card cannot say that Cornell and
@@ -453,6 +486,10 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   padding:11px 17px;transition:background .18s ease,color .18s ease;
   border:var(--bd) solid var(--blue);
 }
+.rcard__actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(16px,1.9vw,24px)}
+.rcard__actions .rcard__go{margin-top:0}
+.rcard__go--workshop{background:var(--paper);color:var(--blue)}
+.rcard__go--workshop:hover{background:var(--blue);color:#fff}
 .rcard__go:hover{background:var(--paper);color:var(--blue)}
 
 /* ---------- registration ----------
@@ -668,6 +705,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 @media (max-width:860px){
   .reg{grid-template-columns:minmax(0,1fr)}
   .spk{grid-template-columns:repeat(2,minmax(0,1fr))}
+   .workshop__speakers{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:720px){
   :root{--bar-h:52px}

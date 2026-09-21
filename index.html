@@ -489,6 +489,11 @@ h1{
       <div class="spk rise" id="speakers-grid"></div>
     </div>
 
+    <div class="blk blk--bare" id="workshops">
+      <h2 class="rise">Workshops</h2>
+      <div class="rise" id="workshops-content"></div>
+    </div>
+
     <div class="blk blk--bare" id="gallery">
       <h2 class="rise">Photo gallery</h2>
       <div class="rise" id="gal"></div>
@@ -779,6 +784,7 @@ h1{
      observer pointed at an empty div never fires. */
   PAGES.cards(document.getElementById('sked'));
   PAGES.speakers(document.getElementById('speakers-grid'));
+  PAGES.workshops(document.getElementById('workshops-content'));
   PAGES.gallery(document.getElementById('gal'));
   PAGES.hype(document.getElementById('hypestrip'));
   PAGES.nav(document.querySelector('.bar'));
