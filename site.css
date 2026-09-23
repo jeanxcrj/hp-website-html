@@ -375,7 +375,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    and it reads
    as one row or it reads as a ragged grid. It steps down by breakpoint instead
    of by whatever happens to fit. */
-.spk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+.spk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
   gap:clamp(12px,1.4vw,20px);margin-top:clamp(30px,4.5vw,54px)}
 /* Its own white ground. While these sat inside a bordered plate the plate was
    the background; without one the corridor comes straight through the card and

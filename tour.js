@@ -97,17 +97,17 @@
 
   var SPEAKERS = [
     { id: 1, name: 'Andreas Palfinger', role: 'Designer', company: 'Zaha Hadid Architects',
-      bio: null, photo: null },
+      bio: null, photo: 'photos/andreas-palfinger.jpg' },
     { id: 2, name: 'Fred Liu', role: null, company: null,
-      bio: null, photo: null },
+      bio: null, photo: 'photos/fred-liu.jpg' },
     { id: 3, name: 'Hena Yang', role: 'Cofounder', company: 'Inyo',
-      bio: null, photo: null },
+      bio: null, photo: 'photos/hena-yang.jpg' },
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
-      bio: null, photo: null },
+      bio: null, photo: 'photos/jangho-yun.jpg' },
     { id: 6, name: 'Remy Zee', role: 'Creator', company: '@remyzeee',
-      bio: null, photo: null },
+      bio: null, photo: 'photos/remy-zee.jpg' },
     { id: 5, name: 'Nino Ferrari-Mathis', role: null, company: '@ninosbuildings',
-      bio: null, photo: null }
+      bio: null, photo: 'photos/nino-ferrari-mathis.jpg' }
   ];
 
   /* The three partner workshops, one row each. `description` is a string or a

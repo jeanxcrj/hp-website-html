@@ -292,7 +292,7 @@
       return '<article class="spk__card">' +
         '<div class="spk__photo' + (p.photo ? ' has-photo' : '') + '">' +
           (p.photo
-            ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name || '') + '">'
+            ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name || '') + '" loading="lazy">'
             /* the slot number is the label on an EMPTY plate; over a portrait it
                is a watermark on someone's face */
             : '<span>PHOTO ' + n + '</span>') +
