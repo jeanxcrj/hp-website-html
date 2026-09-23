@@ -83,6 +83,14 @@
        for the hairline's depth ramp, and two keys of the same name in one
        options object silently overwrite each other. */
     borderFade: 0,
+    /* wrapFade mixes a bar toward the background colour but keeps it opaque,
+       so it ends as a solid of background colour still hiding the bars behind
+       it — and when it wraps they reappear in one frame. wrapFadeOut (0..1)
+       takes the bar's opacity to zero over that last fraction of the near-end
+       ramp, where it is already almost background colour, so the bars behind
+       come up through it instead of popping in. Keep it small: any earlier and
+       the still-coloured bar reads as glass. 0 disables. */
+    wrapFadeOut: 0,
     /* Chips: flat accent rectangles in a darker ink, living entirely in SCREEN
        space. They have no depth at all — no projection, no perspective scaling,
        no depth fade, and they do not ride the field's travel. But they are NOT
@@ -450,16 +458,19 @@
     var drawn = 0;
 
     for (i = 0; i < bars.length; i++) {
+      ctx.globalAlpha = 1;   // wrapFadeOut sets it per bar; chips and words stay opaque
       if (chipAt && chipAt[i]) paintChips(chipAt[i]);
       if (wordAt && wordAt[i]) paintWords(wordAt[i]);
       b = bars[i];
       if (b.z0 < 24) continue;
 
+      var hw = b.hw, hh = b.hh;
+
       // project the 8 corners once
       var vis = false;
       for (var s = 0; s < 8; s++) {
-        var cx = b.x + (s & 1 ? b.hw : -b.hw);
-        var cy = b.y + (s & 2 ? b.hh : -b.hh);
+        var cx = b.x + (s & 1 ? hw : -hw);
+        var cy = b.y + (s & 2 ? hh : -hh);
         var cz = b.z + (s & 4 ? b.hd : -b.hd);
         if (cz < 24) { vis = false; break; }
         var sc = f / cz;
@@ -477,6 +488,11 @@
 
       /* One factor for the whole bar, driven by z0 — the coordinate that
          actually wraps — so a bar dissolves as a unit rather than shearing. */
+      var oNear = 1, oFar = 1;
+      if (P.wrapFadeOut > 0 && wf > 0) {
+        var wo = (b.z0 - P.zNear) / (wf * P.wrapFadeOut);
+        if (wo < 1) oNear = oFar = wo <= 0 ? 0 : wo * wo * (3 - 2 * wo);
+      }
       if (wf > 0) {
         var w = Math.min((b.z0 - P.zNear) / wf, (P.zFar - b.z0) / wf);
         if (w <= 0) continue;
@@ -495,9 +511,12 @@
       if (ef > 0) {
         aNear *= edgeAt(nx, ny);
         aFar *= edgeAt(fx, fy);
-        if (aNear <= 0.002 && aFar <= 0.002) continue;
+        // with wrapFadeOut a background-coloured bar still covers what is
+        // behind it until its opacity is gone, so keep drawing it till then
+        if (aNear <= 0.002 && aFar <= 0.002 && !(P.wrapFadeOut > 0 && oNear > 0.002)) continue;
       }
 
+      ctx.globalAlpha = oNear;
       var behindN = bgAt(nx, ny), behindF = bgAt(fx, fy);
 
       if (P.faces) {
@@ -556,6 +575,7 @@
       }
     }
     // nearer than every bar, so nothing was left to paint them in front of
+    ctx.globalAlpha = 1;
     if (wordAt && wordAt[bars.length]) paintWords(wordAt[bars.length]);
     this.drawn = drawn;
   };
