@@ -114,56 +114,26 @@ One stroke weight for every box — `--bd`. It was 3px on plates, 2px on cards a
 
 | role | face |
 | --- | --- |
-| title | Forma DJR Mono, Medium |
-| subhead | HP Forma DJR Office, Medium |
-| body | HP Forma DJR Office, Regular |
-| caption | Forma DJR Mono, Regular |
-| disclaimer | Forma DJR Mono, Medium |
+| title | IBM Plex Mono, Medium |
+| subhead | Inter, Medium |
+| body | Inter, Regular |
+| caption | IBM Plex Mono, Regular |
+| disclaimer | IBM Plex Mono, Medium |
+
+Both are open-source (SIL Open Font License) and load from Google Fonts via the
+`<link>` in each page's head, so there is nothing to license and no font files in
+the repo. They replaced Forma DJR Mono (Adobe Fonts kit plus a self-hosted Medium)
+and HP Forma DJR Office (self-hosted), which were served from desktop files with
+no web licence.
 
 A disclaimer is the machine-side of the page — a condition on an offer, in the
 same voice as the dates, the labels and the buttons — so `.note` is mono, and its
 measure is computed from `--body-w` and `--body-gap` rather than guessed in `ch`,
 so it wraps on exactly the line the column above it wraps on.
 
-Typekit kit `yxt3aqw` serves **one** family — `forma-djr-mono`, in four faces
-(`n4`, `i4`, `n7`, `i7`). Two consequences, one fixed and one not:
-
-- **Medium.** There is no `n5` in the kit, so every `font-weight:500` on the site
-  was resolving *down* to Regular — CSS font matching tries weights at or below
-  the target before going up. Figma shows Medium because the desktop Adobe Fonts
-  sync has it; the web kit does not. `fonts/forma-djr-mono-500.woff2` now adds
-  the weight to the same family name and the browser merges it with the kit's.
-- **Micro and Text are still missing from the kit**, and that used to mean every
-  subhead and all body copy rendered in the platform grotesque — the page read as
-  Forma on the labels and San Francisco everywhere else, which is two type
-  systems rather than one. **HP Forma DJR Office** now fills both roles from
-  `fonts/hp-forma-office-{400,500}.woff2`: Medium for subheads and notes, Regular
-  for body copy. It leads `--micro` and `--text`, so adding Micro and Text to the
-  kit no longer changes anything by itself — reorder those two stacks in
-  `site.css` if the cuts are wanted apart again.
-
-Both weights matter. With only the Medium registered, `font-weight:400` copy
-matches up to it and every paragraph runs a weight too heavy, which is the whole
-reason a text cut and a display cut are different fonts.
-
-`.no-medium` in `site.css` is a synthetic weight — it thickens stems optically
-with `-webkit-text-stroke` when no real 500 is available. It is dormant now, and
-deliberately kept: `pages.js` asks `document.fonts` whether a 500-weight
-`forma-djr-mono` face is actually registered and only applies it when none is, so
-if the self-hosted file is ever pulled the site still reads medium instead of
-silently dropping to Regular.
-
-> **Licensing.** `fonts/` came from a befonts.com download whose licence reads
-> *Personal Use Only*, and the files are the `-Testing` trial cuts. That is fine
-> for working out the design locally and is **not** fine on an HP-branded site.
-> Before this ships, either add Medium to kit `yxt3aqw` — at which point the
-> probe switches the self-hosted face off on its own and `fonts/` can be deleted
-> — or buy a webfont licence from DJR. The same applies to the Micro and Text
-> families when they are added.
->
-> `fonts/hp-forma-office-*.woff2` are converted from the desktop TTFs of HP's own
-> brand face. On an HP site that is the right typeface and the wrong delivery:
-> confirm with HP that the webfont is licensed for this domain before it ships.
+`.no-medium` in `site.css` is a synthetic weight for the mono, applied by
+`pages.js` only if no 500-weight IBM Plex Mono face registers — dormant whenever
+Google Fonts loads.
 
 ## Colour
 

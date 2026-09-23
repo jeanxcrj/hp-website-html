@@ -480,7 +480,7 @@
       words: words, wordCount: 0, wordSize: 108, wordSpread: 1.12,
       wordMinPx: 12, wordMaxPx: 230,
       wordFill: '#ffffff', wordStroke: '#024AD8', wordEdge: 1,
-      wordFamily: '"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace',
+      wordFamily: '"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace',
       speed: 0, parallax: 0, ease: 0.05
     });
     field.speedScale = 0;
@@ -708,17 +708,17 @@
     [].forEach.call(blocks, function (b) { io.observe(b); });
   }
 
-  /* Does the loaded kit actually carry a Medium? A font-weight:500 declaration
+  /* Did the Medium actually load? A font-weight:500 declaration
      silently resolves to Regular when it does not, which looks like a CSS bug
      and is not one — so ask the font set directly rather than trusting the
-     declaration. document.fonts is populated from the kit's @font-face rules,
+     declaration. document.fonts is populated from the Google Fonts @font-face rules,
      which have parsed by the time this script runs; the fonts.ready re-probe is
      for the case where they have not. */
   function weightProbe() {
     var has = false;
     try {
       global.document.fonts.forEach(function (f) {
-        if (f.family.replace(/["']/g, '') === 'forma-djr-mono' && String(f.weight) === '500') has = true;
+        if (f.family.replace(/["']/g, '') === 'IBM Plex Mono' && String(f.weight) === '500') has = true;
       });
     } catch (e) { has = false; }
     document.documentElement.classList.toggle('no-medium', !has);
