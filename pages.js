@@ -123,6 +123,40 @@
 
   }
 
+  /* ---------- schedule, as a list ----------
+     The same stops as the cards, one row each: date, campus and room, the
+     exhibition, the host chapter, and the way in. For scanning the whole tour
+     at a glance; the cards stay the default because they carry the bill. */
+  function listDate(str) {
+    var m = String(str).match(/^([A-Za-z]{3})[a-z]*\s*(.*)$/);
+    if (!m || !MON[m[1]]) return str;
+    return m[1].toUpperCase() + ' ' + m[2].split(/[–-]/).map(function (d) {
+      d = d.trim(); return d ? pad(parseInt(d, 10)) : '';
+    }).filter(Boolean).join('–');
+  }
+  function list(el) {
+    if (!el) return;
+    var open = T.stops.filter(function (s) { return !s.staging; });
+    el.classList.add('slist');
+    el.innerHTML = open.map(function (s) {
+      return '<div class="slist__row">' +
+        '<p class="slist__date">' + esc(listDate(s.date)) + '</p>' +
+        '<div class="slist__where">' +
+          '<h3 class="slist__name">' + esc(s.school) + '</h3>' +
+          (s.venue ? '<p class="slist__venue">' + esc(s.venue) + '</p>' : '') +
+        '</div>' +
+        '<p class="slist__what">' + (s.exhibitionName ? esc(s.exhibitionName) : '') + '</p>' +
+        '<p class="slist__tag">' + (s.chapter ? '<span>' + esc(s.chapter) + '</span>' : '') + '</p>' +
+        /* the cards' own buttons, so the two views share one way in */
+        '<div class="slist__go">' +
+          '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">REGISTER</a>' +
+          '<a class="rcard__go rcard__go--workshop" href="workshop.html?stop=' + encodeURIComponent(s.slug) + '">' +
+            'WORKSHOP REGISTRATION</a>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
   /* No endpoint exists yet. Saying so beats a success state for something that
      did not happen — point the form at a real action and delete this. Delegated
      from a container rather than bound per form, because the cards build their
@@ -731,7 +765,7 @@
   }
 
   global.PAGES = {
-    cards: cards, gallery: gallery, speakers: speakers, workshops: workshops, hype: hype,
+    cards: cards, list: list, gallery: gallery, speakers: speakers, workshops: workshops, hype: hype,
     nav: nav, backdrop: backdrop,
     register: register, workshop: workshop, reveal: reveal, footer: footer
   };
