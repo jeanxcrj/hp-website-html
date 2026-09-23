@@ -217,61 +217,95 @@ h1{
    corridor is the plates rather than a surface. */
 .night{position:relative;z-index:2;color:var(--ink);min-height:100vh}
 
-/* One paragraph flowing through two columns, not three blocks sitting beside
-   each other. Three columns turned a single continuous thought into what looked
-   like three unrelated notes; one column across the full plate is 150 characters
-   a line, which nobody reads. columns:2 is the middle: the text is one piece and
-   reads top-left to bottom-right, and max-width keeps the measure near 70
-   characters instead of letting it grow with the plate. */
-/* The two numbers are shared with .note below, which has to wrap on the same
-   line length the columns do — see there. */
-.blk{--body-w:1080px;--body-gap:clamp(28px,4vw,64px)}
-.about__body{columns:2;column-gap:var(--body-gap);
-  margin-top:clamp(26px,4vw,48px);max-width:var(--body-w)}
-/* multicol will strand a line at the foot of the first column without these */
-.about__body p{orphans:2;widows:2}
-/* Rag. The browser's default line breaker takes each line as far as it will go
-   and leaves whatever is left to the next one, which is what put a 3-word last
-   line under a 90-character paragraph here. `pretty` costs a few passes of
-   layout on a handful of paragraphs and evens the shape of the block out. */
-.about__body p,.note{text-wrap:pretty}
-/* Over the corridor each column needed its own plate and border or the
-   hairlines ran straight through 13px copy. The sheet is opaque, so nothing
-   runs behind them now and the type sits directly on it. */
-/* About is five paragraphs rather than the one it was written for, so they
-   need a gap between them: set-solid, the column is a wall of text and the
-   break between "what the sponsors bring" and "what the students bring" is
-   invisible. A blank line rather than an indent — the plate's type is flush
-   left everywhere else. */
-.about__body p{margin:0 0 1.15em;font-weight:400;font-size:15px;line-height:1.7;color:var(--slate)}
-.about__body p:last-child{margin-bottom:0}
-/* A paragraph split across the column break loses the shape of its own
-   argument, and these are short enough that keeping each one whole costs
-   nothing. */
-.about__body p{break-inside:avoid}
-/* The quiz's own title, inside the sentence. Blue and medium rather than
-   italic: the body face is the fallback grotesque until the kit carries Text,
-   and a synthetic italic in a paragraph reads as a rendering fault. */
-.about__body .about__partners{color:var(--blue)}
-/* Bold in the About copy is the 500 cut in the text's own colour. The face
-   ships no 700, so plain <strong> would be a smeared synthetic bold. */
-.about__body strong,.note strong{font-weight:500;color:inherit}
-.about__body em{font-style:normal;font-weight:500;color:var(--blue)}
+/* ---------- about: facts + copy ----------
+   The tour at a glance on the left — five facts in pale plates, the small print
+   pinned to the foot — and the copy on the right, led by the one sentence that
+   says what the tour is at statement size. */
+.about{display:grid;grid-template-columns:minmax(240px,31%) minmax(0,1fr);
+  grid-template-areas:"title title" "side main";
+  column-gap:clamp(40px,5.5vw,88px);row-gap:clamp(28px,3vw,44px)}
+.about__title{grid-area:title;
+  font-family:var(--mono);font-weight:500;
+  font-size:clamp(30px,3.06vw,44px);line-height:1.05;letter-spacing:-.01em;
+  color:var(--blue);max-width:none;
+}
+.about__side{grid-area:side;display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+/* One pale panel, ruled inside the way the workshop plates are: 1px of the
+   blue at partial strength, inset from the panel's edges. */
+.about__facts{margin:0;display:flex;flex-direction:column;background:#e9edf8;
+  padding:0 clamp(20px,2.2vw,32px)}
+.about__facts div{padding:clamp(18px,1.9vw,26px) 0;border-bottom:1px solid rgba(2,74,216,.28)}
+.about__facts div:last-child{border-bottom:0}
+.about__facts dt{font-family:var(--mono);font-weight:500;text-transform:uppercase;
+  font-size:11.5px;letter-spacing:.1em;color:var(--slate)}
+.about__facts dd{margin:10px 0 0;font-family:var(--text);font-weight:400;
+  font-size:clamp(16px,1.35vw,19.5px);line-height:1.35;color:var(--blue)}
+.about__main{grid-area:main;min-width:0;display:flex;flex-direction:column;gap:clamp(18px,1.8vw,26px)}
+.about__main p{margin:0;font-family:var(--text);font-weight:400;
+  font-size:clamp(15px,1.2vw,17.5px);line-height:1.7;color:#6e6e71}
+.about__main .about__lead{font-size:clamp(19px,1.7vw,24.5px);line-height:1.5;letter-spacing:-.01em;
+  color:var(--ink);margin-bottom:clamp(4px,.6vw,10px)}
+.about__lead strong{font-weight:400;color:var(--blue)}
+.about__main .about__close{color:var(--ink)}
+/* Rag: `pretty` evens the shape of each paragraph instead of leaving a word or
+   two alone on the last line. */
+.about__main p,.about__facts dd,.note{text-wrap:pretty}
+/* Bold in the About copy is the 500 cut, a shade darker than the grey. The
+   face ships no 700, so plain <strong> would be a smeared synthetic bold. */
+.about__main p:not(.about__lead) strong{font-weight:500;color:#55555a}
+.note strong{font-weight:500;color:inherit}
+
+/* ---------- schedule: grid / list ---------- */
+.sked-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.sked-view{display:flex;border:1px solid var(--blue)}
+.sked-view button{appearance:none;border:0;margin:0;cursor:pointer;background:var(--paper);
+  color:var(--blue);font-family:var(--mono);font-weight:500;font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;padding:8px 14px}
+.sked-view button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.sked-view button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* the list sits the same distance under the heading as the cards (.rcards) */
+#sked-list{margin-top:clamp(34px,4.5vw,58px)}
+#sked[hidden],#sked-list[hidden]{display:none}
+/* One row per stop: date, campus and room, exhibition, chapter, the way in.
+   The column template is shared by every row so the columns line up. */
+/* A plate like every other on the page: the heavy blue border, the rows ruled
+   inside it in hairline grey. */
+.slist{--slist-x:clamp(16px,2.2vw,28px);border:var(--bd) solid var(--blue);background:var(--paper)}
+.slist__row:last-child::after{display:none}
+.slist__row{display:grid;
+  /* fixed tag column: each row is its own grid, so a content-sized column would
+     give every row different widths and the columns would wander */
+  grid-template-columns:minmax(80px,.6fr) minmax(0,2fr) minmax(0,1.5fr) 190px auto;
+  align-items:center;column-gap:clamp(16px,2vw,32px);position:relative;
+  padding:clamp(18px,1.8vw,26px) var(--slist-x);transition:background .15s ease}
+/* The rule between rows is the workshop plates' — 1px of the blue at partial
+   strength, inset from the plate's edges — drawn as its own line so the hover
+   fill can still run the full width of the row. */
+.slist__row::after{content:"";position:absolute;left:var(--slist-x);right:var(--slist-x);
+  bottom:0;border-bottom:1px solid rgba(2,74,216,.28)}
+.slist__row:hover{background:#eaeefb}
+.slist__row p,.slist__row h3{margin:0}
+.slist__date{font-family:var(--mono);font-weight:500;font-size:clamp(15px,1.3vw,19px);
+  letter-spacing:.02em;color:var(--blue);white-space:nowrap}
+.slist__name{font-family:var(--mono);font-weight:500;text-transform:uppercase;
+  font-size:clamp(15px,1.3vw,19px);line-height:1.25;letter-spacing:.02em;color:var(--ink)}
+.slist__venue{margin-top:4px!important;font-family:var(--text);font-size:14px;line-height:1.4;color:#6e6e71}
+.slist__what{font-family:var(--text);font-size:clamp(14px,1.15vw,16px);line-height:1.45;color:#6e6e71}
+.slist__tag{justify-self:center;text-align:center}
+.slist__tag span{display:inline-block;border:1px solid var(--slate);color:var(--slate);
+  font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:6px 10px;white-space:nowrap}
+.slist__go{justify-self:end;display:flex;gap:10px}
+.slist__go .rcard__go{margin-top:0;white-space:nowrap}
 
 /* ---------- the line under a plate ----------
    What qualifies whatever the plate just said. Slate, under the body size —
-   subordinate, and visibly so. It sits outside .about__body in the markup as
-   well, or the columns can strand it at the foot of the FIRST one, where it
-   reads as a footnote to half the section.
+   subordinate, and visibly so.
 
    Mono, not micro: a disclaimer is the machine-side of the page — a condition
    on an offer, in the same voice as the dates, the labels and the buttons —
-   and setting it in the body face makes it read as more prose, only smaller.
-
-   The measure is the COLUMN's, computed rather than guessed. It was 76ch of
-   micro, which lands about twenty pixels past where the column above it wraps:
-   close enough to look like a mistake rather than a different measure, since
-   the two blocks are flush left and the eye reads the right edge as one. */
+   and setting it in the body face makes it read as more prose, only smaller. */
+.blk{--body-w:1080px;--body-gap:clamp(28px,4vw,64px)}
 .note{
   margin:clamp(18px,2.2vw,28px) 0 0;
   font-family:var(--mono);font-weight:500;
@@ -284,6 +318,10 @@ h1{
   color:color-mix(in srgb,var(--slate) 78%,var(--paper));
   max-width:calc((min(var(--body-w),100%) - var(--body-gap)) / 2);
 }
+/* About's own disclaimer: small mono in a darker grey, at the side column's
+   measure, level with the copy's last line. */
+.about__note{margin:0;font-size:11px;line-height:1.65;letter-spacing:0;
+  color:#55555a;max-width:none;text-wrap:balance}
 
 /* ---------- asks ----------
    The two ways out of the last plate. Same box as a card's REGISTER at the
@@ -369,13 +407,16 @@ h1{
      growing at 460px wide, so a vw that keeps climbing past that would run the
      title into the padding. 6.8vw reaches the 33px ceiling at 486px, which is
      where the plate itself stops. */
-  /* This belongs here, not in site.css. It lived there as
-     `@media (max-width:720px){.about__body{columns:1}}`, and never once
-     applied: this <style> block is loaded after site.css, the selectors are
-     the same weight, and a media query adds no specificity — so the columns:2
-     above simply won at every width. Two columns of forty characters is worse
-     than one of eighty, and on a phone it was two of twenty. */
-  .about__body{columns:1}
+  /* The about split stacks here: two columns of forty characters is worse than
+     one of eighty. It belongs in this sheet, not site.css — this <style> loads
+     later at the same weight, so a site.css override would silently lose. */
+  .about{grid-template-columns:minmax(0,1fr);grid-template-areas:"title" "main" "side"}
+  .about__side{gap:24px}
+  .slist__row{grid-template-columns:auto minmax(0,1fr);grid-template-areas:
+      "date date" "where where" "what what" "tag tag" "go go";row-gap:8px;align-items:start}
+  .slist__date{grid-area:date}.slist__where{grid-area:where}.slist__what{grid-area:what}
+  .slist__tag{grid-area:tag;justify-self:start}
+  .slist__go{grid-area:go;justify-self:start;flex-wrap:wrap;margin-top:6px}
   h1{font-size:min(6.8vw,33px)}
   .card__eyebrow{font-size:clamp(11px,3.4vw,15px)}
   /* must be .hero, not main: the base rule is a class, and a class outranks an
@@ -458,51 +499,60 @@ h1{
          from a poster or a group chat is actually asking, and it was sitting
          under the corridor's whole descent. -->
     <div class="blk">
-      <h2 class="rise">About the tour</h2>
-      <div class="about__body rise">
-        <p>At a time of rapid transformation in how we learn, design, engineer, and create,
-        the <strong>HP USA College Tour</strong> brings together students, educators, technology partners,
-        and industry leaders to explore the future of innovation. Through a unique
-        combination of hands-on experiences and real-world insights, the tour showcases how
-        emerging technologies are reshaping creative and technical workflows across
-        industries.</p>
+      <div class="about rise">
+        <h2 class="about__title">About the Tour</h2>
 
-        <p>Each event will feature a dynamic mix of <strong>workshops, industry keynotes, student
-        showcases, technical demonstrations, and interactive activations</strong>, creating
-        opportunities for students to engage directly with the technologies and
-        professionals driving the future of work.</p>
+        <div class="about__side">
+          <!-- The count and the date range are filled from tour.js on load, so
+               they follow the schedule; the text here is the fallback. -->
+          <dl class="about__facts">
+            <div><dt>Stops</dt><dd id="about-stops">9 campuses</dd></div>
+            <div><dt>Dates</dt><dd id="about-dates">Oct 17 – Nov 14, 2026</dd></div>
+            <div><dt>Format</dt><dd>Workshops, keynotes, student showcases, demos and activations</dd></div>
+            <div><dt>Partners</dt><dd>HP, Intel, AMD, D5 Render, Bentley Systems, SOLIDWORKS</dd></div>
+            <div><dt>Cost</dt><dd>Free for students</dd></div>
+          </dl>
+          <p class="note about__note"><strong>Disclaimer:</strong> Participating speakers, technology
+          partners, software vendors, exhibitors, workshops, and activities may vary by
+          university and tour location.</p>
+        </div>
 
-        <p>Alongside HP, leading technology and software partners including <strong>Intel, AMD, D5
-        Render, Bentley Systems, and SOLIDWORKS</strong> will showcase the latest advancements
-        powering architecture, engineering, design, manufacturing, visualization, and
-        AI-driven workflows. Students will gain firsthand exposure to cutting-edge hardware
-        platforms, professional software tools, and industry best practices used by leading
-        organizations around the world.</p>
+        <div class="about__main">
+          <p class="about__lead">At a time of rapid transformation in how we learn, design, engineer, and create,
+          the <strong>HP USA&nbsp;College&nbsp;Tour</strong> brings together students, educators, technology
+          partners, and industry leaders to explore the future of innovation. Through a unique
+          combination of hands-on experiences and real-world insights, the tour showcases how
+          emerging technologies are reshaping creative and technical workflows across
+          industries.</p>
 
-        <p>Visitors will have the opportunity to network directly with professionals from HP
-        and participating partners. Whether exploring high-performance computing, real-time
-        visualization, design simulation, digital twins, engineering workflows, or
-        AI-assisted creation, attendees will gain valuable insight into the technologies
-        shaping their future careers.</p>
+          <p>Each event will feature a dynamic mix of <strong>workshops, industry keynotes, student
+          showcases, technical demonstrations, and interactive activations</strong>, creating
+          opportunities for students to engage directly with the technologies and
+          professionals driving the future of work.</p>
 
-        <p>On the student side, each school is curating its own vision for how these new
-        technologies are shaping the way we work. Whether architecture, engineering,
-        design, or tech clubs, each stop along the tour will add a new series of works to
-        the conversation.</p>
+          <p>Alongside HP, leading technology and software partners including <strong>Intel, AMD, D5
+          Render, Bentley Systems, and SOLIDWORKS</strong> will showcase the latest advancements
+          powering architecture, engineering, design, manufacturing, visualization, and
+          AI-driven workflows. Students will gain firsthand exposure to cutting-edge hardware
+          platforms, professional software tools, and industry best practices used by leading
+          organizations around the world.</p>
 
-        <p><strong>Join us for a full day of inspiration, learning, networking, workshops,
-        exhibitions, demonstrations, giveaways, and collaboration as we explore the future
-        of creation together.</strong></p>
+          <p>Visitors will have the opportunity to network directly with professionals from HP
+          and participating partners. Whether exploring high-performance computing, real-time
+          visualization, design simulation, digital twins, engineering workflows, or
+          AI-assisted creation, attendees will gain valuable insight into the technologies
+          shaping their future careers.</p>
 
-        <p class="about__partners"><strong>Featured Partners:</strong> HP, Intel, AMD, D5 Render, Bentley Systems,
-        SOLIDWORKS, and participating university organizations.</p>
+          <p>On the student side, each school is curating its own vision for how these new
+          technologies are shaping the way we work. Whether architecture, engineering,
+          design, or tech clubs, each stop along the tour will add a new series of works to
+          the conversation.</p>
+
+          <p class="about__close">Join us for a full day of inspiration, learning, networking, workshops,
+          exhibitions, demonstrations, giveaways, and collaboration as we explore the future
+          of creation together.</p>
+        </div>
       </div>
-      <!-- Outside .about__body on purpose: the body is columned, and a
-           disclaimer that can fall to the foot of the FIRST column reads as a
-           footnote to half the section. -->
-      <p class="note rise"><strong>Disclaimer:</strong> Participating speakers, technology
-      partners, software vendors, exhibitors, workshops, and activities may vary by
-      university and tour location.</p>
     </div>
 
     <!-- A band rather than a plate. Ink where everything above it is paper, and
@@ -539,10 +589,18 @@ h1{
     <!-- Drawn from tour.js rather than typed here, so a stop cannot appear on
          the schedule without a registration page behind it. -->
     <div class="blk blk--bare" id="schedule">
-      <h2 class="rise">Schedule</h2>
+      <div class="sked-head rise">
+        <h2>Schedule</h2>
+        <div class="sked-view" role="group" aria-label="Schedule view">
+          <button type="button" data-view="grid" aria-pressed="true">Grid</button>
+          <button type="button" data-view="list" aria-pressed="false">List</button>
+        </div>
+      </div>
       <!-- The schedule and the registration list were the same twelve rows
-           printed twice — one as a table, one as cards. One grid now. -->
+           printed twice — one as a table, one as cards. One set of stops now,
+           shown as a grid or a list. -->
       <div class="rise" id="sked"></div>
+      <div class="rise" id="sked-list" hidden></div>
     </div>
 
     <div class="blk blk--bare" id="speakers">
@@ -858,6 +916,48 @@ h1{
      speakers do not exist as markup until tour.js has been walked, and an
      observer pointed at an empty div never fires. */
   PAGES.cards(document.getElementById('sked'));
+  PAGES.list(document.getElementById('sked-list'));
+  /* About's facts follow the schedule: the number of stops, and the span from
+     the first dated stop to the last. Undated stops (TBD) count as stops but
+     cannot move the range. */
+  (function () {
+    var stops = TOUR.stops.filter(function (s) { return !s.staging; });
+    var n = document.getElementById('about-stops');
+    if (n) n.textContent = stops.length + ' campuses';
+    var M = { Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11 };
+    var days = [];
+    stops.forEach(function (s) {
+      var m = String(s.date).match(/^([A-Za-z]{3})[a-z]*\s+(\d+)(?:\s*[–-]\s*(\d+))?/);
+      if (!m || M[m[1]] === undefined) return;
+      days.push({ m: m[1], d: +m[2], k: M[m[1]] * 100 + +m[2] });
+      if (m[3]) days.push({ m: m[1], d: +m[3], k: M[m[1]] * 100 + +m[3] });
+    });
+    var d = document.getElementById('about-dates');
+    if (d && days.length) {
+      days.sort(function (a, b) { return a.k - b.k; });
+      var a = days[0], z = days[days.length - 1];
+      d.textContent = a.m + ' ' + a.d + ' – ' + z.m + ' ' + z.d + ', 2026';
+    }
+  }());
+  /* Grid / list switch for the schedule. The choice is remembered per browser
+     as a convenience; storage can be unavailable, so every access is guarded. */
+  (function () {
+    var grid = document.getElementById('sked'), lst = document.getElementById('sked-list');
+    var btns = document.querySelectorAll('.sked-view button');
+    function show(view) {
+      grid.hidden = view === 'list'; lst.hidden = view !== 'list';
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === view)); });
+    }
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        show(b.dataset.view);
+        try { localStorage.setItem('hp.skedView', b.dataset.view); } catch (e) {}
+      });
+    });
+    var saved = null;
+    try { saved = localStorage.getItem('hp.skedView'); } catch (e) {}
+    if (saved === 'list') show('list');
+  }());
   PAGES.speakers(document.getElementById('speakers-grid'));
   PAGES.workshops(document.getElementById('workshops-content'));
   PAGES.gallery(document.getElementById('gal'));
