@@ -251,6 +251,11 @@ h1{
 /* The quiz's own title, inside the sentence. Blue and medium rather than
    italic: the body face is the fallback grotesque until the kit carries Text,
    and a synthetic italic in a paragraph reads as a rendering fault. */
+.about__body .about__partners{color:var(--blue)}
+/* Bold in the About copy is the 500 cut in ink against the slate body. The
+   face ships no 700, so plain <strong> would be a smeared synthetic bold. */
+.about__body strong,.note strong{font-weight:500;color:var(--ink)}
+.about__body .about__partners strong{color:inherit}
 .about__body em{font-style:normal;font-weight:500;color:var(--blue)}
 
 /* ---------- the line under a plate ----------
@@ -312,6 +317,15 @@ h1{
   max-width:min(100%,1040px);margin-inline:auto}
 .hype__slot{position:relative;display:block;aspect-ratio:9/16;overflow:hidden;
   background:var(--paper);border:var(--bd) solid var(--blue);text-decoration:none}
+/* Instagram's player, cropped to the cut alone. The player is a 54px header,
+   a 4:5 media box with the 9:16 video centred in it, then the like bar and
+   comments. Scaling the frame to 144% of the plate makes the video exactly the
+   plate's width; shifting it up 54px and left 22% lines the video up with the
+   plate, and the plate's overflow cuts away everything else. The extra 1.5%
+   of scale hides the hairline of letterbox that rounding leaves at the edges. */
+.hype__slot--ig{background:#000}
+.hype__slot--ig iframe{position:absolute;border:0;width:144.44%;left:-22.22%;
+  top:calc(-54px - .75%);height:calc(102% + 330px)}
 .hype__slot video{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;display:block}
 /* the slot number labels an EMPTY plate, the same way the speaker slots do */
@@ -446,36 +460,49 @@ h1{
     <div class="blk">
       <h2 class="rise">About the tour</h2>
       <div class="about__body rise">
-        <p>At a time of major change in how we interact with technical tools, the HP USA
-        College Tour aims to bring companies and students together to explore what new
-        technologies mean for how we create. The event will feature a series of software
-        workshops, inspirational talks from industry leaders, student exhibitions,
-        technical demonstrations, and interactive activations.</p>
+        <p>At a time of rapid transformation in how we learn, design, engineer, and create,
+        the <strong>HP USA College Tour</strong> brings together students, educators, technology partners,
+        and industry leaders to explore the future of innovation. Through a unique
+        combination of hands-on experiences and real-world insights, the tour showcases how
+        emerging technologies are reshaping creative and technical workflows across
+        industries.</p>
 
-        <p>Brand sponsors will educate on the latest and greatest in hardware and
-        software, keeping students up to date with the best tools they can use to tackle
-        their work. Visitors can expect to meet industry Product Managers, Technical
-        Leads, Go-to-Market Managers, and Business Development Leaders available to
-        connect with students and educate on what&rsquo;s new.</p>
+        <p>Each event will feature a dynamic mix of <strong>workshops, industry keynotes, student
+        showcases, technical demonstrations, and interactive activations</strong>, creating
+        opportunities for students to engage directly with the technologies and
+        professionals driving the future of work.</p>
+
+        <p>Alongside HP, leading technology and software partners including <strong>Intel, AMD, D5
+        Render, Bentley Systems, and SOLIDWORKS</strong> will showcase the latest advancements
+        powering architecture, engineering, design, manufacturing, visualization, and
+        AI-driven workflows. Students will gain firsthand exposure to cutting-edge hardware
+        platforms, professional software tools, and industry best practices used by leading
+        organizations around the world.</p>
+
+        <p>Visitors will have the opportunity to network directly with professionals from HP
+        and participating partners. Whether exploring high-performance computing, real-time
+        visualization, design simulation, digital twins, engineering workflows, or
+        AI-assisted creation, attendees will gain valuable insight into the technologies
+        shaping their future careers.</p>
 
         <p>On the student side, each school is curating its own vision for how these new
         technologies are shaping the way we work. Whether architecture, engineering,
         design, or tech clubs, each stop along the tour will add a new series of works to
         the conversation.</p>
 
-        <p>The event will be split between two spaces: the gallery and the auditorium.
-        Each space will be open throughout the day to host various activities. We will
-        give away free merch, including HP mice, keyboards, stickers, t-shirts, and tote
-        bags.</p>
+        <p><strong>Join us for a full day of inspiration, learning, networking, workshops,
+        exhibitions, demonstrations, giveaways, and collaboration as we explore the future
+        of creation together.</strong></p>
 
-        <p>Join us for a full day of talks, workshops, exhibitions, demos, giveaways, and
-        more!</p>
+        <p class="about__partners"><strong>Featured Partners:</strong> HP, Intel, AMD, D5 Render, Bentley Systems,
+        SOLIDWORKS, and participating university organizations.</p>
       </div>
       <!-- Outside .about__body on purpose: the body is columned, and a
            disclaimer that can fall to the foot of the FIRST column reads as a
            footnote to half the section. -->
-      <p class="note rise">Disclaimer: speakers and company representatives will vary by
-      college.</p>
+      <p class="note rise"><strong>Disclaimer:</strong> Participating speakers, technology
+      partners, software vendors, exhibitors, workshops, and activities may vary by
+      university and tour location.</p>
     </div>
 
     <!-- A band rather than a plate. Ink where everything above it is paper, and
@@ -523,6 +550,7 @@ h1{
       <!-- Drawn from TOUR.speakers in tour.js, so a speaker's stops stay tied to
            the same slugs the schedule uses. -->
       <div class="spk rise" id="speakers-grid"></div>
+      <p class="note rise">Disclaimer: Speakers are subject to change.</p>
     </div>
 
     <div class="blk blk--bare" id="workshops">
@@ -631,6 +659,9 @@ h1{
        the ramp runs at both ends of the loop, so past ~0.3 it starts bleaching
        the near slabs, which are the ones carrying the colour */
     wrapFade: 0.16,
+    /* ...and fade the last, near-white stretch of that ramp out, so a slab
+       leaving at the camera end does not pop the bars behind it into view */
+    wrapFadeOut: 0.12,
     /* dissolve at the frame border instead of being clipped by it */
     borderFade: 0.38,
     /* Left and low, as it was — nudged right. 0.37 put the convergence under

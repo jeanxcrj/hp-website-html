@@ -211,7 +211,7 @@
         note.textContent = shots.length + (shots.length === 1 ? ' PHOTO' : ' PHOTOS');
         grid.innerHTML = shots.map(function (ph) {
           return '<div class="shot"><img src="' + esc(ph.src) + '" alt="' +
-            esc(ph.alt || ph.school || '') + '"></div>';
+            esc(ph.alt || ph.school || '') + '"><span class="shot__soon">Coming Soon</span></div>';
         }).join('');
         return;
       }
@@ -221,7 +221,9 @@
       note.textContent = (school ? school.toUpperCase() + ' — ' : '') +
         'PHOTOS COMING SOON';
       var tiles = '';
-      for (var i = 0; i < TILES; i++) tiles += '<div class="shot shot--empty"></div>';
+      for (var i = 0; i < TILES; i++) {
+        tiles += '<div class="shot shot--empty"><span class="shot__soon">Coming Soon</span></div>';
+      }
       grid.innerHTML = tiles;
     }
 
@@ -262,6 +264,15 @@
     el.classList.add('hype');
     el.innerHTML = (T.hype || []).map(function (v, i) {
       var n = i + 1;
+      /* No file of our own yet: Instagram's player, which does load for a
+         visitor who is not logged in. */
+      if (!v.src && v.ig) {
+        return '<div class="hype__slot hype__slot--ig">' +
+          '<iframe src="https://www.instagram.com/p/' + encodeURIComponent(v.ig) + '/embed/" ' +
+            'title="' + esc(v.title || 'Reel 0' + n) + '" loading="lazy" scrolling="no" ' +
+            'allowtransparency="true" allow="autoplay; encrypted-media; picture-in-picture"></iframe>' +
+          '</div>';
+      }
       return '<a class="hype__slot" href="' + esc(v.href || '#') + '"' +
         (v.href ? ' target="_blank" rel="noopener"' : '') + '>' +
         (v.src
@@ -288,41 +299,54 @@
         '</div>' +
         '<div class="spk__body">' +
           '<h3 class="spk__name">' + or(p.name, 'Speaker ' + n) + '</h3>' +
-          /* Role and company, always both. The role is null on every one of
-             these, so it draws as its own greyed slot rather than closing the
-             line up — the gap is the point, and it is one field to fill in
-             tour.js when the titles arrive. */
+          /* Role and company, always both. A missing one draws as its own
+             greyed slot rather than closing the line up — the gap is the point,
+             and it is one field to fill in tour.js when the titles arrive. */
           '<p class="spk__role">' + or(p.role, 'Role') +
             '<span class="spk__dot"> · </span>' + or(p.company, 'Company') + '</p>' +
-          '<p class="spk__bio">' + or(p.bio, 'Description to come — one short paragraph on what they work on and what they are bringing to the bench.') + '</p>' +
+          '<p class="spk__bio">' + or(p.bio, T.speakerBio) + '</p>' +
         '</div>' +
         '</article>';
     }).join('');
   }
 
-  /* ---------- workshops ---------- */
+  /* ---------- workshops ----------
+     One card per partner workshop, three across: the partner's logo on top,
+     then the company, the workshop and what it covers. The per-campus register list follows, unchanged. */
   function workshops(el) {
     if (!el) return;
     var stops = T.stops.filter(function (s) { return !s.staging; });
     el.innerHTML =
       '<div class="workshop__speakers">' +
-        (T.workshopSpeakers || []).map(function (p) {
+        (T.workshops || []).map(function (w) {
           return '<article class="workshop__speaker">' +
-            '<div class="workshop__speaker-photo' + (p.photo ? ' has-photo' : '') + '">' +
-              (p.photo
-                ? '<img src="' + esc(p.photo) + '" alt="' + esc(p.name) + '">' 
+            '<div class="workshop__logo">' +
+              (w.logo
+                ? '<img src="' + esc(w.logo) + '" alt="' + esc(w.company) + '">'
                 : '<span>WORKSHOP</span>') +
             '</div>' +
             '<div class="workshop__speaker-body">' +
-              '<h3>' + esc(p.name) + '</h3>' +
-              '<p class="workshop__speaker-role">' + esc(p.role || 'Workshop speaker') +
-                (p.company ? '<span> · ' + esc(p.company) + '</span>' : '') + '</p>' +
-              '<p>' + esc(p.bio) + '</p>' +
+              '<h3>' + or(w.company, 'Company') + '</h3>' +
+              '<p class="workshop__speaker-role">' + or(w.name, 'Workshop name') + '</p>' +
+              '<div class="workshop__copy">' +
+                (w.description
+                  ? [].concat(w.description).map(function (para) {
+                      return '<p class="workshop__desc">' + esc(para) + '</p>';
+                    }).join('')
+                  : '<p class="workshop__desc">' + or(null, T.workshopDesc) + '</p>') +
+                (w.note
+                  ? '<p class="workshop__desc"><strong>NOTE:</strong> ' + esc(w.note) + '</p>'
+                  : '') +
+              '</div>' +
             '</div>' +
           '</article>';
         }).join('') +
       '</div>' +
       '<div class="workshop__list">' +
+        '<div class="workshop__listhead">' +
+          '<h3>Register</h3>' +
+          '<p>Workshop places are limited at every stop. Find your school below.</p>' +
+        '</div>' +
         stops.map(function (s) {
           return '<div class="workshop__row">' +
             '<div><h3>' + esc(s.school) + '</h3>' +

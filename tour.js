@@ -8,9 +8,9 @@
 
    The list is the confirmed and in-negotiation columns of the planning sheet —
    the green and orange rows. The yellow ones (NYU UDAS, UPenn AIAS, MassArt,
-   Thomas Jefferson NOMAS and the RPI weekday date) are off the schedule until
-   they firm up, and the staging days were never public stops. CMU is held at
-   Oct 28 while Lori Claus looks into Tepper and Rangos.
+   Thomas Jefferson NOMAS) are off the schedule until they firm up, and the
+   staging days were never public stops. Venues and dates are HP's list of
+   Sep 23; Yale has a venue but no date, CMU a date but no venue.
 
    `status` is the colour coding off that sheet. It is kept as data but no
    longer rendered: CONFIRMED / TARGETING is how the tour is tracked internally,
@@ -26,7 +26,7 @@
 
    `speakers` is the bill for that campus, by SPEAKERS id. The tour asked for a
    line of names under each school and the real split is not decided yet, so
-   these are a shuffle of the five names we have rather than a promise — swap
+   these are a shuffle of the names we have rather than a promise — swap
    the ids as each campus is settled and both the card and the speaker grid
    follow. */
 (function (global) {
@@ -34,79 +34,100 @@
 
   var STOPS = [
     { slug: 'cornell-aias', school: 'Cornell University', chapter: 'AIAS',
-      date: 'Oct 17', status: 'set', venue: 'Milstein Auditorium', speakers: [4],
+      date: 'Oct 17', status: 'set', venue: 'Milstein Hall Dome', speakers: [1, 4],
       exhibitionName: 'Material Futures',
       exhibitionDescription: 'A gathering of speculative materials, spatial ideas, and new ways to build.' ,
-      note: 'Confirmed — Milstein Auditorium and the Milstein dome.' },
+      note: 'Confirmed — the Milstein dome.' },
 
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
-      date: 'Oct 18', status: 'set', venue: "Venue name", speakers: [3, 5],
+      date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [3, 5],
       exhibitionName: 'Open Practice',
       exhibitionDescription: 'Projects that show how experimentation can move between design, technology, and culture.',
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
-      date: 'Oct 23–24', status: 'set', venue: "Venue name", speakers: [3, 4],
+      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [1, 2],
       exhibitionName: 'Making Visible',
       exhibitionDescription: 'A showcase of work that turns research, process, and making into public form.', note: null },
 
-    { slug: 'cmu', school: 'Carnegie Mellon University', chapter: null,
-      date: 'Oct 28', status: 'target', venue: "Venue name", speakers: [5],
-      exhibitionName: 'Systems in Motion',
-      exhibitionDescription: 'A look at the people and prototypes reshaping how built environments work.',
-      note: 'Targeting Oct 28 — AIAS with ACM.' },
-
     { slug: 'nyu-tech', school: 'New York University', chapter: 'Tech',
-      date: 'Oct 30', status: 'set', venue: "Venue name", speakers: [4, 5],
+      date: 'Oct 30', status: 'set', venue: 'Leslie eLab', speakers: [4, 5],
       exhibitionName: 'Next Signals',
       exhibitionDescription: 'Emerging ideas at the intersection of creative practice, technology, and everyday life.',
       note: '12pm to 6pm.' },
 
     { slug: 'harvard-recompute', school: 'Harvard University', chapter: 'Recompute',
-      date: 'Oct 31', status: 'set', venue: "Venue name", speakers: [3],
+      date: 'Oct 31', status: 'set', venue: 'Northwest Science Building B100', speakers: [3, 2],
       exhibitionName: 'Recompute',
       exhibitionDescription: 'A collection of projects that question familiar systems and propose more responsive futures.',
-      note: 'Lecture hall reserved; the gallery space is still being found.' },
+      note: null },
 
     { slug: 'rpi-soa', school: 'Rensselaer Polytechnic Institute',
       chapter: 'School of Architecture',
-      date: 'Nov 3', status: 'target', venue: 'EMPAC', speakers: [4],
+      date: 'Nov 3', status: 'set', venue: 'EMPAC Building', speakers: [2, 4],
       exhibitionName: 'Prototype / Perform',
       exhibitionDescription: 'Experiments in architecture, media, and performance developed through iterative making.',
-      note: 'EMPAC, on hold with the dean.' },
+      note: null },
 
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
-      date: 'Nov 1 / Nov 7', status: 'target', venue: "Venue name", speakers: [5],
+      date: 'Nov 7', status: 'set', venue: 'Julis Romo Rabinowitz (JRR) Atrium', speakers: [5],
       exhibitionName: 'Ideas in Public',
       exhibitionDescription: 'A student-led exhibition about turning ambitious ideas into shared experiences.',
-      note: 'A weekend date, Nov 1 or Nov 7 — TBD.' }
+      note: null },
+
+    { slug: 'cmu', school: 'Carnegie Mellon University', chapter: null,
+      date: 'Nov 14', status: 'set', venue: 'Venue TBD', speakers: [2, 3],
+      exhibitionName: 'Systems in Motion',
+      exhibitionDescription: 'A look at the people and prototypes reshaping how built environments work.',
+      note: null },
+
+    /* No date yet. numDate() passes anything it cannot read as a month through
+       untouched, so 'TBD' prints as TBD on the card. */
+    { slug: 'yale', school: 'Yale University', chapter: null,
+      date: 'TBD', status: 'target', venue: 'CEID Building', speakers: [1, 3],
+      exhibitionName: 'Workshop',
+      exhibitionDescription: null,
+      note: 'Date TBD.' }
   ];
 
-  /* Names, companies and portraits lifted from the earlier HP USA Tour deck, so
-     these are the real bill rather than placeholders. `role` is still null on
-     every one: that file carried a name and an organisation and nothing else,
-     and a job title is not something to fill in on someone's behalf. The card
-     now draws the slot either way — a greyed ROLE line where the title belongs —
-     so filling one in here is the whole job.
+  /* Alphabetical by first name, so the grid implies no billing order — except
+     Remy Zee, who sits beside Jangho Yun by request. Roles and
+     bios still marked placeholder are stand-ins until the real copy arrives. */
+  var SPEAKER_BIO = 'Placeholder description. A short paragraph will go here on who this speaker is, the work they are known for, and the perspective they are bringing to the tour. Expect a look at their process, the tools they rely on, and what they think students should be paying attention to right now.';
 
-     Which campuses each of them takes is held on the STOPS side rather than
-     here: one list, read in both directions by speakersFor() and stopsFor(). */
   var SPEAKERS = [
-    { id: 3, name: 'Andy Christoforou', role: null, company: 'KPF',
-      bio: null, photo: 'photos/andy-christoforou.jpg' },
-    { id: 4, name: 'Show It Better', role: null, company: '816K followers',
-      bio: null, photo: 'photos/show-it-better.jpg' },
-    { id: 5, name: 'Learn Upstairs', role: null, company: '700K followers',
-      bio: null, photo: 'photos/learn-upstairs.jpg' }
+    { id: 1, name: 'Andreas Palfinger', role: 'Designer', company: 'Zaha Hadid Architects',
+      bio: null, photo: null },
+    { id: 2, name: 'Fred Liu', role: null, company: null,
+      bio: null, photo: null },
+    { id: 3, name: 'Hena Yang', role: 'Cofounder', company: 'Inyo',
+      bio: null, photo: null },
+    { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
+      bio: null, photo: null },
+    { id: 6, name: 'Remy Zee', role: 'Creator', company: '@remyzeee',
+      bio: null, photo: null },
+    { id: 5, name: 'Nino Ferrari-Mathis', role: null, company: '@ninosbuildings',
+      bio: null, photo: null }
   ];
 
-  var WORKSHOP_SPEAKERS = [
-    { name: 'Greg Demchek', role: 'Workshop speaker', company: 'Bentley Labs',
-      bio: 'A practical session on turning complex ideas into clear, compelling work.',
-      photo: 'photos/greg-demchek.jpg' },
-    { name: 'Jessie Huang', role: 'Workshop speaker', company: "D5",
-      bio: 'A hands-on session for exploring new tools, workflows, and creative possibilities.',
-      photo: "photos/jessie-huang.jpeg" }
+  /* The three partner workshops, one row each. `description` is a string or a
+     list of paragraphs; null falls back to the placeholder copy until the
+     partner sends theirs. `note` prints last, after a bold NOTE. */
+  var WORKSHOP_DESC = 'Placeholder description. This workshop is a hands-on session where students work directly with professional software on a real project brief, guided by the team that builds the tools. Expect a short introduction to the platform and where it fits in a modern design and engineering workflow, followed by a live demonstration and time at the workstations to try it yourself. Along the way the session covers practical techniques, common pitfalls, and the habits professionals use to move faster. Bring your questions and your own work. No prior experience is required, and every attendee leaves with resources to keep going.';
+
+  var WORKSHOPS = [
+    { company: 'Bentley Systems', logo: 'logos/bentley.png',
+      name: 'Workshop name', description: null, speakers: ['Greg Demchek'] },
+    { company: 'D5 Render', logo: 'logos/d5.png',
+      name: 'Workshop name', description: null, speakers: ['Jessie Huang'] },
+    { company: 'SOLIDWORKS', logo: 'logos/solidworks.png',
+      name: 'Design Smarter with SOLIDWORKS: Modeling, Simulation & AI',
+      description: [
+        'Think you\u2019re fast in SOLIDWORKS? Prove it. You\u2019ll model a component against the clock, then run a simulation to see how well it holds up.',
+        'Next, make it stronger with less material, using the same simulation and optimization workflow engineers use on the job. We\u2019ll finish with a look at new AI tools that help you explore more options and iterate faster.'
+      ],
+      note: 'The workshop is designed for students with prior experience in parametric CAD modeling.',
+      speakers: [] }
   ];
 
   /* Photographs, keyed to the school they were taken at. Empty until the tour
@@ -120,21 +141,15 @@
      filter groups on. */
   var PHOTOS = [];
 
-  /* Vertical cuts for the "Learn more about HP" strip. Three slots, in the order
-     they appear. `src` is an mp4 or webm sitting beside the site; until one
-     lands, a slot renders as an empty 9:16 plate that still opens its `href`.
-
-     PLACEHOLDERS. These point at HP's accounts, not at three particular reels.
-     Instagram serves nothing to a fetch, so a reel URL cannot be checked before
-     it goes in, and a link that 404s on the tour's own site is worse than a link
-     to the feed it came from. To pin three actual reels: paste the permalinks
-     into `href` below, and drop the mp4s beside the site and name them in `src`
-     — which is also the only way the plates will PLAY anything, since these are
-     the site's own plates rather than embeds. */
+  /* Vertical cuts for the "More about HP" strip, in the order they appear.
+     `ig` is the post's shortcode: the slot embeds Instagram's own player for
+     it, because Instagram will not hand a reel's file to anything that is not
+     logged in. Drop an mp4 beside the site and name it in `src` and the slot
+     plays that instead, in the site's own plate. */
   var HYPE = [
-    { title: 'Reel 01', href: 'https://www.instagram.com/hp/reels/', src: null },
-    { title: 'Reel 02', href: 'https://www.instagram.com/zbyhp/', src: null },
-    { title: 'Reel 03', href: 'https://www.youtube.com/@hpofficialchannel/shorts', src: null }
+    { title: 'Reel 01', href: 'https://www.instagram.com/reel/Db817DDClLL/', ig: 'Db817DDClLL', src: null },
+    { title: 'Reel 02', href: 'https://www.instagram.com/p/DcjZWdQgDqd/', ig: 'DcjZWdQgDqd', src: null },
+    { title: 'Reel 03', href: 'https://www.instagram.com/p/DbuAL3uFMtJ/', ig: 'DbuAL3uFMtJ', src: null }
   ];
 
   /* The chapter is what separates two stops at the same school, so a stop's
@@ -183,7 +198,8 @@
   }
 
   global.TOUR = {
-    stops: STOPS, speakers: SPEAKERS, workshopSpeakers: WORKSHOP_SPEAKERS,
+    stops: STOPS, speakers: SPEAKERS, speakerBio: SPEAKER_BIO,
+    workshops: WORKSHOPS, workshopDesc: WORKSHOP_DESC,
     photos: PHOTOS, hype: HYPE,
     stopName: stopName, bySlug: bySlug, byId: byId,
     speakersFor: speakersFor, stopsFor: stopsFor, bySchool: bySchool

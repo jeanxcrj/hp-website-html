@@ -403,29 +403,50 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 .tbc{opacity:.42}
 .spk__dot{opacity:.42}
 
-.workshop__speakers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+/* Three cards side by side, each a column: logo on top over the same hairline
+   the register list divides its rows with, inset to the card's padding, then
+   company, workshop and brief. Cards in a row stretch to the tallest so the borders
+   line up. */
+.workshop__speakers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
    gap:clamp(16px,2vw,28px);margin-top:clamp(30px,4.5vw,54px)}
-.workshop__speaker{display:flex;background:var(--paper);border:var(--bd) solid var(--blue)}
-.workshop__speaker-photo{position:relative;flex:0 0 36%;aspect-ratio:4/5;display:flex;
-   align-items:flex-end;padding:10px;background:repeating-linear-gradient(135deg,rgba(2,74,216,.045) 0 9px,transparent 9px 18px)}
-.workshop__speaker-photo.has-photo{background:var(--paper)}
-.workshop__speaker-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.workshop__speaker-photo span{font-family:var(--mono);font-size:10px;color:var(--slate)}
-.workshop__speaker-body{padding:clamp(14px,1.6vw,20px)}
+.workshop__speaker{display:flex;flex-direction:column;background:var(--paper);border:var(--bd) solid var(--blue)}
+.workshop__logo{display:flex;align-items:center;justify-content:flex-start;height:clamp(96px,9vw,120px);
+   padding:0;margin:0 clamp(16px,2vw,26px);border-bottom:1px solid rgba(2,74,216,.28)}
+.workshop__logo img{display:block;width:auto;height:auto;max-width:70%;max-height:44px;object-fit:contain}
+.workshop__logo span{font-family:var(--mono);font-size:10px;color:var(--slate)}
+.workshop__speaker-body{padding:clamp(16px,2vw,26px);flex:1;min-width:0}
 .workshop__speaker-body h3,.workshop__speaker-body p{margin:0}
 .workshop__speaker-body h3{font-family:var(--mono);font-size:16px;color:var(--blue)}
 .workshop__speaker-body p{margin-top:9px;font-family:var(--text);font-size:13px;line-height:1.5;color:var(--slate)}
-.workshop__speaker-body .workshop__speaker-role{font-family:var(--micro);font-weight:500}
+.workshop__speaker-body .workshop__speaker-role{font-family:var(--micro);font-weight:500;text-wrap:balance}
+.workshop__copy{margin-top:14px}
+.workshop__speaker-body .workshop__desc{margin:0 0 .85em;font-size:13.5px;line-height:1.6;
+   color:var(--slate);text-wrap:pretty;hyphens:manual}
+.workshop__speaker-body .workshop__desc:last-child{margin-bottom:0}
+.workshop__desc strong{font-weight:500}
+/* placeholder copy keeps the speaker bios' faded ink, not a fade of the grey */
+.workshop__copy .tbc{color:var(--ink)}
+@media (max-width:980px){.workshop__speakers{grid-template-columns:minmax(0,1fr)}}
+/* The register list inverts: ink plate, white type, the same hairline rules
+   in white, and the buttons flip to outline-on-blue with a white fill on hover. */
 .workshop__list{margin-top:clamp(28px,4vw,48px);padding:0 clamp(16px,2.2vw,28px);
-   background:var(--paper);border:var(--bd) solid var(--blue)}
+   background:var(--blue);border:var(--bd) solid var(--blue)}
 .workshop__row{display:flex;align-items:center;justify-content:space-between;gap:20px;
-   padding:18px 0;border-bottom:1px solid rgba(2,74,216,.28)}
+   padding:18px 0;border-bottom:1px solid rgba(255,255,255,.3)}
+.workshop__row:last-child{border-bottom:0}
+.workshop__listhead{padding:clamp(22px,3vw,34px) 0 clamp(16px,2vw,22px);
+   border-bottom:1px solid rgba(255,255,255,.3)}
+.workshop__listhead h3{margin:0;font-size:clamp(22px,2.4vw,30px);letter-spacing:-.02em;color:#fff}
+.workshop__listhead p{margin:8px 0 0;font-family:var(--text);font-size:14px;line-height:1.5;
+   color:rgba(255,255,255,.72)}
 .workshop__row h3,.workshop__row p{margin:0}
-.workshop__row h3{font-family:var(--mono);font-size:17px;color:var(--blue)}
-.workshop__row p{margin-top:5px;font-family:var(--text);font-size:13px;color:var(--slate)}
-.workshop__register{flex:none;color:var(--blue);border:var(--bd) solid var(--blue);padding:11px 15px;
+.workshop__row h3{font-family:var(--mono);font-size:17px;color:#fff}
+.workshop__row p{margin-top:5px;font-family:var(--text);font-size:13px;color:rgba(255,255,255,.72)}
+.workshop__register{flex:none;color:#fff;border:var(--bd) solid #fff;padding:11px 15px;
    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;text-decoration:none}
-.workshop__register:hover{background:var(--blue);color:#fff}
+.workshop__register:hover{background:#fff;color:var(--blue)}
+
+
 
 /* ---------- the campus cards ----------
    The plate is the poster's: a heavy rule, the date up top in the machine voice,
@@ -621,6 +642,11 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 .shot{position:relative;aspect-ratio:4/3;border:var(--bd) solid var(--blue);
   overflow:hidden;background:var(--paper)}
 .shot img{width:100%;height:100%;object-fit:cover;display:block}
+/* Over every plate, photo or not, until the tour has actually run. */
+.shot__soon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.0675em;
+  word-spacing:-.2em;text-transform:uppercase;color:var(--blue)}
+.shot img+.shot__soon{background:rgba(255,255,255,.72)}
 /* background-IMAGE, not background: the shorthand would reset the paper colour
    .shot sets, leaving a hatch floating on the corridor rather than on a plate. */
 .shot--empty{background-image:repeating-linear-gradient(135deg,
@@ -748,7 +774,6 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 @media (max-width:860px){
   .reg{grid-template-columns:minmax(0,1fr)}
   .spk{grid-template-columns:repeat(2,minmax(0,1fr))}
-   .workshop__speakers{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:720px){
   :root{--bar-h:52px}
