@@ -118,7 +118,7 @@
        a single-colour word cannot do on a field that is both. */
     words: [], wordCount: 0,
     wordFill: '#ffffff', wordStroke: '#024AD8', wordEdge: 1,
-    wordFamily: '"forma-djr-mono",ui-monospace,monospace', wordWeight: 500,
+    wordFamily: '"IBM Plex Mono",ui-monospace,monospace', wordWeight: 500,
     wordSize: 150,        // cap height in world units; screen px = wordSize * f/z
     wordSpread: 1,        // radius multiplier against the bar cloud
     /* Below the floor the outline is thicker than the letter it is drawing and

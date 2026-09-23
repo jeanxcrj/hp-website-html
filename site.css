@@ -6,55 +6,11 @@
    still carries its own <style> for the things only it has — the corridor, the
    hero card, the sponsor plate, the swipe. */
 
-/* ---------- the missing weight ----------
-   Kit yxt3aqw serves forma-djr-mono at 400 and 700 only, so every
-   font-weight:500 on this site was resolving DOWN to Regular. These two faces
-   add the 500 to the same family name, and the browser merges them with the
-   kit's — one family, four weights, no separate name to remember at the call
-   site.
-
-   This also switches the synthetic-medium fallback off by itself: the probe in
-   pages.js looks for a registered 500-weight forma-djr-mono face, finds these,
-   and drops .no-medium. Nothing else has to change.
-
-   The files are Forma DJR Mono Medium, converted OTF -> WOFF2. See the note in
-   README under Type before this goes anywhere public. */
-@font-face{
-  font-family:"forma-djr-mono";
-  src:url("fonts/forma-djr-mono-500.woff2") format("woff2");
-  font-weight:500;font-style:normal;font-display:swap;
-}
-@font-face{
-  font-family:"forma-djr-mono";
-  src:url("fonts/forma-djr-mono-500i.woff2") format("woff2");
-  font-weight:500;font-style:italic;font-display:swap;
-}
-
-/* ---------- the proportional face ----------
-   HP Forma DJR Office: HP's own cut of the same Forma the mono belongs to, and
-   the missing half of the type stack. Every subhead and every paragraph on the
-   site was rendering in the platform grotesque, because the kit carries neither
-   Micro nor Text — so the page read as Forma on the labels and San Francisco
-   everywhere else, which is two type systems, not one.
-
-   Both roles come out of this one family rather than two: Medium for subheads
-   and notes, Regular for body copy. The 400 matters as much as the 500 — with
-   only a Medium registered, every paragraph on the site matches up to it and
-   runs a weight too heavy, which is the thing the body-copy note below is
-   about.
-
-   Converted TTF -> WOFF2 from the desktop files. Same caveat as the mono: see
-   README under Type before this goes anywhere public. */
-@font-face{
-  font-family:"hp-forma-office";
-  src:url("fonts/hp-forma-office-400.woff2") format("woff2");
-  font-weight:400;font-style:normal;font-display:swap;
-}
-@font-face{
-  font-family:"hp-forma-office";
-  src:url("fonts/hp-forma-office-500.woff2") format("woff2");
-  font-weight:500;font-style:normal;font-display:swap;
-}
+/* ---------- type ----------
+   IBM Plex Mono for titles, labels and buttons; Inter for subheads and body.
+   Both are open-source (SIL OFL) and served by Google Fonts from the <link> in
+   each page's head. They replace Forma DJR Mono and HP Forma DJR Office, which
+   were self-hosted from desktop files without a web licence. */
 
 /* The blue is the logo's own — the asset is a single colour, #024AD8, so the
    mark, the type and the bars in the field are all literally one ink. */
@@ -72,16 +28,14 @@
   --edge:clamp(16px,3.2vw,46px);
   --hero-x:clamp(20px,8vw,118px);
   --card-w:min(580px,47vw);
-  /* The type stack, as specified. Kit yxt3aqw currently serves ONE family —
-     forma-djr-mono, in 400 and 700 — so Micro and Text fall through to the
-     platform grotesque and Medium (500) resolves to Regular. Add Forma DJR
-     Micro, Forma DJR Text, and the Mono's Medium weight to the kit and every
-     line below snaps into place with no code change.
+  /* The type stack.
 
        title    mono, medium      the big lines and every section heading
        subhead  micro, medium     the line under a title
        body     text, regular     anything anyone actually reads at length
-       caption  mono, regular     labels, dates, status, nav, buttons */
+       caption  mono, regular     labels, dates, status, nav, buttons
+
+     mono is IBM Plex Mono; micro and text are both Inter. */
   /* One plate, two spellings of it: the bordered block and the bare one have
      to put their headings on the same vertical axis, and they only do that
      while the bare one's padding is the other's padding plus its border. */
@@ -90,15 +44,9 @@
      systems of box rather than one. */
   --bd:2px;
   --plate-pad:clamp(22px,3vw,42px);
-  --mono:"forma-djr-mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  /* HP Forma DJR Office leads both roles: it is the face the tour is set in,
-     it is served from this repo rather than waited on, and one family covering
-     subheads and body is what the page had been missing. Micro and Text are
-     kept behind it as a record of the spec — putting Office first means adding
-     them to the kit no longer changes anything, so if the two cuts are wanted
-     apart again, this is the line to reorder. */
-  --micro:"hp-forma-office","forma-djr-micro","forma-djr-text",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
-  --text:"hp-forma-office","forma-djr-text","forma-djr-micro",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --micro:"Inter",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --text:"Inter",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
 }
 *{box-sizing:border-box}
 /* overscroll-behavior kills the rubber band. It matters more here than on an
@@ -132,11 +80,7 @@ body{
 }
 /* One weight across the whole site. The browser ships h1-h6, b, strong and
    button at bold, so inheriting medium from body is not enough — they have to
-   be brought down explicitly or the page runs at two weights by accident.
-
-   Note the kit: forma-djr-mono is served at 400 and 700 only, so 500 currently
-   resolves DOWN to Regular. Adding the Medium weight to kit yxt3aqw is what
-   makes this line true rather than aspirational. */
+   be brought down explicitly or the page runs at two weights by accident. */
 h1,h2,h3,h4,h5,h6,b,strong,button{font-weight:500}
 input,select,textarea{font-weight:400}
 /* Every title is mono, so every title keeps the negative word-spacing the mono
@@ -722,22 +666,13 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   justify-self:start;display:block}
 
 /* ---------- synthetic medium ----------
-   Kit yxt3aqw serves forma-djr-mono in four faces — n4, i4, n7, i7. There is no
-   n5, so every font-weight:500 on the page resolves DOWN to Regular (CSS font
-   matching tries weights at or below the target first). Figma shows Medium
-   because the desktop sync has it; the web kit does not.
+   A fallback for when the mono's Medium fails to load: without a real 500,
+   every font-weight:500 resolves DOWN to Regular. This thickens the stems
+   optically to sit between Regular and Bold. Scoped to the mono only, and in
+   em so a 38px title and an 11px label thicken by the same proportion.
 
-   The real fix is one checkbox: Adobe Fonts -> Web Projects -> this kit ->
-   Forma DJR Mono -> tick Medium, and while you are in there add Forma DJR Micro
-   and Forma DJR Text, which are not in the kit either. Until then this thickens
-   the stems optically to sit between Regular and Bold.
-
-   Scoped to the mono only: the platform faces standing in for Micro and Text
-   have a real 500 already and would come out double-weighted. In em, not px, so
-   a 38px title and an 11px label thicken by the same proportion.
-
-   pages.js adds .no-medium ONLY when no 500-weight forma-djr-mono face is
-   registered, so this switches itself off the moment the kit is fixed. */
+   pages.js adds .no-medium ONLY when no 500-weight IBM Plex Mono face is
+   registered, so it stays dormant whenever the Google Fonts request succeeds. */
 .no-medium h1,.no-medium h2,
 .no-medium .rcard__name,.no-medium .spk__name,
 .no-medium .rcard__date,
