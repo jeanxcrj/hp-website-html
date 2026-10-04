@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500&display=swap">
-<link rel="stylesheet" href="site.css?v=20261004b">
+<link rel="stylesheet" href="site.css?v=20261004c">
 <style>
 /* Only what the index has. The ink, the band, the gutters, the sheet type, the
    schedule, the cards and the arrival all live in site.css now — three pages
@@ -264,6 +264,16 @@ h1{
 .about__more{align-self:flex-start;margin:0;padding:0;border:0;background:none;cursor:pointer;
   font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--blue);
   text-decoration:underline;text-underline-offset:3px}
+/* On a phone the lead stands alone: READ MORE follows it straight away, and the
+   two paragraphs before the break fold away with the rest. `order` moves the
+   button without moving it in the markup, so desktop keeps its break. */
+@media (max-width:720px){
+  .about__main > *{order:2}
+  .about__main > .about__lead{order:0}
+  .about__main > .about__more{order:1}
+  .about__main.is-open > .about__more{order:3}
+  .about__main:not(.is-open) > .about__mob{display:none}
+}
 /* Rag: `pretty` evens the shape of each paragraph instead of leaving a word or
    two alone on the last line. */
 .about__main p,.about__facts dd,.note{text-wrap:pretty}
@@ -542,12 +552,12 @@ h1{
           emerging technologies are reshaping creative and technical workflows across
           industries.</p>
 
-          <p>Each event will feature a dynamic mix of <strong>workshops, industry keynotes, student
+          <p class="about__mob">Each event will feature a dynamic mix of <strong>workshops, industry keynotes, student
           showcases, technical demonstrations, and interactive activations</strong>, creating
           opportunities for students to engage directly with the technologies and
           professionals driving the future of work.</p>
 
-          <p>Alongside HP, leading technology and software partners including <strong>Intel, AMD, D5
+          <p class="about__mob">Alongside HP, leading technology and software partners including <strong>Intel, AMD, D5
           Render, Bentley Systems, and SOLIDWORKS</strong> will showcase the latest advancements
           powering architecture, engineering, design, manufacturing, visualization, and
           AI-driven workflows. Students will gain firsthand exposure to cutting-edge hardware
@@ -672,10 +682,10 @@ h1{
 </section>
 
 
-<script src="field.js?v=20261004b"></script>
-<script src="xbox.js?v=20261004b"></script>
-<script src="tour.js?v=20261004b"></script>
-<script src="pages.js?v=20261004b"></script>
+<script src="field.js?v=20261004c"></script>
+<script src="xbox.js?v=20261004c"></script>
+<script src="tour.js?v=20261004c"></script>
+<script src="pages.js?v=20261004c"></script>
 <script>
 (function () {
   'use strict';
@@ -969,6 +979,7 @@ h1{
       rest.hidden = !open;
       btn.setAttribute('aria-expanded', String(open));
       btn.textContent = open ? 'READ LESS' : 'READ MORE';
+      btn.parentNode.classList.toggle('is-open', open);
       if (open) rest.after(btn); else rest.before(btn);
     });
   }());
