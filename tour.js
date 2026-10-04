@@ -36,6 +36,10 @@
     { slug: 'cornell-aias', school: 'Cornell University', chapter: 'AIAS',
       date: 'Oct 17', status: 'set', venue: 'Milstein Hall Dome', speakers: [7, 1],
       club: 'Cornell AIAS',
+      luma: { tour: 'https://luma.com/ru47828y',
+        bentley: 'https://luma.com/als8c6tm',
+        d5: 'https://luma.com/yhgqvp08',
+        solidworks: 'https://luma.com/w88pkahx' },
       exhibitionName: 'Material Futures',
       exhibitionDescription: 'A gathering of speculative materials, spatial ideas, and new ways to build.' ,
       note: 'Confirmed — the Milstein dome.' },
@@ -43,6 +47,10 @@
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
       date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [3, 1],
       club: 'PennAiR',
+      luma: { tour: 'https://luma.com/249mwrur',
+        bentley: 'https://luma.com/4ruup0qh',
+        d5: 'https://luma.com/event/evt-tjYAHrossWGwp4h',
+        solidworks: 'https://luma.com/jzn18yw6' },
       exhibitionName: 'Open Practice',
       exhibitionDescription: 'Projects that show how experimentation can move between design, technology, and culture.',
       note: 'Confirmed for the Sunday.' },
@@ -50,12 +58,20 @@
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
       date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [7, 8],
       club: 'Pratt AIAS',
+      luma: { tour: 'https://luma.com/i8k6mpgv',
+        bentley: 'https://luma.com/j9i2u203',
+        d5: 'https://luma.com/fflthcfd',
+        solidworks: 'https://luma.com/event/evt-QlDmLRo0LgmEv2r' },
       exhibitionName: 'Making Visible',
       exhibitionDescription: 'A showcase of work that turns research, process, and making into public form.', note: null },
 
     { slug: 'nyu-tech', school: 'New York University', chapter: 'Tech',
       date: 'Oct 25', status: 'set', venue: 'Kimmel Floor 4', speakers: [2, 4, 3],
       club: 'Tech @ NYU',
+      luma: { tour: 'https://luma.com/i4df9dm5',
+        bentley: 'https://luma.com/0luhptdp',
+        d5: 'https://luma.com/1blesmnw',
+        solidworks: 'https://luma.com/uyy4g7gg' },
       exhibitionName: 'Next Signals',
       exhibitionDescription: 'Emerging ideas at the intersection of creative practice, technology, and everyday life.',
       note: null },
@@ -63,6 +79,10 @@
     { slug: 'harvard-recompute', school: 'Harvard University', chapter: 'Recompute',
       date: 'Oct 31', status: 'set', venue: 'Northwest Science Building B100', speakers: [9, 4, 3],
       club: 'ReCompute & HUPC',
+      luma: { tour: 'https://luma.com/rz4kxann',
+        bentley: 'https://luma.com/k12oqpos',
+        d5: 'https://luma.com/akx45zlg',
+        solidworks: 'https://luma.com/grjbiiw5' },
       exhibitionName: 'Recompute',
       exhibitionDescription: 'A collection of projects that question familiar systems and propose more responsive futures.',
       note: null },
@@ -71,6 +91,10 @@
       chapter: 'School of Architecture',
       date: 'Nov 4', status: 'set', venue: 'EMPAC Building', speakers: [8],
       club: 'RPI NOMAS',
+      luma: { tour: 'https://luma.com/3fpjs1sk',
+        bentley: 'https://luma.com/event/evt-9Asw65DVntZKrim',
+        d5: 'https://luma.com/ymkg16bz',
+        solidworks: 'https://luma.com/pa9apqgm' },
       exhibitionName: 'Prototype / Perform',
       exhibitionDescription: 'Experiments in architecture, media, and performance developed through iterative making.',
       note: null },
@@ -78,6 +102,10 @@
     { slug: 'yale', school: 'Yale University', chapter: null,
       date: 'Nov 6', status: 'set', venue: 'CEID Building', speakers: [5],
       club: 'CEID',
+      luma: { tour: 'https://luma.com/climvw2h',
+        bentley: 'https://luma.com/gkdpegnv',
+        d5: 'https://luma.com/udrze508',
+        solidworks: 'https://luma.com/event/evt-EpNNqLlfODZfiDb' },
       exhibitionName: 'Workshop',
       exhibitionDescription: null,
       note: null },
@@ -85,6 +113,10 @@
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
       date: 'Nov 7', status: 'set', venue: 'Julis Romo Rabinowitz (JRR) Atrium', speakers: [5, 4, 10],
       club: 'HackPrinceton',
+      luma: { tour: 'https://luma.com/sbjgapnu',
+        bentley: 'https://luma.com/event/evt-7AnBICjkuTJyAX2',
+        d5: 'https://luma.com/9diuk7u7',
+        solidworks: 'https://luma.com/de4xk276' },
       exhibitionName: 'Ideas in Public',
       exhibitionDescription: 'A student-led exhibition about turning ambitious ideas into shared experiences.',
       note: null }
@@ -123,7 +155,7 @@
   var WORKSHOP_DESC = 'Placeholder description. This workshop is a hands-on session where students work directly with professional software on a real project brief, guided by the team that builds the tools. Expect a short introduction to the platform and where it fits in a modern design and engineering workflow, followed by a live demonstration and time at the workstations to try it yourself. Along the way the session covers practical techniques, common pitfalls, and the habits professionals use to move faster. Bring your questions and your own work. No prior experience is required, and every attendee leaves with resources to keep going.';
 
   var WORKSHOPS = [
-    { company: 'Bentley Systems', logo: 'logos/bentley.png',
+    { key: 'bentley', company: 'Bentley Systems', logo: 'logos/bentley.png',
       name: 'Drive the Future of AEC Workflows',
       description: [
         'In this workshop, you\u2019ll experience an early-access AEC design workflow in three connected steps from design intent into multi-disciplinary collaboration and stakeholder engagement:',
@@ -132,7 +164,7 @@
         'Transform your model into an immersive digital experience that supports stakeholder communication, project understanding, and informed decision-making. (iTwin Engage)'
       ],
       speakers: ['Greg Demchek'] },
-    { company: 'D5 Render', logo: 'logos/d5.png',
+    { key: 'd5', company: 'D5 Render', logo: 'logos/d5.png',
       name: 'Minutes, Not Days: The AI-Powered D5 Rendering Workflow',
       description: [
         'Forget overnight render queues. This session shows what AI-powered rendering actually feels like: a Rhino model turns into a cinematic image in minutes, live on stage - one that communicates not just what a space looks like, but how it feels.',
@@ -141,7 +173,7 @@
         'No rendering experience required: this is simply how the next generation of architects will work.'
       ],
       speakers: ['Jessie Huang'] },
-    { company: 'SOLIDWORKS', logo: 'logos/solidworks.png',
+    { key: 'solidworks', company: 'SOLIDWORKS', logo: 'logos/solidworks.png',
       name: 'Design Smarter with SOLIDWORKS: Modeling, Simulation & AI',
       description: [
         'Think you\u2019re fast in SOLIDWORKS? Prove it. You\u2019ll model a component against the clock, then run a simulation to see how well it holds up.',
@@ -178,6 +210,15 @@
      title on a registration page and as the row label in the schedule. */
   function stopName(s) {
     return s.chapter ? s.school + ' ' + s.chapter : s.school;
+  }
+
+  /* Every registration lives on Luma: one event per stop for the tour itself
+     (`luma.tour`) and one per partner workshop, keyed by WORKSHOPS[].key. */
+  function registerUrl(s) {
+    return s && s.luma && s.luma.tour || null;
+  }
+  function workshopUrl(s, key) {
+    return s && s.luma && s.luma[key] || null;
   }
 
   function bySlug(slug) {
@@ -223,6 +264,7 @@
     workshops: WORKSHOPS, workshopDesc: WORKSHOP_DESC,
     photos: PHOTOS, hype: HYPE,
     stopName: stopName, bySlug: bySlug, byId: byId,
+    registerUrl: registerUrl, workshopUrl: workshopUrl,
     speakersFor: speakersFor, stopsFor: stopsFor, bySchool: bySchool
   };
 })(window);

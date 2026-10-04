@@ -501,6 +501,14 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 .reg__wsnote{display:block;margin-top:5px;font-size:12px;line-height:1.5;
   color:var(--slate)}
 
+.reg__ws{display:flex;flex-direction:column}
+.reg__wsrow{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:18px 0;border-bottom:1px solid rgba(2,74,216,.28)}
+.reg__wsrow:first-child{padding-top:0}
+.reg__wsrow:last-child{border-bottom:0}
+.reg__wsrow h3{margin:0;font-family:var(--mono);font-size:17px;color:var(--blue)}
+.reg__wsrow p{margin:5px 0 0;font-family:var(--text);font-size:13px;line-height:1.45;color:var(--slate)}
+.reg__wsrow .rcard__go{flex:none}
 .reg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:clamp(26px,4vw,64px);margin-top:clamp(30px,4.5vw,54px);max-width:1180px;align-items:start}
 .reg__meta{border:var(--bd) solid var(--blue);padding:clamp(18px,2.2vw,28px)}
