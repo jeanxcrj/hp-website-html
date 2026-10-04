@@ -759,7 +759,12 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
      reads as a drawing shoved into a corner instead of one carrying on past
      the page — and the crop lands on the strip's own edge either way once the
      width is this close to the drawing's. */
-  .promo__art img{left:50%;transform:translate(-50%,-50%)}
+  /* Stacked, the band has the width to show the whole laptop, so it gets the
+     uncropped export (hp-laptop-full.svg, via <picture>) laid out in the flow:
+     centred, at its own ratio, nothing clipped. */
+  .promo__art{min-height:0;padding:clamp(28px,7vw,48px) 0 0}
+  .promo__art img{position:static;transform:none;display:block;
+    width:88%;max-width:560px;height:auto;max-height:none;margin:0 auto}
 }
 @media (max-width:620px){
   .gal{--gal-cols:2}
