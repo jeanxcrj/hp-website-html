@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500&display=swap">
-<link rel="stylesheet" href="site.css?v=20261003d">
+<link rel="stylesheet" href="site.css?v=20261004a">
 <style>
 /* Only what the index has. The ink, the band, the gutters, the sheet type, the
    schedule, the cards and the arrival all live in site.css now — three pages
@@ -258,6 +258,12 @@ h1{
   color:var(--ink);margin-bottom:clamp(4px,.6vw,10px)}
 .about__lead strong{font-weight:400;color:var(--blue)}
 .about__main .about__close{color:var(--ink)}
+/* The first three paragraphs say what the tour is; the rest opens on READ MORE. */
+.about__rest{display:flex;flex-direction:column;gap:clamp(18px,1.8vw,26px)}
+.about__rest[hidden]{display:none}
+.about__more{align-self:flex-start;margin:0;padding:0;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;color:var(--blue);
+  text-decoration:underline;text-underline-offset:3px}
 /* Rag: `pretty` evens the shape of each paragraph instead of leaving a word or
    two alone on the last line. */
 .about__main p,.about__facts dd,.note{text-wrap:pretty}
@@ -548,20 +554,23 @@ h1{
           platforms, professional software tools, and industry best practices used by leading
           organizations around the world.</p>
 
-          <p>Visitors will have the opportunity to network directly with professionals from HP
-          and participating partners. Whether exploring high-performance computing, real-time
-          visualization, design simulation, digital twins, engineering workflows, or
-          AI-assisted creation, attendees will gain valuable insight into the technologies
-          shaping their future careers.</p>
+          <button type="button" class="about__more" aria-expanded="false" aria-controls="about-more">READ MORE</button>
+          <div class="about__rest" id="about-more" hidden>
+            <p>Visitors will have the opportunity to network directly with professionals from HP
+            and participating partners. Whether exploring high-performance computing, real-time
+            visualization, design simulation, digital twins, engineering workflows, or
+            AI-assisted creation, attendees will gain valuable insight into the technologies
+            shaping their future careers.</p>
 
-          <p>On the student side, each school is curating its own vision for how these new
-          technologies are shaping the way we work. Whether architecture, engineering,
-          design, or tech clubs, each stop along the tour will add a new series of works to
-          the conversation.</p>
+            <p>On the student side, each school is curating its own vision for how these new
+            technologies are shaping the way we work. Whether architecture, engineering,
+            design, or tech clubs, each stop along the tour will add a new series of works to
+            the conversation.</p>
 
-          <p class="about__close">Join us for a full day of inspiration, learning, networking, workshops,
-          exhibitions, demonstrations, giveaways, and collaboration as we explore the future
-          of creation together.</p>
+            <p class="about__close">Join us for a full day of inspiration, learning, networking, workshops,
+            exhibitions, demonstrations, giveaways, and collaboration as we explore the future
+            of creation together.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -663,10 +672,10 @@ h1{
 </section>
 
 
-<script src="field.js?v=20261003d"></script>
-<script src="xbox.js?v=20261003d"></script>
-<script src="tour.js?v=20261003d"></script>
-<script src="pages.js?v=20261003d"></script>
+<script src="field.js?v=20261004a"></script>
+<script src="xbox.js?v=20261004a"></script>
+<script src="tour.js?v=20261004a"></script>
+<script src="pages.js?v=20261004a"></script>
 <script>
 (function () {
   'use strict';
@@ -950,6 +959,18 @@ h1{
       var dd = function (n) { return (n < 10 ? '0' : '') + n; };
       d.textContent = a.m + ' ' + dd(a.d) + ' – ' + z.m + ' ' + dd(z.d) + ', 2026';
     }
+  }());
+  /* About: READ MORE opens the rest of the copy, and sits below it once open. */
+  (function () {
+    var btn = document.querySelector('.about__more'), rest = document.getElementById('about-more');
+    if (!btn || !rest) return;
+    btn.addEventListener('click', function () {
+      var open = rest.hidden;
+      rest.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = open ? 'READ LESS' : 'READ MORE';
+      if (open) rest.after(btn); else rest.before(btn);
+    });
   }());
   /* Grid / list switch for the schedule. The choice is remembered per browser
      as a convenience; storage can be unavailable, so every access is guarded. */
