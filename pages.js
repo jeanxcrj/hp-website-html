@@ -317,9 +317,33 @@
     }).join('');
   }
 
-  /* ---------- speakers ---------- */
+  /* ---------- speakers ----------
+     A real bio is cut to the placeholder's length, so every card in the row
+     keeps the same depth whoever has sent theirs; READ MORE opens the rest. */
+  function bio(text) {
+    var max = T.speakerBio.length;
+    if (!text) return '<p class="spk__bio">' + or(null, T.speakerBio) + '</p>';
+    if (text.length <= max) return '<p class="spk__bio">' + esc(text) + '</p>';
+    var cut = text.lastIndexOf(' ', max);
+    var head = text.slice(0, cut > 0 ? cut : max).replace(/[\s,.;:\u2014-]+$/, '');
+    return '<p class="spk__bio">' +
+        '<span class="spk__short">' + esc(head) + '\u2026</span>' +
+        '<span class="spk__full" hidden>' + esc(text) + '</span>' +
+      '</p>' +
+      '<button type="button" class="spk__more" aria-expanded="false">READ MORE</button>';
+  }
+
   function speakers(el) {
     if (!el) return;
+    el.addEventListener('click', function (e) {
+      var btn = e.target.closest('.spk__more');
+      if (!btn) return;
+      var body = btn.parentNode, open = btn.getAttribute('aria-expanded') !== 'true';
+      body.querySelector('.spk__short').hidden = open;
+      body.querySelector('.spk__full').hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = open ? 'READ LESS' : 'READ MORE';
+    });
     el.innerHTML = T.speakers.map(function (p) {
       var n = p.id < 10 ? '0' + p.id : '' + p.id;
       var venues = T.stopsFor(p).map(function (stop) { return stop.venue; }).filter(Boolean);
@@ -338,7 +362,7 @@
              and it is one field to fill in tour.js when the titles arrive. */
           '<p class="spk__role">' + or(p.role, 'Role') +
             '<span class="spk__dot"> · </span>' + or(p.company, 'Company') + '</p>' +
-          '<p class="spk__bio">' + or(p.bio, T.speakerBio) + '</p>' +
+          bio(p.bio) +
         '</div>' +
         '</article>';
     }).join('');
