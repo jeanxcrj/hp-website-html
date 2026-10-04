@@ -107,7 +107,7 @@
       bio: null, photo: 'photos/fred-liu.jpg' },
     { id: 3, name: 'Hena Yang', role: 'Cofounder', company: 'Inyo',
       bio: 'I\u2019m a fine arts student, creator, and cofounder of Inyo, where I combine my creative background with technology to rethink how people connect. I\u2019ll be speaking about building a career across art, social media, and entrepreneurship, and how embracing an unconventional path can open doors to opportunities you never expected.',
-      photo: 'photos/hena-yang.jpg' },
+      photo: 'photos/hena-yang.jpg?v=2' },
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
       bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
       photo: 'photos/jangho-yun.jpg' },
