@@ -518,7 +518,7 @@ h1{
                they follow the schedule; the text here is the fallback. -->
           <dl class="about__facts">
             <div><dt>Stops</dt><dd id="about-stops">8 campuses</dd></div>
-            <div><dt>Dates</dt><dd id="about-dates">Oct 17 – Nov 7, 2026</dd></div>
+            <div><dt>Dates</dt><dd id="about-dates">Oct 17 – Nov 07, 2026</dd></div>
             <div><dt>Format</dt><dd>Workshops, keynotes, student showcases, demos and activations</dd></div>
             <div><dt>Partners</dt><dd>HP, Intel, AMD, D5 Render, Bentley Systems, SOLIDWORKS</dd></div>
             <div><dt>Cost</dt><dd>Free for students</dd></div>
@@ -947,7 +947,8 @@ h1{
     if (d && days.length) {
       days.sort(function (a, b) { return a.k - b.k; });
       var a = days[0], z = days[days.length - 1];
-      d.textContent = a.m + ' ' + a.d + ' – ' + z.m + ' ' + z.d + ', 2026';
+      var dd = function (n) { return (n < 10 ? '0' : '') + n; };
+      d.textContent = a.m + ' ' + dd(a.d) + ' – ' + z.m + ' ' + dd(z.d) + ', 2026';
     }
   }());
   /* Grid / list switch for the schedule. The choice is remembered per browser
