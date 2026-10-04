@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>USA College Tour — poster cycle</title>
+<style>
+  @font-face{
+    font-family:"forma-djr-mono";
+    src:url("fonts/forma-djr-mono-500.woff2") format("woff2");
+    font-weight:500;font-style:normal;font-display:block;
+  }
+
+  /* --ink is the only colour in the page. JS retargets it on every switch and
+     the plate's type transitions to it, so the name crosses to the new campus
+     on the same curve as the corridor behind it — the canvas is lerped
+     separately in JS because the engine takes a hex string, not a variable. */
+  :root{
+    --ink:#C8324F;
+    --paper:#ffffff;
+    --xf:900ms;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper)}
+  body{font-family:"forma-djr-mono",ui-monospace,monospace;font-weight:500;
+    -webkit-font-smoothing:antialiased}
+
+  #field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;
+    -webkit-user-select:none;user-select:none}
+
+  /* pointer-events:none: the whole frame is a drag surface for steering the
+     corridor, and the plate swallowing the press would make the field stick
+     under the cursor. */
+  .poster{position:fixed;inset:0;z-index:1;pointer-events:none;
+    padding:clamp(20px,3.2vw,44px)}
+
+  /* ---------- speaker bar ----------
+     Authored at 2476x86, scaled to the full viewport width — at 1900px wide
+     that lands it around 66px tall, the proportion it was drawn at.
+
+     This version has no frame: no white plate, no hairline, just the names on
+     transparency, so the corridor runs behind them. Nothing here paints a
+     background either — adding one would put the frame back that the artwork
+     deliberately drops. The names carry their own top and bottom air inside
+     the 86 unit box, which is why top:0 needs no offset.
+
+     They keep their authored teal: one rule in the JS below retargets them to
+     the live campus colour instead, if that is wanted. */
+  .topbar{position:fixed;left:0;right:0;top:0;z-index:2}
+  .topbar svg{display:block;width:100%;height:auto}
+
+  /* ---------- the name plate ---------- */
+  /* A fixed-width rectangle like the printed one, so the block does not jump
+     width as CORNELL gives way to MASSACHUSETTS COLLEGE OF ART AND DESIGN —
+     only its height eases, and the name reflows inside it. */
+  /* The rule sits on the same --ink as the type, so it crosses to the next
+     campus on the one curve. 3px: heavy enough to hold its own against a
+     62px name and against the slabs passing behind the plate, light enough
+     to stay a frame rather than becoming a bar of its own. */
+  .plate{position:absolute;left:clamp(20px,6vw,104px);top:50%;
+    transform:translateY(-50%);
+    width:min(560px,52vw);
+    background:var(--paper);color:var(--ink);
+    border:3px solid var(--ink);
+    padding:clamp(16px,1.7vw,24px) clamp(18px,1.9vw,26px) clamp(18px,1.9vw,26px);
+    transition:color var(--xf) linear,border-color var(--xf) linear}
+
+  /* height is set in px by the script and eased here. It cannot be left to
+     auto: CORNELL UNIVERSITY sets two lines and MASSACHUSETTS COLLEGE OF ART
+     AND DESIGN four, and auto height jumps between them in a single frame.
+     The plate is centred by translateY(-50%) off its OWN height, so easing
+     this makes the whole plate grow and recentre on the same curve.
+     300ms against the 230ms slide-in: the box finishes just after the name
+     lands, so it is still opening as the last line clears the mask edge. */
+  .school{margin:0;font-weight:500;text-transform:uppercase;
+    font-size:clamp(28px,4.4vw,62px);line-height:.96;letter-spacing:-.015em;
+    transition:height 300ms var(--ease)}
+
+  .date{margin-top:clamp(12px,1.4vw,20px);
+    font-size:clamp(15px,1.5vw,22px);letter-spacing:.02em}
+
+  /* ---------- the text swap ---------- */
+  /* Each swapping field is a masked box; its inner span slides a line-height up
+     and out, the text is replaced while it is clear of the mask, then it slides
+     in from below. overflow:hidden is what makes it a mechanical counter flip
+     rather than a cross-dissolve — which suits type this technical. */
+  .flip{display:block;overflow:hidden}
+  .flip > span{display:block;
+    transition:transform 230ms var(--ease),opacity 170ms linear}
+  .flip.is-out > span{transform:translateY(-102%);opacity:0;
+    transition:transform 180ms cubic-bezier(.5,0,.75,0),opacity 140ms linear}
+  .flip.is-pre > span{transform:translateY(102%);opacity:0;transition:none}
+
+  /* ---------- record control ----------
+     Outside .poster so it can take a click (the frame is pointer-events:none),
+     and hidden for the duration of the take so it cannot appear in its own
+     video. Deliberately plain: it is a tool, not part of the piece. */
+  .rec{position:fixed;right:14px;bottom:14px;z-index:5;
+    font:500 11px/1 "forma-djr-mono",ui-monospace,monospace;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink);background:var(--paper);
+    border:1px solid var(--ink);border-radius:0;
+    padding:8px 11px 7px;cursor:pointer;opacity:.5;
+    transition:opacity 200ms linear,color var(--xf) linear,border-color var(--xf) linear}
+  .rec:hover{opacity:1}
+  .rec[disabled]{cursor:default;opacity:.85}
+
+  @media (max-width:760px){
+    .plate{left:clamp(16px,5vw,28px);right:clamp(16px,5vw,28px);width:auto}
+  }
+
+  /* With motion reduced the corridor holds one still frame and the cycle stops
+     on the first campus — a page that flies AND flips type is exactly what the
+     preference is asking not to receive. */
+  @media (prefers-reduced-motion:reduce){
+    .flip > span,.flip,.plate{transition:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+
+<div class="poster">
+  <div class="topbar" id="topbar"></div>
+
+  <div class="plate">
+    <h1 class="school flip" id="school"><span>Cornell University</span></h1>
+    <div class="date flip" id="date"><span>10.17</span></div>
+  </div>
+</div>
+
+<button class="rec" id="rec" type="button">Record</button>
+
+<script src="field.js"></script>
+<script src="tour.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- the campuses ----------
+     Order and dates come from tour.js, so this page cannot drift from the
+     schedule the rest of the site renders. Only the colours live here.
+
+     Each school's own primary, as commonly published. The engine shades every
+     bar from this hue toward the white background with depth, so a near-black
+     primary does not flatten the corridor — it reads as high-contrast slabs up
+     close dissolving to white at the vanishing point, which is exactly the
+     black-and-white Pratt stop.
+
+     Two of these I am not confident about, because neither school publishes a
+     signature colour the way the others do: MassArt (black wordmark on white
+     is what its identity actually is) and Jefferson (navy, taken from the Rams
+     athletic mark). Both are one line to correct. */
+  var COLORS = {
+    'Cornell University':                        '#B31B1B',  // Carnelian
+    'University of Pennsylvania':                '#011F5B',  // Penn Blue
+    'New York University':                       '#57068C',  // NYU Violet
+    'Rensselaer Polytechnic Institute':          '#D6001C',  // RPI Red
+    'Pratt Institute':                           '#000000',  // black / white
+    'Harvard University':                        '#A51C30',  // Crimson
+    'Carnegie Mellon University':                '#C41230',  // Tartan Red
+    'Massachusetts College of Art and Design':   '#000000',  // black / white
+    'Thomas Jefferson University':               '#00205B'   // Jefferson navy
+  };
+  var FALLBACK = '#024AD8';   // the HP blue, if a new school lands in tour.js
+
+  /* Oct 18–19  ->  10.18–10.19.   The month is carried forward across a range,
+     so only the first half of "Oct 30 / Nov 6" needs its own month token. */
+  var MON = { Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',
+              Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12' };
+  function numeric(str) {
+    var last = null;
+    return String(str).replace(/([A-Z][a-z]{2})?\s*(\d{1,2})/g, function (_, m, d) {
+      if (m && MON[m]) last = MON[m];
+      return (last || '10') + '.' + (d.length < 2 ? '0' + d : d);
+    });
+  }
+
+  // Held off the reel for now, even if tour.js lists them again.
+  var HOLD = ['Massachusetts College of Art and Design'];
+
+  var SCHOOLS = TOUR.bySchool({ skipStaging: true }).filter(function (g) {
+    return HOLD.indexOf(g.school) < 0;
+  }).map(function (g) {
+    return {
+      name: g.school,
+      date: g.stops.map(function (s) { return numeric(s.date); }).join('  /  '),
+      col: COLORS[g.school] || FALLBACK
+    };
+  });
+
+  /* ---------- timing ----------
+     One second a campus. The type is the only thing that CUTS — it flips on the
+     beat, which is what makes the rotation legible. Nothing about the corridor
+     cuts: no rebuild, and colour and speed both ride ONE eased window per beat.
+
+     The window is shaped by smootherstep rather than an exponential chase.
+     A chase is smooth at the end but not at the start — it leaves at full
+     velocity the instant the beat lands, which is the jolt that was left.
+     Smootherstep has zero velocity AND zero acceleration at both ends, so the
+     colour leaves the old campus and arrives at the new one without an edge on
+     either side. The speed swell rides the same window on a sin^2 bell, which
+     is likewise flat at 0 and 1 — it rises out of the cruise and settles back
+     into it rather than being kicked. */
+  var BEAT   = 1300;  // ms per campus, type flip to type flip
+  var EASE_MS = 880;  // ms the colour and the swell take, of that beat
+  var SWELL  = 1.34;  // peak speed multiplier at the middle of the window
+
+  /* ---------- engine ---------- */
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var field = new ExtrusionField(document.getElementById('field'), {
+    count: 220, seed: 12,
+    spread: 1500, aspectXY: 1.15, clump: 0.55, hole: 0.13, cone: 0.55,
+    zNear: 620, zFar: 10000, zPow: 1.35,
+    lenMin: 900, lenMax: 5600, lenDepth: 0.8,
+    thick: 400, thickVar: 0.5, flat: 0.30, flatVar: 0.6,
+    faces: true, faceShade: 0.36,
+    fade: 0.76, fadePow: 1.5, grad: 0.55, gradPow: 1, gradStops: 22,
+    minPx: 4, edge: 0.5, edgeCol: '#ffffff', edgeFade: true,
+    chips: 0, wrapFade: 0.16, borderFade: 0.38, wrapFadeOut: 0.12,
+    fov: 70, vpX: 0.37, vpY: 0.58,
+    col: SCHOOLS[0].col, bg: '#ffffff',
+    wash: 0, washCol: '#ffffff', washR: 0.88, washSoft: 2.8,
+    speed: 265, parallax: 0.055, ease: 0.05
+  });
+
+  function mixHex(a, b, t) {
+    a = a.replace('#',''); b = b.replace('#','');
+    var o = '#';
+    for (var i = 0; i < 3; i++) {
+      var v = Math.round(parseInt(a.substr(i*2,2),16) +
+        (parseInt(b.substr(i*2,2),16) - parseInt(a.substr(i*2,2),16)) * t);
+      o += (v < 16 ? '0' : '') + v.toString(16);
+    }
+    return o;
+  }
+
+  /* ---------- speaker bar ----------
+     Injected rather than dropped in an <img> so the artwork is part of the
+     document: its paths can be restyled from CSS. To make the strip track the
+     campus instead of holding its teal, add
+       #topbar path[fill="#578492"]{fill:var(--ink)}
+     to the sheet — a fill/stroke PROPERTY beats the authored attribute. */
+  /* Logo bar off for now — no HP lockup, no sponsor logos. Add ?logos to the
+     URL to bring the whole strip back. */
+  if (new URLSearchParams(location.search).has('logos')) {
+    fetch('speaker-names.svg')
+      .then(function (r) { return r.text(); })
+      .then(function (svg) { document.getElementById('topbar').innerHTML = svg; })
+      .catch(function () {
+        document.getElementById('topbar').innerHTML =
+          '<img src="speaker-names.svg" alt="" style="display:block;width:100%">';
+      });
+  }
+
+  /* ---------- type ---------- */
+  var elSchool = document.getElementById('school');
+  var elDate   = document.getElementById('date');
+
+  /* Out, replace while hidden, in — and the box resizes WITH the new name, not
+     ahead of it. Starting the height at the same moment as the slide-out was
+     the mistake: the plate grew around a name that was still on screen and had
+     not got any longer, so it opened a pocket of empty paper and only then
+     filled it.
+
+     The resize is issued at the swap instead, while the mask is empty, and it
+     runs on roughly the same clock as the slide-in. The new name enters from
+     below as the box opens, so the lower lines clear the mask edge exactly as
+     there is room for them — the growth and the arrival are one motion.
+
+     No pre-measurement is needed for this ordering: once the text is set, the
+     span's own offsetHeight IS the new height, because overflow:hidden clips
+     the span without constraining it. */
+  function flip(el, text) {
+    var span = el.firstChild;
+    if (span.textContent === text) return;
+    if (reduced) { span.textContent = text; el.style.height = ''; return; }
+    el.classList.add('is-out');
+    setTimeout(function () {
+      span.textContent = text;
+      el.classList.remove('is-out');
+      el.classList.add('is-pre');       // parked below, transition suppressed
+      el.style.height = span.offsetHeight + 'px';
+      // one frame parked below the mask, so the slide-in has somewhere to come from
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { el.classList.remove('is-pre'); });
+      });
+    }, 185);
+  }
+
+  /* First paint, and every reflow after: the mask has no height of its own
+     until something sets one. Fonts settle after the page does, and the name
+     rewraps when the window changes, so both have to re-seed it. */
+  /* Seeding is a correction, not a move — the font arriving or the window
+     changing should resize the plate at once, not ease it. The transition is
+     suppressed across the write, and the forced read between is what makes the
+     browser commit the new height before it is allowed to animate again. */
+  function seed(el) {
+    el.style.transition = 'none';
+    el.style.height = el.firstChild.offsetHeight + 'px';
+    void el.offsetHeight;
+    el.style.transition = '';
+  }
+  function seedAll() { seed(elSchool); seed(elDate); }
+  seedAll();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(seedAll);
+  addEventListener('resize', seedAll, { passive: true });
+
+  /* ---------- the cycle ---------- */
+  var idx = 0, t0 = performance.now(), paused = false;
+  var colFrom = SCHOOLS[0].col;  // where this window's colour started
+  var col = colFrom;             // what the field is showing right now
+
+  /* No reseed. Rebuilding the bar cloud on every switch was the pop: 220 slabs
+     cutting to new positions inside one frame, which no amount of speed hides.
+     The field already renews itself — bars wrap from the near plane back to the
+     far one continuously — so leaving it alone gives a flight that never
+     repeats and never cuts, and the campus change rides on colour alone. */
+  function apply(i) {
+    var s = SCHOOLS[i];
+    flip(elSchool, s.name);
+    flip(elDate, s.date);
+    document.documentElement.style.setProperty('--ink', s.col);
+  }
+  apply(0);
+  /* the plate's own colour transition, roughly matched to how long the
+     exponential chase below takes to arrive */
+  document.documentElement.style.setProperty('--xf', '520ms');
+
+  function goto(i) {
+    colFrom = col;               // ease out of wherever we actually are, not
+    idx = (i + SCHOOLS.length) % SCHOOLS.length;   // out of the last target
+    apply(idx);
+    t0 = performance.now();
+    if (armed) { armed = false; beginTake(pendingStream); pendingStream = null; }
+  }
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (reduced) return;
+
+    // one clock for the whole switch, so colour and speed cannot drift apart
+    var u = Math.min(1, (now - t0) / EASE_MS);
+
+    if (u < 1 || col !== SCHOOLS[idx].col) {
+      var e = u * u * u * (u * (u * 6 - 15) + 10);        // smootherstep
+      col = mixHex(colFrom, SCHOOLS[idx].col, e);
+      field.set({ col: col });
+      field.speedScale = 1 + (SWELL - 1) * Math.pow(Math.sin(Math.PI * u), 2);
+      if (u >= 1) field.speedScale = 1;
+    }
+
+    if (paused) { t0 = now - EASE_MS; return; }
+    if (now - t0 >= BEAT) goto(idx + 1);
+  }
+
+  /* ---------- steering, same as the hero ---------- */
+  if (!reduced) {
+    addEventListener('pointermove', function (e) {
+      field.pointer.x = e.clientX / innerWidth;
+      field.pointer.y = e.clientY / innerHeight;
+    }, { passive: true });
+  }
+  var basePar = field.P.parallax, steering = false;
+  addEventListener('pointerdown', function () {
+    steering = true; field.set({ parallax: 0.55, ease: 0.12 });
+  });
+  addEventListener('pointerup', function () {
+    if (!steering) return;
+    steering = false; field.set({ parallax: basePar, ease: 0.05 });
+  });
+
+  /* ---------- record ----------
+     A screen capture of this tab rather than a canvas capture: the corridor is
+     a <canvas> but the name, the date and the speaker bar are DOM and SVG, and
+     canvas.captureStream() would hand back the corridor alone. getDisplayMedia
+     is the only path that records what is actually composited.
+
+     preferCurrentTab pre-selects this tab in the picker, but the picker still
+     appears and still has to be accepted — that permission is not skippable,
+     and should not be.
+
+     The take is armed rather than started: it waits for the next beat and
+     begins exactly on a type flip, then runs one full rotation. Starting and
+     ending on the same instant of the cycle is what makes the file loop. */
+  var recBtn = document.getElementById('rec');
+  var armed = false, recorder = null;
+
+  function mimeType() {
+    return ['video/mp4;codecs=avc1.42E01E', 'video/webm;codecs=vp9',
+            'video/webm;codecs=vp8', 'video/webm']
+      .filter(function (t) { return MediaRecorder.isTypeSupported(t); })[0];
+  }
+
+  function save(blob, mime) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'usa-college-tour.' + (mime.indexOf('mp4') > -1 ? 'mp4' : 'webm');
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 20000);
+  }
+
+  function beginTake(stream) {
+    var mime = mimeType();
+    recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 16e6 });
+    var chunks = [];
+    recorder.ondataavailable = function (e) { if (e.data.size) chunks.push(e.data); };
+    recorder.onstop = function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      recorder = null;
+      recBtn.hidden = false;
+      recBtn.disabled = false;
+      recBtn.textContent = 'Record';
+      save(new Blob(chunks, { type: mime }), mime);
+    };
+    recBtn.hidden = true;                   // out of its own frame
+    recorder.start();
+    setTimeout(function () {
+      if (recorder && recorder.state !== 'inactive') recorder.stop();
+    }, BEAT * SCHOOLS.length);
+  }
+
+  recBtn.addEventListener('click', function () {
+    if (recorder || armed) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      recBtn.textContent = 'Unsupported'; return;
+    }
+    recBtn.disabled = true;
+    recBtn.textContent = 'Pick this tab';
+    navigator.mediaDevices.getDisplayMedia({
+      preferCurrentTab: true, audio: false,
+      video: { frameRate: { ideal: 60 } }
+    }).then(function (stream) {
+      recBtn.textContent = 'Arming';
+      armed = true;
+      pendingStream = stream;
+    }).catch(function () {                  // picker dismissed
+      recBtn.disabled = false;
+      recBtn.textContent = 'Record';
+    });
+  });
+
+  var pendingStream = null;
+
+  /* space pauses, arrows step — for scrubbing to a campus while recording */
+  addEventListener('keydown', function (e) {
+    if (e.key === 'r' || e.key === 'R') { recBtn.click(); }
+    else if (e.key === ' ') { e.preventDefault(); paused = !paused; t0 = performance.now(); }
+    else if (e.key === 'ArrowRight') goto(idx + 1);
+    else if (e.key === 'ArrowLeft')  goto(idx - 1);
+  });
+
+  addEventListener('resize', function () { field.resize(); }, { passive: true });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) field.stop(); else { field.start(); t0 = performance.now(); }
+  });
+
+  field.start();
+  if (reduced) { field.stop(); field.draw(); }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
