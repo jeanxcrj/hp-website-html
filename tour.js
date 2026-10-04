@@ -10,7 +10,7 @@
    the green and orange rows. The yellow ones (NYU UDAS, UPenn AIAS, MassArt,
    Thomas Jefferson NOMAS) are off the schedule until they firm up, and the
    staging days were never public stops. Venues and dates match the D5 page
-   Sep 23; Yale has a venue but no date, CMU a date but no venue.
+   of Oct 3; CMU has been dropped from the tour.
 
    `status` is the colour coding off that sheet. It is kept as data but no
    longer rendered: CONFIRMED / TARGETING is how the tour is tracked internally,
