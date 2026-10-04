@@ -9,7 +9,7 @@
    The list is the confirmed and in-negotiation columns of the planning sheet —
    the green and orange rows. The yellow ones (NYU UDAS, UPenn AIAS, MassArt,
    Thomas Jefferson NOMAS) are off the schedule until they firm up, and the
-   staging days were never public stops. Venues and dates are HP's list of
+   staging days were never public stops. Venues and dates match the D5 page
    Sep 23; Yale has a venue but no date, CMU a date but no venue.
 
    `status` is the colour coding off that sheet. It is kept as data but no
@@ -69,31 +69,23 @@
       exhibitionDescription: 'Experiments in architecture, media, and performance developed through iterative making.',
       note: null },
 
+    { slug: 'yale', school: 'Yale University', chapter: null,
+      date: 'Nov 6', status: 'set', venue: 'CEID Building', speakers: [1, 3],
+      exhibitionName: 'Workshop',
+      exhibitionDescription: null,
+      note: null },
+
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
       date: 'Nov 7', status: 'set', venue: 'Julis Romo Rabinowitz (JRR) Atrium', speakers: [5],
       exhibitionName: 'Ideas in Public',
       exhibitionDescription: 'A student-led exhibition about turning ambitious ideas into shared experiences.',
-      note: null },
-
-    { slug: 'cmu', school: 'Carnegie Mellon University', chapter: null,
-      date: 'Nov 14', status: 'set', venue: 'Venue TBD', speakers: [2, 3],
-      exhibitionName: 'Systems in Motion',
-      exhibitionDescription: 'A look at the people and prototypes reshaping how built environments work.',
-      note: null },
-
-    /* No date yet. numDate() passes anything it cannot read as a month through
-       untouched, so 'TBD' prints as TBD on the card. */
-    { slug: 'yale', school: 'Yale University', chapter: null,
-      date: 'TBD', status: 'target', venue: 'CEID Building', speakers: [1, 3],
-      exhibitionName: 'Workshop',
-      exhibitionDescription: null,
-      note: 'Date TBD.' }
+      note: null }
   ];
 
   /* Alphabetical by first name, so the grid implies no billing order — except
      Remy Zee, who sits beside Jangho Yun by request. Roles and
      bios still marked placeholder are stand-ins until the real copy arrives. */
-  var SPEAKER_BIO = 'Placeholder description. A short paragraph will go here on who this speaker is, the work they are known for, and the perspective they are bringing to the tour. Expect a look at their process, the tools they rely on, and what they think students should be paying attention to right now.';
+  var SPEAKER_BIO = 'Placeholder description. A short paragraph will go here on who this speaker is, the work they are known for, and the perspective they are bringing to the tour.';
 
   var SPEAKERS = [
     { id: 1, name: 'Andreas Palfinger', role: 'Designer', company: 'Zaha Hadid Architects',
@@ -117,9 +109,23 @@
 
   var WORKSHOPS = [
     { company: 'Bentley Systems', logo: 'logos/bentley.png',
-      name: 'Workshop name', description: null, speakers: ['Greg Demchek'] },
+      name: 'Drive the Future of AEC Workflows',
+      description: [
+        'In this workshop, you\u2019ll experience an early-access AEC design workflow in three connected steps from design intent into multi-disciplinary collaboration and stakeholder engagement:',
+        'Accelerate your design intent through AI-assisted modeling and design exploration. (MicroStation w/ MCP)',
+        'Bring your model into the cloud to collaborate in a project-centric environment, connecting data, teams, and decisions. (Bentley Infrastructure Cloud)',
+        'Transform your model into an immersive digital experience that supports stakeholder communication, project understanding, and informed decision-making. (iTwin Engage)'
+      ],
+      speakers: ['Greg Demchek'] },
     { company: 'D5 Render', logo: 'logos/d5.png',
-      name: 'Workshop name', description: null, speakers: ['Jessie Huang'] },
+      name: 'Minutes, Not Days: The AI-Powered D5 Rendering Workflow',
+      description: [
+        'Forget overnight render queues. This session shows what AI-powered rendering actually feels like: a Rhino model turns into a cinematic image in minutes, live on stage - one that communicates not just what a space looks like, but how it feels.',
+        'D5\u2019s AI understands your scene, builds the atmosphere and context around it, and refines the result to presentation quality, so you spend your studio hours designing, not tweaking sliders.',
+        'You\u2019ll see the full workflow demonstrated end to end, then try it yourself.',
+        'No rendering experience required: this is simply how the next generation of architects will work.'
+      ],
+      speakers: ['Jessie Huang'] },
     { company: 'SOLIDWORKS', logo: 'logos/solidworks.png',
       name: 'Design Smarter with SOLIDWORKS: Modeling, Simulation & AI',
       description: [
