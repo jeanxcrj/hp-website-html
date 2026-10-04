@@ -689,7 +689,7 @@
       ['COMPETITION', 'index.html#competition'],
       ['SCHEDULE', 'index.html#schedule'],
       ['SPEAKERS', 'index.html#speakers'],
-      ['GALLERY', 'index.html#gallery'],
+      /* ['GALLERY', 'index.html#gallery'],  hidden until the tour has photos */
       ['MORE ABOUT HP', 'index.html#hype'],
       ['REGISTER', 'index.html#schedule']
     ],
