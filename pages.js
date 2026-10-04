@@ -15,6 +15,15 @@
     });
   }
 
+  /* A stop's REGISTER: out to its Luma event, in a new tab so the schedule
+     stays where they left it. */
+  function regLink(s) {
+    var url = T.registerUrl(s);
+    return url
+      ? '<a class="rcard__go" href="' + esc(url) + '" target="_blank" rel="noopener">REGISTER</a>'
+      : '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">REGISTER</a>';
+  }
+
   /* A field nobody has filled in yet renders as its own label, greyed — so the
      gap is visible as a gap instead of as an accidentally empty line. */
   function or(v, placeholder) {
@@ -102,8 +111,7 @@
               : '';
           }()) +
         '<div class="rcard__actions">' +
-          '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">' +
-            'REGISTER</a>' +
+          regLink(s) +
           '<a class="rcard__go rcard__go--workshop" href="workshop.html?stop=' + encodeURIComponent(s.slug) + '">' +
             'WORKSHOP REGISTRATION</a>' + 
         '</div>' +
@@ -149,7 +157,7 @@
         '<p class="slist__tag">' + (s.chapter ? '<span>' + esc(s.chapter) + '</span>' : '') + '</p>' +
         /* the cards' own buttons, so the two views share one way in */
         '<div class="slist__go">' +
-          '<a class="rcard__go" href="register.html?stop=' + encodeURIComponent(s.slug) + '">REGISTER</a>' +
+          regLink(s) +
           '<a class="rcard__go rcard__go--workshop" href="workshop.html?stop=' + encodeURIComponent(s.slug) + '">' +
             'WORKSHOP REGISTRATION</a>' +
         '</div>' +
@@ -459,6 +467,7 @@
        links at; reached without a stop, or with one that no longer exists,
        they hand you back to the schedule rather than inventing a second list. */
     if (!stop) { location.replace('index.html#schedule'); return; }
+    if (!ws && T.registerUrl(stop)) { location.replace(T.registerUrl(stop)); return; }
 
     var name = T.stopName(stop);
     document.title = (ws ? 'Workshop' : 'Register') + ' · ' + name +
@@ -489,9 +498,22 @@
         '</div>' +
         /* the same fields the cards open, from the same function — two spellings
            of one form is two forms to keep in step */
-        '<div class="reg__fields">' + fields(stop, kind) + '</div>' +
+        (ws && stop.luma
+          /* one row per partner workshop, each its own Luma event */
+          ? '<div class="reg__fields reg__ws">' +
+              (T.workshops || []).map(function (w) {
+                var url = T.workshopUrl(stop, w.key);
+                return '<div class="reg__wsrow">' +
+                  '<div><h3>' + esc(w.company) + '</h3><p>' + esc(w.name) + '</p></div>' +
+                  (url
+                    ? '<a class="rcard__go" href="' + esc(url) + '" target="_blank" rel="noopener">REGISTER</a>'
+                    : '<span class="tbc">SOON</span>') +
+                '</div>';
+              }).join('') +
+            '</div>'
+          : '<div class="reg__fields">' + fields(stop, kind) + '</div>') +
       '</div>';
-    wireSubmit(root);
+    if (!(ws && stop.luma)) wireSubmit(root);
   }
 
   function register(root) { signup(root, 'register'); }
@@ -594,7 +616,7 @@
        not a way of scrolling to a card in it — someone who already knows their
        campus should not have to find it in a grid first. */
     menu.innerHTML = campuses.map(function (st) {
-      return '<a href="register.html?stop=' + encodeURIComponent(st.slug) + '">' +
+      return '<a href="' + esc(T.registerUrl(st) || 'register.html?stop=' + st.slug) + '" target="_blank" rel="noopener">' +
         esc(st.school) + '</a>';
     }).join('');
     wrap.appendChild(menu);
