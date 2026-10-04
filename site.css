@@ -715,7 +715,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
   /* narrower than the button's own offset allows, so a panel cannot hang off
      the right edge of a 360px screen */
   .navdrop{min-width:0;width:min(78vw,290px)}
-  .brand img{height:48px}
+  .brand img{height:36px}
   /* Four items will not fit beside the lockup at this width. The band keeps the
      one that is a call to action; the rest are in the footer, which is why the
      footer is on every page and not only on the index. */
