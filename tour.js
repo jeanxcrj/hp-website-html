@@ -34,70 +34,85 @@
 
   var STOPS = [
     { slug: 'cornell-aias', school: 'Cornell University', chapter: 'AIAS',
-      date: 'Oct 17', status: 'set', venue: 'Milstein Hall Dome', speakers: [1, 4],
+      date: 'Oct 17', status: 'set', venue: 'Milstein Hall Dome', speakers: [7, 1],
+      club: 'Cornell AIAS',
       exhibitionName: 'Material Futures',
       exhibitionDescription: 'A gathering of speculative materials, spatial ideas, and new ways to build.' ,
       note: 'Confirmed — the Milstein dome.' },
 
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
-      date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [3, 5],
+      date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [3, 1],
+      club: 'PennAiR',
       exhibitionName: 'Open Practice',
       exhibitionDescription: 'Projects that show how experimentation can move between design, technology, and culture.',
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
-      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [1, 2],
+      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [7, 8],
+      club: 'Pratt AIAS',
       exhibitionName: 'Making Visible',
       exhibitionDescription: 'A showcase of work that turns research, process, and making into public form.', note: null },
 
     { slug: 'nyu-tech', school: 'New York University', chapter: 'Tech',
-      date: 'Oct 30', status: 'set', venue: 'Leslie eLab', speakers: [4, 5],
+      date: 'Oct 25', status: 'set', venue: 'Kimmel Floor 4', speakers: [2, 4, 3],
+      club: 'Tech @ NYU',
       exhibitionName: 'Next Signals',
       exhibitionDescription: 'Emerging ideas at the intersection of creative practice, technology, and everyday life.',
-      note: '12pm to 6pm.' },
+      note: null },
 
     { slug: 'harvard-recompute', school: 'Harvard University', chapter: 'Recompute',
-      date: 'Oct 31', status: 'set', venue: 'Northwest Science Building B100', speakers: [3, 2],
+      date: 'Oct 31', status: 'set', venue: 'Northwest Science Building B100', speakers: [9, 4, 3],
+      club: 'ReCompute & HUPC',
       exhibitionName: 'Recompute',
       exhibitionDescription: 'A collection of projects that question familiar systems and propose more responsive futures.',
       note: null },
 
     { slug: 'rpi-soa', school: 'Rensselaer Polytechnic Institute',
       chapter: 'School of Architecture',
-      date: 'Nov 3', status: 'set', venue: 'EMPAC Building', speakers: [2, 4],
+      date: 'Nov 4', status: 'set', venue: 'EMPAC Building', speakers: [8],
+      club: 'RPI NOMAS',
       exhibitionName: 'Prototype / Perform',
       exhibitionDescription: 'Experiments in architecture, media, and performance developed through iterative making.',
       note: null },
 
     { slug: 'yale', school: 'Yale University', chapter: null,
-      date: 'Nov 6', status: 'set', venue: 'CEID Building', speakers: [1, 3],
+      date: 'Nov 6', status: 'set', venue: 'CEID Building', speakers: [5],
+      club: 'CEID',
       exhibitionName: 'Workshop',
       exhibitionDescription: null,
       note: null },
 
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
-      date: 'Nov 7', status: 'set', venue: 'Julis Romo Rabinowitz (JRR) Atrium', speakers: [5],
+      date: 'Nov 7', status: 'set', venue: 'Julis Romo Rabinowitz (JRR) Atrium', speakers: [5, 4, 10],
+      club: 'HackPrinceton',
       exhibitionName: 'Ideas in Public',
       exhibitionDescription: 'A student-led exhibition about turning ambitious ideas into shared experiences.',
       note: null }
   ];
 
-  /* Alphabetical by first name, so the grid implies no billing order — except
-     Remy Zee, who sits beside Jangho Yun by request. Roles and
+  /* Alphabetical by first name, so the grid implies no billing order. Roles and
      bios still marked placeholder are stand-ins until the real copy arrives. */
   var SPEAKER_BIO = 'Placeholder description. A short paragraph will go here on who this speaker is, the work they are known for, and the perspective they are bringing to the tour.';
 
   var SPEAKERS = [
     { id: 1, name: 'Andreas Palfinger', role: 'Designer', company: 'Zaha Hadid Architects',
       bio: null, photo: 'photos/andreas-palfinger.jpg' },
+    { id: 7, name: 'Brey Tucker', role: null, company: null,
+      bio: null, photo: null },
+    { id: 10, name: 'Daniel Min', role: null, company: null,
+      bio: null, photo: null },
+    { id: 9, name: 'Duke Pan', role: null, company: null,
+      bio: null, photo: null },
     { id: 2, name: 'Fred Liu', role: null, company: null,
       bio: null, photo: 'photos/fred-liu.jpg' },
     { id: 3, name: 'Hena Yang', role: 'Cofounder', company: 'Inyo',
-      bio: null, photo: 'photos/hena-yang.jpg' },
+      bio: 'I\u2019m a fine arts student, creator, and cofounder of Inyo, where I combine my creative background with technology to rethink how people connect. I\u2019ll be speaking about building a career across art, social media, and entrepreneurship, and how embracing an unconventional path can open doors to opportunities you never expected.',
+      photo: 'photos/hena-yang.jpg' },
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
-      bio: null, photo: 'photos/jangho-yun.jpg' },
-    { id: 6, name: 'Remy Zee', role: 'Creator', company: '@remyzeee',
-      bio: null, photo: 'photos/remy-zee.jpg' },
+      bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
+      photo: 'photos/jangho-yun.jpg' },
+    { id: 8, name: 'Kenton Grant', role: null, company: null,
+      bio: null, photo: null },
     { id: 5, name: 'Nino Ferrari-Mathis', role: null, company: '@ninosbuildings',
       bio: null, photo: 'photos/nino-ferrari-mathis.jpg' }
   ];

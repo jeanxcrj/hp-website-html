@@ -384,7 +384,7 @@
         stops.map(function (s) {
           return '<div class="workshop__row">' +
             '<div><h3>' + esc(s.school) + '</h3>' +
-              '<p>' + esc(s.exhibitionName || 'Workshop') + '</p></div>' +
+              '<p>' + esc(s.club || s.exhibitionName || 'Workshop') + '</p></div>' +
             '<a class="workshop__register" href="workshop.html?stop=' + encodeURIComponent(s.slug) + '">REGISTER</a>' +
           '</div>';
         }).join('') +
