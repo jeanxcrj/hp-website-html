@@ -319,7 +319,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    and it reads
    as one row or it reads as a ragged grid. It steps down by breakpoint instead
    of by whatever happens to fit. */
-.spk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+.spk{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
   gap:clamp(12px,1.4vw,20px);margin-top:clamp(30px,4.5vw,54px)}
 /* Its own white ground. While these sat inside a bordered plate the plate was
    the background; without one the corridor comes straight through the card and
@@ -342,6 +342,9 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
 .spk__role{font-family:var(--micro);font-weight:500;font-size:13.5px;line-height:1.4;
   margin:0;color:var(--slate)}
 .spk__bio{font-family:var(--text);font-size:13.5px;line-height:1.6;margin:0;color:var(--ink);flex:1}
+.spk__more{align-self:flex-start;margin:0;padding:0;border:0;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.06em;color:var(--blue);
+  text-decoration:underline;text-underline-offset:3px}
 /* An unfilled field is a labelled gap, not blank space: you can see which one
    is missing without opening tour.js. */
 .tbc{opacity:.42}
