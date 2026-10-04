@@ -479,22 +479,6 @@
           '<div class="reg__line"><b>SCHOOL</b><span>' + esc(stop.school) + '</span></div>' +
           '<div class="reg__line"><b>CHAPTER</b><span>' + esc(stop.chapter || '—') + '</span></div>' +
           '<div class="reg__line"><b>DATE</b><span>' + esc(stop.date) + '</span></div>' +
-          /* The session, as another row of the same panel. It was a kicker
-             beside the h2 for a moment; in the panel it sits with the school,
-             the chapter and the date — the four facts about this evening, read
-             the same way, instead of one of them being set apart as a
-             subtitle. The name and the blurb are already on the stop: they
-             were written for the schedule card and commented out of it, and
-             this is the page they describe. A stop with neither gets no row
-             rather than an empty one. */
-          (ws && (stop.exhibitionName || stop.exhibitionDescription)
-            ? '<div class="reg__line reg__line--ws"><b>WORKSHOP</b><span>' +
-                esc(stop.exhibitionName || 'Workshop') +
-                (stop.exhibitionDescription
-                  ? '<span class="reg__wsnote">' + esc(stop.exhibitionDescription) + '</span>'
-                  : '') +
-              '</span></div>'
-            : '') +
         '</div>' +
         /* the same fields the cards open, from the same function — two spellings
            of one form is two forms to keep in step */
