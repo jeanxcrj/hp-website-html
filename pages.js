@@ -404,6 +404,7 @@
                   ? '<p class="workshop__desc"><strong>NOTE:</strong> ' + esc(w.note) + '</p>'
                   : '') +
               '</div>' +
+              '<button type="button" class="workshop__more" aria-expanded="false">READ MORE</button>' +
             '</div>' +
           '</article>';
         }).join('') +
@@ -421,6 +422,32 @@
           '</div>';
         }).join('') +
       '</div>';
+
+    /* Every description is held to the same depth so the three cards line up;
+       READ MORE opens one. A description short enough to fit never gets one. */
+    function fit() {
+      el.querySelectorAll('.workshop__speaker-body').forEach(function (body) {
+        var copy = body.querySelector('.workshop__copy');
+        var btn = body.querySelector('.workshop__more');
+        if (copy.classList.contains('is-open')) return;
+        var over = copy.scrollHeight > copy.clientHeight + 2;
+        copy.classList.toggle('is-clipped', over);
+        btn.hidden = !over;
+      });
+    }
+    el.addEventListener('click', function (e) {
+      var btn = e.target.closest('.workshop__more');
+      if (!btn) return;
+      var copy = btn.parentNode.querySelector('.workshop__copy');
+      var open = !copy.classList.contains('is-open');
+      copy.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.textContent = open ? 'READ LESS' : 'READ MORE';
+      if (!open) fit();
+    });
+    fit();
+    window.addEventListener('resize', fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
 
   /* The planning sheet writes dates as "Oct 18–19"; the cards want them numeric,
