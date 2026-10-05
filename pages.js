@@ -379,7 +379,9 @@
              greyed slot rather than closing the line up — the gap is the point,
              and it is one field to fill in tour.js when the titles arrive. */
           '<p class="spk__role">' + or(p.role, 'Role') +
-            '<span class="spk__dot"> · </span>' + or(p.company, 'Company') + '</p>' +
+            /* '' means "none", not "not yet": the line ends at the role */
+            (p.company === '' ? '' :
+              '<span class="spk__dot"> · </span>' + or(p.company, 'Company')) + '</p>' +
           bio(p.bio) +
         '</div>' +
         '</article>';
