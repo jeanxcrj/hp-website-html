@@ -346,11 +346,21 @@
     el.addEventListener('click', function (e) {
       var btn = e.target.closest('.spk__more');
       if (!btn) return;
-      var body = btn.parentNode, open = btn.getAttribute('aria-expanded') !== 'true';
-      body.querySelector('.spk__short').hidden = open;
-      body.querySelector('.spk__full').hidden = !open;
-      btn.setAttribute('aria-expanded', String(open));
-      btn.textContent = open ? 'READ LESS' : 'READ MORE';
+      /* The row opens together: the grid stretches every card to the tallest,
+         so opening one alone leaves its neighbours as cut text over empty
+         space. The rest of the row reads in full with no button of their own;
+         the one that was clicked carries READ LESS for the whole row. */
+      var card = btn.closest('.spk__card'), open = btn.getAttribute('aria-expanded') !== 'true';
+      Array.prototype.forEach.call(el.querySelectorAll('.spk__card'), function (c) {
+        if (c.offsetTop !== card.offsetTop) return;
+        var short = c.querySelector('.spk__short'), b = c.querySelector('.spk__more');
+        if (!short) return;
+        short.hidden = open;
+        c.querySelector('.spk__full').hidden = !open;
+        b.hidden = open && b !== btn;
+        b.setAttribute('aria-expanded', String(open));
+        b.textContent = open ? 'READ LESS' : 'READ MORE';
+      });
     });
     el.innerHTML = T.speakers.map(function (p) {
       var n = p.id < 10 ? '0' + p.id : '' + p.id;
