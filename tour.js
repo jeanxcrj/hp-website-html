@@ -127,26 +127,35 @@
   var SPEAKER_BIO = 'Placeholder description. A short paragraph will go here on who this speaker is, the work they are known for, and the perspective they are bringing to the tour.';
 
   var SPEAKERS = [
-    { id: 1, name: 'Andreas Palfinger', role: 'Designer', company: 'Zaha Hadid Architects',
-      bio: null, photo: 'photos/andreas-palfinger.jpg' },
-    { id: 7, name: 'Brey Tucker', role: null, company: null,
-      bio: null, photo: null },
-    { id: 10, name: 'Daniel Min', role: null, company: null,
-      bio: null, photo: null },
-    { id: 9, name: 'Duke Pan', role: null, company: null,
-      bio: null, photo: null },
-    { id: 2, name: 'Fred Liu', role: null, company: null,
-      bio: null, photo: 'photos/fred-liu.jpg' },
-    { id: 3, name: 'Hena Yang', role: 'Cofounder', company: 'Inyo',
+    { id: 1, name: 'Andreas Palfinger', role: 'Artist, Architect', company: 'ZHA',
+      bio: 'Andreas is an artist and works as an architectural designer at ZHA (formerly Zaha Hadid Architects), based in London and New York. The talk follows Andreas\u2019 journey through multiple disciplines and continents: from graphic design to painting, animation film, sculpture and architecture; from the Austrian alps to New York, Beijing, Mumbai and London.',
+      photo: 'photos/andreas-palfinger.jpg?v=3' },
+    { id: 7, name: 'Brey Tucker', role: 'Senior Industry Manager, Project Delivery', company: 'Autodesk',
+      /* drawn from the University of Houston alumni spotlight — confirm with Brey */
+      bio: 'I trained as an architect and went from practice at HOK into design technology, leading BIM, VR, and digital fabrication work at firms like Perkins+Will and Stantec. Today I help shape the cloud collaboration tools architects and engineers use to deliver projects at Autodesk.',
+      photo: 'photos/brey-tucker.jpg' },
+    { id: 10, name: 'Daniel Min', role: 'Founder & Content Creator (190K+)', company: 'Mints Media',
+      /* drawn from Daniel's LinkedIn */
+      bio: 'I\u2019m the founder of Mints Media and a content creator with 190K+ followers, and I film vlogs on my YouTube channel, Daniel Mints. I studied at Wharton and am based in New York.',
+      photo: 'photos/daniel-min.jpg?v=2' },
+    { id: 9, name: 'Duke Pan', role: '350K+ YouTuber, YC Founder', company: 'SWE @ Meta, Tesla AI, Coinbase',
+      bio: 'Duke Pan, known online as Frying Pan, is a content creator, software engineer, and Y Combinator-backed founder. He\u2019ll share his unconventional path from a low-income upbringing in Canada to acting in China, studying computer science, YouTube, and big tech, graduating during the 2022 layoffs, and life as a founder. Drawing on his work building AI agents, he\u2019ll also discuss how students can create their own opportunities as AI changes engineering and work.',
+      photo: 'photos/duke-pan.jpg?v=2' },
+    { id: 2, name: 'Fred Liu', role: 'Designer', company: 'Creator',
+      /* stand-in copy, written for the layout — swap for Fred's own when it arrives */
+      bio: 'I work across design, technology, and the internet, making things and sharing the process along the way.', photo: 'photos/fred-liu.jpg' },
+    { id: 3, name: 'Hena Yang', role: 'Creator & Cofounder', company: 'Inyo',
       bio: 'I\u2019m a fine arts student, creator, and cofounder of Inyo, where I combine my creative background with technology to rethink how people connect. I\u2019ll be speaking about building a career across art, social media, and entrepreneurship, and how embracing an unconventional path can open doors to opportunities you never expected.',
       photo: 'photos/hena-yang.jpg?v=2' },
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
       bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
       photo: 'photos/jangho-yun.jpg' },
-    { id: 8, name: 'Kenton Grant', role: null, company: null,
-      bio: null, photo: null },
-    { id: 5, name: 'Nino Ferrari-Mathis', role: null, company: '@ninosbuildings',
-      bio: null, photo: 'photos/nino-ferrari-mathis.jpg' }
+    { id: 8, name: 'Kenton Grant', role: 'Director of Technology', company: 'Olson Kundig',
+      /* drawn from the Olson Kundig profile — confirm with Kenton */
+      bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
+      photo: 'photos/kenton-grant.jpg' },
+    { id: 5, name: 'Nino Ferrari-Mathis', role: 'Creator', company: 'NinosBuildings',
+      bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/nino-ferrari-mathis.jpg?v=2' }
   ];
 
   /* The three partner workshops, one row each. `description` is a string or a
