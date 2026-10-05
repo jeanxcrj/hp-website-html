@@ -117,7 +117,7 @@
      21-character line within 8px of a phone plate's inner edge, with nothing
      left over. The tracking is deliberate and stays at zero — spelled 0 rather
      than .0, which parses the same but reads as a typo. */
-  font-size:clamp(11px,1.667vw,24px);letter-spacing:0;word-spacing:0;
+  font-size:clamp(11px,min(1.667vw,calc(var(--plate-h) * .075)),24px);letter-spacing:0;word-spacing:0;
   color:var(--slate);
 }
 /* Sized off the plate, not off the viewport: EXPLORING is the longest word and
@@ -131,8 +131,16 @@ h1{
      scroll width against a 390px viewport, the whole page sliding sideways.
      3.472vw is exactly 50 at 1440. 64 was set against a plate that ran almost
      the full frame; on the narrower plate it is the whole card, and the title
-     stops being type on a poster and becomes the poster. */
-  font-size:clamp(20px,3.472vw,50px);
+     stops being type on a poster and becomes the poster.
+
+     The plate-h term is the other half of "sized off the plate". The plate's
+     height comes from the window's height, so on a short wide window (a laptop
+     with its toolbars showing, ~1440x650) the plate drops to ~223px tall and
+     ~490 across while 3.472vw still asks for 50px: EMPOWERING TODAY ran out of
+     the card and the second line fell onto the sponsor strip. .17 of the plate
+     keeps the line inside the inner width at a 0.575em advance and leaves room
+     for the mark and eyebrow above it; it only bites below ~807px of height. */
+  font-size:clamp(20px,min(3.472vw,calc(var(--plate-h) * .17)),50px);
   line-height:1;
   letter-spacing:-.025em;
 }
