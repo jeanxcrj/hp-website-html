@@ -283,7 +283,8 @@ h1,h2,.rcard__name,.spk__name{
   font-family:var(--mono);font-weight:500;word-spacing:-.3em;
   font-size:clamp(21px,2.5vw,38px);line-height:1.12;letter-spacing:-.02em;
 }
-.promo p{margin:0 0 1.05em;font-size:14px;line-height:1.7;color:rgba(255,255,255,.88);
+/* same body size and leading as About's paragraphs (.about__main p) */
+.promo p{margin:0 0 1.05em;font-family:var(--text);font-weight:400;font-size:clamp(15px,1.2vw,17.5px);line-height:1.7;color:rgba(255,255,255,.88);
   max-width:62ch}
 /* The quiz's own title inside the sentence. On the ink it cannot be blue, so it
    is the one thing in the band at full white. */
