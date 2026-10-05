@@ -141,9 +141,11 @@
     { id: 9, name: 'Duke Pan', role: '350K+ YouTuber, YC Founder', company: 'SWE @ Meta, Tesla AI, Coinbase',
       bio: 'Duke Pan, known online as Frying Pan, is a content creator, software engineer, and Y Combinator-backed founder. He\u2019ll share his unconventional path from a low-income upbringing in Canada to acting in China, studying computer science, YouTube, and big tech, graduating during the 2022 layoffs, and life as a founder. Drawing on his work building AI agents, he\u2019ll also discuss how students can create their own opportunities as AI changes engineering and work.',
       photo: 'photos/duke-pan.jpg?v=2' },
-    { id: 2, name: 'Fred Liu', role: 'Designer', company: 'Creator',
+    /* company '' (not null): Fred has no affiliation to list, so his line is
+       the role alone rather than a greyed "Company" slot */
+    { id: 2, name: 'Fred Liu', role: 'Content Creator', company: '',
       /* stand-in copy, written for the layout — swap for Fred's own when it arrives */
-      bio: 'I work across design, technology, and the internet, making things and sharing the process along the way.', photo: 'photos/fred-liu.jpg' },
+      bio: 'I\u2019m a content creator, making things online and sharing the process along the way.', photo: 'photos/fred-liu.jpg' },
     { id: 3, name: 'Hena Yang', role: 'Creator & Cofounder', company: 'Inyo',
       bio: 'I\u2019m a fine arts student, creator, and cofounder of Inyo, where I combine my creative background with technology to rethink how people connect. I\u2019ll be speaking about building a career across art, social media, and entrepreneurship, and how embracing an unconventional path can open doors to opportunities you never expected.',
       photo: 'photos/hena-yang.jpg?v=2' },
