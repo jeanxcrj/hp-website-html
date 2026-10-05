@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500&display=swap">
-<link rel="stylesheet" href="site.css?v=20261004d">
+<link rel="stylesheet" href="site.css?v=20261005a">
 <style>
 /* Only what the index has. The ink, the band, the gutters, the sheet type, the
    schedule, the cards and the arrival all live in site.css now — three pages
@@ -139,8 +139,14 @@ h1{
      ~490 across while 3.472vw still asks for 50px: EMPOWERING TODAY ran out of
      the card and the second line fell onto the sponsor strip. .17 of the plate
      keeps the line inside the inner width at a 0.575em advance and leaves room
-     for the mark and eyebrow above it; it only bites below ~807px of height. */
-  font-size:clamp(20px,min(3.472vw,calc(var(--plate-h) * .17)),50px);
+     for the mark and eyebrow above it; it only bites below ~807px of height.
+
+     The third term keeps EXPLORING TOMORROW clear of the REGISTER slab, which
+     hangs ~110px into the card's right edge. On a short laptop window (an XPS
+     15 at 150% is ~1280x650) the plate is ~490 wide and the .17 term still let
+     the line run under the button's face. 18 glyphs at a 0.575em advance is
+     10.35em; 175px is the left padding plus the slab's reach plus a gap with room for wider Windows rendering. */
+  font-size:clamp(20px,min(3.472vw,calc(var(--plate-h) * .17),calc((var(--card-w) - 175px) / 10.4)),50px);
   line-height:1;
   letter-spacing:-.025em;
 }
@@ -685,10 +691,10 @@ h1{
 </section>
 
 
-<script src="field.js?v=20261004d"></script>
-<script src="xbox.js?v=20261004d"></script>
-<script src="tour.js?v=20261004d"></script>
-<script src="pages.js?v=20261004d"></script>
+<script src="field.js?v=20261005a"></script>
+<script src="xbox.js?v=20261005a"></script>
+<script src="tour.js?v=20261005a"></script>
+<script src="pages.js?v=20261005a"></script>
 <script>
 (function () {
   'use strict';
