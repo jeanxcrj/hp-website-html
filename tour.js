@@ -33,17 +33,6 @@
   'use strict';
 
   var STOPS = [
-    { slug: 'cornell-aias', school: 'Cornell University', chapter: 'AIAS',
-      date: 'Oct 17', status: 'set', venue: 'Milstein Hall Dome', speakers: [7, 1],
-      club: 'Cornell AIAS',
-      luma: { tour: 'https://luma.com/ru47828y',
-        bentley: 'https://luma.com/als8c6tm',
-        d5: 'https://luma.com/yhgqvp08',
-        solidworks: 'https://luma.com/w88pkahx' },
-      exhibitionName: 'Material Futures',
-      exhibitionDescription: 'A gathering of speculative materials, spatial ideas, and new ways to build.' ,
-      note: 'Confirmed — the Milstein dome.' },
-
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
       date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [3, 1],
       club: 'PennAiR',
@@ -198,8 +187,8 @@
      runs — the gallery reads the length of this and shows the empty template
      when there is nothing yet, so filling it in is the whole job:
 
-       { school: 'Cornell University', src: 'photos/cornell-01.jpg',
-         alt: 'Open benches at Cornell' }
+       { school: 'University of Pennsylvania', src: 'photos/upenn-01.jpg',
+         alt: 'Open benches at Penn' }
 
      `school` must match a STOPS entry's school exactly; that string is what the
      filter groups on. */

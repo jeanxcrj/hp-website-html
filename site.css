@@ -463,7 +463,7 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    line-height:1.45;color:var(--slate)}
 
 /* Who is actually standing in THIS room. The speaker grid further down is the
-   whole tour's bill; without this line the card cannot say that Cornell and
+   whole tour's bill; without this line the card cannot say that Penn and
    CMU are not the same evening. */
 .rcard__bill{margin:0;font-family:var(--text);font-weight:400;font-size:12px;
   line-height:1.5;color:var(--slate)}
