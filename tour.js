@@ -10,7 +10,7 @@
    the green and orange rows. The yellow ones (NYU UDAS, UPenn AIAS, MassArt,
    Thomas Jefferson NOMAS) are off the schedule until they firm up, and the
    staging days were never public stops. Venues and dates match the D5 page
-   of Oct 3; CMU has been dropped from the tour.
+   of Oct 3; CMU and RPI have been dropped from the tour.
 
    `status` is the colour coding off that sheet. It is kept as data but no
    longer rendered: CONFIRMED / TARGETING is how the tour is tracked internally,
@@ -65,7 +65,7 @@
       exhibitionDescription: 'Emerging ideas at the intersection of creative practice, technology, and everyday life.',
       note: null },
 
-    { slug: 'harvard-recompute', school: 'Harvard University', chapter: 'Recompute',
+    { slug: 'harvard-recompute', school: 'Harvard University - HUPC & HCS ReCompute', chapter: null,
       date: 'Oct 31', status: 'set', venue: 'Northwest Science Building B100', speakers: [9, 4, 3],
       club: 'ReCompute & HUPC',
       luma: { tour: 'https://luma.com/rz4kxann',
@@ -74,18 +74,6 @@
         solidworks: 'https://luma.com/grjbiiw5' },
       exhibitionName: 'Recompute',
       exhibitionDescription: 'A collection of projects that question familiar systems and propose more responsive futures.',
-      note: null },
-
-    { slug: 'rpi-soa', school: 'Rensselaer Polytechnic Institute',
-      chapter: 'School of Architecture',
-      date: 'Nov 4', status: 'set', venue: 'EMPAC Building', speakers: [8],
-      club: 'RPI NOMAS',
-      luma: { tour: 'https://luma.com/3fpjs1sk',
-        bentley: 'https://luma.com/event/evt-9Asw65DVntZKrim',
-        d5: 'https://luma.com/ymkg16bz',
-        solidworks: 'https://luma.com/pa9apqgm' },
-      exhibitionName: 'Prototype / Perform',
-      exhibitionDescription: 'Experiments in architecture, media, and performance developed through iterative making.',
       note: null },
 
     { slug: 'yale', school: 'Yale University', chapter: null,
@@ -100,7 +88,7 @@
       note: null },
 
     { slug: 'princeton', school: 'Princeton University', chapter: 'Hacking Club',
-      date: 'Nov 7', status: 'set', venue: 'Julis Romo Rabinowitz (JRR) Atrium', speakers: [5, 4, 10],
+      date: 'Nov 7', status: 'set', venue: 'Friend Center for Engineering Education', speakers: [5, 4, 10],
       club: 'HackPrinceton',
       luma: { tour: 'https://luma.com/sbjgapnu',
         bentley: 'https://luma.com/event/evt-7AnBICjkuTJyAX2',
@@ -145,6 +133,10 @@
       /* drawn from the Olson Kundig profile — confirm with Kenton */
       bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
       photo: 'photos/kenton-grant.jpg' },
+    /* stand-in copy drawn from Kyle's LinkedIn — swap for his own when it arrives */
+    { id: 11, name: 'Kyle Reeder, PE', role: 'Civil Engineer', company: 'Bentley Systems',
+      bio: 'I\u2019m a licensed civil engineer who moved from designing infrastructure into helping teams adopt the tools behind it at Bentley Systems. My work sits between engineering, project delivery, and automation, from sewer and roadway design to building on the iTwin platform.',
+      photo: 'photos/kyle-reeder.jpg' },
     { id: 5, name: 'Nino Ferrari-Mathis', role: 'Creator', company: 'NinosBuildings',
       bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/nino-ferrari-mathis.jpg?v=2' }
   ];
@@ -174,10 +166,10 @@
       ],
       speakers: ['Jessie Huang'] },
     { key: 'solidworks', company: 'SOLIDWORKS', logo: 'logos/solidworks.png',
-      name: 'Design Smarter with SOLIDWORKS: Modeling, Simulation & AI',
+      name: 'Design Smarter with SOLIDWORKS: Modeling & AI',
       description: [
-        'Think you\u2019re fast in SOLIDWORKS? Prove it. You\u2019ll model a component against the clock, then run a simulation to see how well it holds up.',
-        'Next, make it stronger with less material, using the same simulation and optimization workflow engineers use on the job. We\u2019ll finish with a look at new AI tools that help you explore more options and iterate faster.'
+        'Think you\u2019re fast in SOLIDWORKS? Prove it. Get hands-on practice with a real-world design challenge and put your SOLIDWORKS skills to the test.',
+        'After some basic training, you\u2019ll model a preselected component and race to complete your design. Then we\u2019ll look at what\u2019s coming next: emerging AI-powered tools that can help designers and engineers explore more possibilities, iterate faster, and push their designs even further.'
       ],
       note: 'The workshop is designed for students with prior experience in parametric CAD modeling.',
       speakers: [] }
