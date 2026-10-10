@@ -133,9 +133,10 @@
       /* drawn from the Olson Kundig profile — confirm with Kenton */
       bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
       photo: 'photos/kenton-grant.jpg' },
-    /* role and bio still to come from Kyle via Andrew */
-    { id: 11, name: 'Kyle Reeder, PE', role: null, company: 'Bentley Systems',
-      bio: null, photo: 'photos/kyle-reeder.jpg' },
+    /* stand-in copy drawn from Kyle's LinkedIn — swap for his own when it arrives */
+    { id: 11, name: 'Kyle Reeder, PE', role: 'Civil Engineer', company: 'Bentley Systems',
+      bio: 'I\u2019m a licensed civil engineer who moved from designing infrastructure into helping teams adopt the tools behind it at Bentley Systems. My work sits between engineering, project delivery, and automation, from sewer and roadway design to building on the iTwin platform.',
+      photo: 'photos/kyle-reeder.jpg' },
     { id: 5, name: 'Nino Ferrari-Mathis', role: 'Creator', company: 'NinosBuildings',
       bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/nino-ferrari-mathis.jpg?v=2' }
   ];
