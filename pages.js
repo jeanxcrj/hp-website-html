@@ -801,13 +801,18 @@
       [].forEach.call(blocks, function (b) { b.classList.add('is-up'); });
       return;
     }
+    /* Fire on the top edge crossing into the lower part of the screen, not on a
+       share of the block's area. A fraction stops being reachable once a block is
+       taller than the screen divided by it: the speakers grid stacks to one
+       column on a phone, and at 13 cards 12% of it was more than a whole
+       screen, so it never revealed and the section sat at opacity 0. */
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
         en.target.classList.add('is-up');
         io.unobserve(en.target);
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
     [].forEach.call(blocks, function (b) { io.observe(b); });
   }
 
