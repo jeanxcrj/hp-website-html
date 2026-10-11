@@ -141,7 +141,7 @@
       bio: 'I\u2019m a licensed civil engineer who moved from designing infrastructure into helping teams adopt the tools behind it at Bentley Systems. My work sits between engineering, project delivery, and automation, from sewer and roadway design to building on the iTwin platform.',
       photo: 'photos/real/kyle-reeder.jpg' },
     { id: 5, name: 'Nino Ferrari-Mathis', role: 'Creator', company: 'NinosBuildings',
-      bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/nino-ferrari-mathis.jpg?v=2' }
+      bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/real/nino-ferrari-mathis.jpg' }
   ];
 
   /* The three partner workshops, one row each. `description` is a string or a
