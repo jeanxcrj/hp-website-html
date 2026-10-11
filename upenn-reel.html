@@ -168,7 +168,7 @@
   var CARDS = [
     { kind: 'title', ms: 2800,
       title: 'UPenn Aerial Robotics',
-      meta: ['Sunday 10.18 &middot; 11 AM&ndash;7:30 PM', 'Amy Gutmann Hall, Philadelphia'] },
+      meta: ['Sunday 10.18 | 11 AM&ndash;7:30 PM', 'Amy Gutmann Hall, Philadelphia'] },
 
     { kind: 'speaker', ms: 2400, p: who('Jia Chen'),        slot: 'Power speaker<br>12:00&ndash;12:30 PM' },
     { kind: 'speaker', ms: 2400, p: who('Hena Yang'),       slot: 'Power speaker<br>3:20&ndash;3:50 PM' },
@@ -202,7 +202,7 @@
              '<p class="role">' + c.p.role + '</p>' +
              '<p class="slot">' + c.slot + '</p></div></div>';
     }
-    return '<p class="kicker"><span>Schedule &middot; Sunday 10.18</span><span class="n">' + c.page + '</span></p>' +
+    return '<p class="kicker"><span>Schedule | Sunday 10.18</span><span class="n">' + c.page + '</span></p>' +
            '<ul class="rows">' + c.rows.map(function (r) {
              return '<li><span class="t">' + r[0] + '</span><span class="w">' + r[1] +
                     '</span><span class="who">' + r[2] + '</span></li>';
