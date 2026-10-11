@@ -128,7 +128,7 @@
       photo: 'photos/real/hena-yang.jpg' },
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
       bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
-      photo: 'photos/jangho-yun.jpg' },
+      photo: 'photos/real/jangho-yun.jpg' },
     { id: 12, name: 'Jia Chen', role: 'Co-founder & CEO', company: 'Jam',
       bio: 'I’ll be talking about going from engineering student to building larger projects.',
       photo: 'photos/real/jia-chen.jpg' },
