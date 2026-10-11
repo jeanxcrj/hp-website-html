@@ -82,8 +82,10 @@
   .spk .name{margin:0;font-size:2.9vw;line-height:1;text-transform:uppercase;letter-spacing:-.01em}
   .spk .role{margin:.9vw 0 0;font-family:"hp-forma",system-ui,sans-serif;font-weight:400;
     font-size:1.2vw;line-height:1.35}
+  /* the session line is set like the role above it, in the secondary blue */
   .spk .slot{margin:1.4vw 0 0;padding-top:.8vw;border-top:.1vw solid var(--rule);
-    font-size:1vw;letter-spacing:.03em;text-transform:uppercase}
+    font-family:"hp-forma",system-ui,sans-serif;font-weight:400;
+    font-size:1.2vw;line-height:1.35;color:var(--second)}
 
   /* schedule: time, what, who — ruled like the site's register list */
   .rows{margin:1vw 0 0;padding:0;list-style:none}
@@ -181,7 +183,7 @@
              '<p class="meta">' + c.meta.join('<br>') + '</p>';
     }
     if (c.kind === 'speaker') {
-      return '<p class="kicker"><span>Speaker</span><span class="n">UPenn &middot; 10.18</span></p>' +
+      return '<p class="kicker"><span>Speaker</span></p>' +
              '<div class="spk"><img src="' + c.p.photo + '" alt="">' +
              '<div><p class="name">' + c.p.name + '</p>' +
              '<p class="role">' + c.p.role + '</p>' +
