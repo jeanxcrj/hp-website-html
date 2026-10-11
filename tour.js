@@ -131,7 +131,7 @@
       photo: 'photos/jangho-yun.jpg' },
     { id: 12, name: 'Jia Chen', role: 'Co-founder & CEO', company: 'Jam',
       bio: 'I’ll be talking about going from engineering student to building larger projects.',
-      photo: 'photos/jia-chen.jpg' },
+      photo: 'photos/jia-chen.jpg?v=2' },
     { id: 8, name: 'Kenton Grant', role: 'Director of Technology', company: 'Olson Kundig',
       /* drawn from the Olson Kundig profile — confirm with Kenton */
       bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
