@@ -122,7 +122,7 @@
        the role alone rather than a greyed "Company" slot */
     { id: 2, name: 'Fred Liu', role: 'Content Creator', company: '',
       /* stand-in copy, written for the layout — swap for Fred's own when it arrives */
-      bio: 'I\u2019m a content creator, making things online and sharing the process along the way.', photo: 'photos/fred-liu.jpg' },
+      bio: 'I\u2019m a content creator, making things online and sharing the process along the way.', photo: 'photos/real/fred-liu.jpg' },
     { id: 3, name: 'Hena Yang', role: 'Creator & Cofounder', company: 'Inyo',
       bio: 'I\u2019m a fine arts student, creator, and cofounder of Inyo, where I combine my creative background with technology to rethink how people connect. I\u2019ll be speaking about building a career across art, social media, and entrepreneurship, and how embracing an unconventional path can open doors to opportunities you never expected.',
       photo: 'photos/real/hena-yang.jpg' },
