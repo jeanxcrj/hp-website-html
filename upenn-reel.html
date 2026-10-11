@@ -23,6 +23,7 @@
   :root{
     --ink:#011F5B;
     --hp:#024AD8;
+    --second:#8397BE;   /* the brand's secondary blue (lavender) */
     --paper:#ffffff;
     --rule:rgba(1,31,91,.16);
     --ease:cubic-bezier(.22,1,.36,1);
@@ -63,16 +64,16 @@
   .card.is-pre{transform:translateY(1.6vw);opacity:0;transition:none}
 
   /* Captions (the Speaker / Schedule lines and the title card's date and
-     venue) take the secondary blue, HP's, so they sit apart from the Penn
+     venue) take the brand's secondary blue, the lavender, so they sit apart from the Penn
      Blue names and titles they label. */
   .kicker{margin:1.7vw 0 0;font-size:.95vw;letter-spacing:.04em;text-transform:uppercase;
-    display:flex;justify-content:space-between;gap:1vw;color:var(--hp)}
+    display:flex;justify-content:space-between;gap:1vw;color:var(--second)}
   .kicker .n{opacity:.5}
 
   .title{margin:1.2vw 0 0;font-size:4.15vw;line-height:.98;letter-spacing:-.01em;
     text-transform:uppercase;font-weight:500}
   .meta{margin:1.5vw 0 0;font-size:1.05vw;line-height:1.45;letter-spacing:.02em;
-    text-transform:uppercase;color:var(--hp)}
+    text-transform:uppercase;color:var(--second)}
 
   /* speaker: portrait on the left, the words on the right, both on the top line */
   .spk{display:grid;grid-template-columns:11.2vw 1fr;gap:1.6vw;margin-top:1.4vw;align-items:end}
