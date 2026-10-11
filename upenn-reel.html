@@ -131,12 +131,18 @@
      The Penn stop, from its event page: the three power speakers and the day's
      running order. Names, roles and portraits come from tour.js so this reel
      uses the same people, spelled the same way, as the site. */
+  /* The reel shows the speakers' own photographs, not the site's blue riso
+     treatment. Anyone without one here falls back to the site's portrait. */
+  var REAL = {
+    'Jia Chen': 'photos/real/jia-chen.jpg',
+    'Kyle Reeder, PE': 'photos/real/kyle-reeder.jpg'
+  };
   function who(name) {
     var p = TOUR.speakers.filter(function (s) { return s.name === name; })[0];
     return {
       name: name,
       role: [p.role, p.company].filter(Boolean).join(', '),
-      photo: p.photo
+      photo: REAL[name] || p.photo
     };
   }
 
