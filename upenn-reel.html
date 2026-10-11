@@ -156,7 +156,7 @@
   function who(name) {
     var p = TOUR.speakers.filter(function (s) { return s.name === name; })[0];
     return {
-      name: name,
+      name: name.replace(/,.*$/, ''),   // "Kyle Reeder, PE" is just Kyle Reeder here
       role: [p.role, p.company].filter(Boolean).join(', '),
       photo: REAL[name] || p.photo
     };
@@ -167,9 +167,9 @@
       title: 'UPenn Aerial Robotics',
       meta: ['Sunday 10.18 &middot; 11 AM&ndash;7:30 PM', 'Amy Gutmann Hall, Philadelphia'] },
 
-    { kind: 'speaker', ms: 2400, p: who('Jia Chen'),        slot: 'Power speaker &middot; 12:00&ndash;12:30 PM' },
-    { kind: 'speaker', ms: 2400, p: who('Hena Yang'),       slot: 'Power speaker &middot; 3:20&ndash;3:50 PM' },
-    { kind: 'speaker', ms: 2400, p: who('Kyle Reeder, PE'), slot: 'Power speaker &middot; 6:40&ndash;7:10 PM' },
+    { kind: 'speaker', ms: 2400, p: who('Jia Chen'),        slot: 'Power speaker<br>12:00&ndash;12:30 PM' },
+    { kind: 'speaker', ms: 2400, p: who('Hena Yang'),       slot: 'Power speaker<br>3:20&ndash;3:50 PM' },
+    { kind: 'speaker', ms: 2400, p: who('Kyle Reeder, PE'), slot: 'Power speaker<br>6:40&ndash;7:10 PM' },
 
     { kind: 'schedule', ms: 3200, page: '1/3', rows: [
       ['11:00&ndash;12:00', 'Demos &amp; exhibition', ''],
@@ -183,7 +183,7 @@
       ['4:00&ndash;5:00',   'Workshop', 'Bentley Systems'] ] },
     { kind: 'schedule', ms: 3200, page: '3/3', rows: [
       ['5:10&ndash;6:40',   'Workshop', 'SOLIDWORKS'],
-      ['6:40&ndash;7:10',   'Power speaker', 'Kyle Reeder, PE'],
+      ['6:40&ndash;7:10',   'Power speaker', 'Kyle Reeder'],
       ['7:10&ndash;7:30',   'Giveaway &amp; closeout', ''] ] }
   ];
 
