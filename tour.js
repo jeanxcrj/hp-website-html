@@ -129,6 +129,9 @@
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
       bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
       photo: 'photos/jangho-yun.jpg' },
+    { id: 12, name: 'Jia Chen', role: 'Co-founder & CEO', company: 'Jam',
+      bio: 'I’ll be talking about going from engineering student to building larger projects.',
+      photo: 'photos/jia-chen.jpg' },
     { id: 8, name: 'Kenton Grant', role: 'Director of Technology', company: 'Olson Kundig',
       /* drawn from the Olson Kundig profile — confirm with Kenton */
       bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
