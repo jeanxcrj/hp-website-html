@@ -351,6 +351,12 @@
     else if (e.key === 'ArrowLeft') goto(idx - 1);
   });
 
+  /* A trackpad pinch magnifies the page without relaying it out, so the plate
+     and the corridor both blow up and the edges crop off. On a Mac a pinch
+     arrives as a wheel event with ctrlKey set; swallowing those keeps the
+     frame at the size it was laid out for. */
+  addEventListener('wheel', function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+
   /* the cursor would end up in the take; hide it after a moment of stillness */
   var idleT;
   addEventListener('pointermove', function () {
