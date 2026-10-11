@@ -315,12 +315,10 @@ p,.spk__bio,.check span,.sent{text-wrap:pretty}
    Slots, not people. Everything a real entry needs is drawn empty rather than
    filled with a plausible stranger — a placeholder that looks like content is
    the one kind that ships by accident. */
-/* Five, explicitly. auto-fill decides the count from the available width, which
-   would be right if the count were open-ended, but the bill is five people
-   and it reads
-   as one row or it reads as a ragged grid. It steps down by breakpoint instead
-   of by whatever happens to fit. */
-.spk{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+/* Four, explicitly: three rows of four. auto-fill decides the count from the
+   available width, which would read as a ragged grid. It steps down by
+   breakpoint instead of by whatever happens to fit. */
+.spk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
   gap:clamp(12px,1.4vw,20px);margin-top:clamp(30px,4.5vw,54px)}
 /* Its own white ground. While these sat inside a bordered plate the plate was
    the background; without one the corridor comes straight through the card and
