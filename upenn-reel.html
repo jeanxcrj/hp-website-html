@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>USA College Tour — UPenn reel</title>
+<meta name="robots" content="noindex">
+<style>
+  @font-face{
+    font-family:"forma-djr-mono";
+    src:url("fonts/forma-djr-mono-500.woff2") format("woff2");
+    font-weight:500;font-style:normal;font-display:block;
+  }
+  @font-face{
+    font-family:"hp-forma";
+    src:url("fonts/hp-forma-office-400.woff2") format("woff2");
+    font-weight:400;font-style:normal;font-display:block;
+  }
+
+  /* One school, so one ink: Penn Blue, the same hex the campus reel uses for
+     Penn. The plate's rule and title, and every slab. The HP mark and
+     the "USA college tour" line stay HP blue, as they do on the frame. */
+  :root{
+    --ink:#011F5B;
+    --hp:#024AD8;
+    --paper:#ffffff;
+    --rule:rgba(1,31,91,.16);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--paper)}
+  body{font-family:"forma-djr-mono",ui-monospace,monospace;font-weight:500;color:var(--ink);
+    -webkit-font-smoothing:antialiased}
+
+  #field{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;
+    -webkit-user-select:none;user-select:none}
+
+  /* ---------- the plate ----------
+     Sized in vw throughout, so a take recorded at any window size is the same
+     picture scaled. Placed where the frame puts it: left margin a little over
+     5% of the width, vertically centred, just under half the width wide. */
+  .plate{position:fixed;z-index:1;pointer-events:none;
+    left:5.7vw;top:50%;transform:translateY(-50%);
+    width:44.4vw;
+    background:var(--paper);
+    border:.21vw solid var(--ink);
+    overflow:hidden;
+    /* height is written by the script and eased here, so the box grows and
+       recentres on one curve as a longer card comes in */
+    transition:height 460ms var(--ease)}
+  .plate__in{padding:1.75vw 1.9vw 2vw}
+
+  /* the HP lockup, recoloured from the site's white export by masking it */
+  .lockup{display:block;width:10.6vw;aspect-ratio:553/140;background:var(--hp);
+    -webkit-mask:url(hp-lockup.svg) left center/contain no-repeat;
+            mask:url(hp-lockup.svg) left center/contain no-repeat}
+
+  /* ---------- card content ---------- */
+  .card{transition:transform 300ms var(--ease),opacity 220ms linear}
+  .card.is-out{transform:translateY(-1.6vw);opacity:0;
+    transition:transform 200ms cubic-bezier(.5,0,.75,0),opacity 160ms linear}
+  .card.is-pre{transform:translateY(1.6vw);opacity:0;transition:none}
+
+  .kicker{margin:1.7vw 0 0;font-size:.95vw;letter-spacing:.04em;text-transform:uppercase;
+    display:flex;justify-content:space-between;gap:1vw}
+  .kicker .n{opacity:.5}
+
+  .title{margin:1.2vw 0 0;font-size:4.15vw;line-height:.98;letter-spacing:-.01em;
+    text-transform:uppercase;font-weight:500}
+  .meta{margin:1.5vw 0 0;font-size:1.05vw;line-height:1.45;letter-spacing:.02em;
+    text-transform:uppercase}
+
+  /* speaker: portrait on the left, the words on the right, both on the top line */
+  .spk{display:grid;grid-template-columns:11.2vw 1fr;gap:1.6vw;margin-top:1.4vw;align-items:end}
+  .spk img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;
+    border:.1vw solid var(--rule)}
+  .spk .name{margin:0;font-size:2.9vw;line-height:1;text-transform:uppercase;letter-spacing:-.01em}
+  .spk .role{margin:.9vw 0 0;font-family:"hp-forma",system-ui,sans-serif;font-weight:400;
+    font-size:1.2vw;line-height:1.35}
+  .spk .slot{margin:1.4vw 0 0;padding-top:.8vw;border-top:.1vw solid var(--rule);
+    font-size:1vw;letter-spacing:.03em;text-transform:uppercase}
+
+  /* schedule: time, what, who — ruled like the site's register list */
+  .rows{margin:1vw 0 0;padding:0;list-style:none}
+  .rows li{display:grid;grid-template-columns:9.6vw 1fr auto;gap:1vw;align-items:baseline;
+    padding:.95vw 0;border-top:.1vw solid var(--rule);
+    transition:transform 340ms var(--ease),opacity 260ms linear}
+  .rows li:last-child{border-bottom:.1vw solid var(--rule)}
+  .rows .t{font-size:1.15vw;letter-spacing:.01em}
+  .rows .w{font-size:1.7vw;line-height:1.05;text-transform:uppercase;letter-spacing:-.005em}
+  .rows .who{font-family:"hp-forma",system-ui,sans-serif;font-weight:400;font-size:1.15vw;
+    text-align:right}
+  /* rows arrive one after another rather than as a block */
+  .card.is-pre .rows li{transform:translateY(1vw);opacity:0;transition:none}
+  .rows li:nth-child(2){transition-delay:50ms}
+  .rows li:nth-child(3){transition-delay:100ms}
+  .rows li:nth-child(4){transition-delay:150ms}
+
+  /* ---------- record control ----------
+     Same tool as the poster cycle: outside the frame so it can take a click,
+     hidden for the length of the take. */
+  .rec{position:fixed;right:14px;bottom:14px;z-index:5;
+    font:500 11px/1 "forma-djr-mono",ui-monospace,monospace;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink);background:var(--paper);
+    border:1px solid var(--ink);border-radius:0;
+    padding:8px 11px 7px;cursor:pointer;opacity:.5;transition:opacity 200ms linear}
+  .rec:hover{opacity:1}
+  .rec[disabled]{cursor:default;opacity:.85}
+
+  @media (prefers-reduced-motion:reduce){
+    .plate,.card,.rows li{transition:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+
+<div class="plate" id="plate"><div class="plate__in">
+  <span class="lockup" role="img" aria-label="HP USA College Tour 2026"></span>
+  <div class="card" id="card"></div>
+</div></div>
+
+<button class="rec" id="rec" type="button">Record</button>
+
+<script src="field.js"></script>
+<script src="tour.js"></script>
+<script>
+(function () {
+  /* ---------- content ----------
+     The Penn stop, from its event page: the three power speakers and the day's
+     running order. Names, roles and portraits come from tour.js so this reel
+     uses the same people, spelled the same way, as the site. */
+  function who(name) {
+    var p = TOUR.speakers.filter(function (s) { return s.name === name; })[0];
+    return {
+      name: name,
+      role: [p.role, p.company].filter(Boolean).join(', '),
+      photo: p.photo
+    };
+  }
+
+  var CARDS = [
+    { kind: 'title', ms: 2800,
+      title: 'UPenn Aerial Robotics',
+      meta: ['Sunday 10.18 &middot; 11 AM&ndash;7:30 PM', 'Amy Gutmann Hall, Philadelphia'] },
+
+    { kind: 'speaker', ms: 2400, p: who('Jia Chen'),        slot: 'Power speaker &middot; 12:00&ndash;12:30 PM' },
+    { kind: 'speaker', ms: 2400, p: who('Hena Yang'),       slot: 'Power speaker &middot; 3:20&ndash;3:50 PM' },
+    { kind: 'speaker', ms: 2400, p: who('Kyle Reeder, PE'), slot: 'Power speaker &middot; 6:40&ndash;7:10 PM' },
+
+    { kind: 'schedule', ms: 3200, page: '1/3', rows: [
+      ['11:00&ndash;12:00', 'Demos &amp; exhibition', ''],
+      ['12:00&ndash;12:30', 'Power speaker', 'Jia Chen'],
+      ['12:40&ndash;1:00',  'Keynote', 'HP'],
+      ['1:10&ndash;1:30',   'Keynote', 'Intel'] ] },
+    { kind: 'schedule', ms: 3200, page: '2/3', rows: [
+      ['1:40&ndash;2:00',   'Keynote', 'AMD'],
+      ['2:10&ndash;3:10',   'Workshop', 'D5 Render'],
+      ['3:20&ndash;3:50',   'Power speaker', 'Hena Yang'],
+      ['4:00&ndash;5:00',   'Workshop', 'Bentley Systems'] ] },
+    { kind: 'schedule', ms: 3200, page: '3/3', rows: [
+      ['5:10&ndash;6:40',   'Workshop', 'SOLIDWORKS'],
+      ['6:40&ndash;7:10',   'Power speaker', 'Kyle Reeder, PE'],
+      ['7:10&ndash;7:30',   'Giveaway &amp; closeout', ''] ] }
+  ];
+
+  function html(c) {
+    if (c.kind === 'title') {
+      return '<h1 class="title">' + c.title + '</h1>' +
+             '<p class="meta">' + c.meta.join('<br>') + '</p>';
+    }
+    if (c.kind === 'speaker') {
+      return '<p class="kicker"><span>Speaker</span><span class="n">UPenn &middot; 10.18</span></p>' +
+             '<div class="spk"><img src="' + c.p.photo + '" alt="">' +
+             '<div><p class="name">' + c.p.name + '</p>' +
+             '<p class="role">' + c.p.role + '</p>' +
+             '<p class="slot">' + c.slot + '</p></div></div>';
+    }
+    return '<p class="kicker"><span>Schedule &middot; Sunday 10.18</span><span class="n">' + c.page + '</span></p>' +
+           '<ul class="rows">' + c.rows.map(function (r) {
+             return '<li><span class="t">' + r[0] + '</span><span class="w">' + r[1] +
+                    '</span><span class="who">' + r[2] + '</span></li>';
+           }).join('') + '</ul>';
+  }
+
+  // portraits decoded before the reel starts, so a card never lands empty
+  CARDS.forEach(function (c) { if (c.p) { var i = new Image(); i.src = c.p.photo; } });
+
+  /* ---------- engine ----------
+     Retuned toward the frame: fewer, much heavier slabs, the vanishing point
+     pushed out to the right edge, white hairlines. No colour wash at the knot:
+     the far bars fade to the white ground, as on the campus reel. */
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var field = new ExtrusionField(document.getElementById('field'), {
+    count: 150, seed: 7,
+    spread: 1700, aspectXY: 1.25, clump: 0.6, hole: 0.06, cone: 0.5,
+    zNear: 560, zFar: 9000, zPow: 1.3,
+    lenMin: 1400, lenMax: 6800, lenDepth: 0.8,
+    thick: 560, thickVar: 0.55, flat: 0.28, flatVar: 0.6,
+    faces: true, faceShade: 0.22,
+    fade: 0.8, fadePow: 1.25, grad: 0.7, gradPow: 1, gradStops: 22,
+    minPx: 4, edge: 1, edgeCol: '#ffffff', edgeFade: true,
+    chips: 0, wrapFade: 0.16, borderFade: 0.38, wrapFadeOut: 0.12,
+    fov: 66, vpX: 0.9, vpY: 0.5,
+    col: '#011F5B', bg: '#ffffff', wash: 0,
+    speed: 300, parallax: 0.05, ease: 0.05
+  });
+
+  /* ---------- the swap ----------
+     Same order as the poster cycle: out, replace while hidden, then in — and
+     the plate's height is set at the swap, so the box opens as the new card
+     arrives rather than ahead of it. */
+  var plate = document.getElementById('plate');
+  var inner = plate.firstElementChild;
+  var card = document.getElementById('card');
+
+  function fitPlate(animate) {
+    if (!animate) plate.style.transition = 'none';
+    plate.style.height = inner.offsetHeight + 'px';
+    if (!animate) { void plate.offsetHeight; plate.style.transition = ''; }
+  }
+
+  function show(c, first) {
+    if (first || reduced) { card.innerHTML = html(c); fitPlate(false); return; }
+    card.classList.add('is-out');
+    setTimeout(function () {
+      card.innerHTML = html(c);
+      card.classList.remove('is-out');
+      card.classList.add('is-pre');
+      fitPlate(true);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { card.classList.remove('is-pre'); });
+      });
+    }, 210);
+  }
+
+  show(CARDS[0], true);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitPlate(false); });
+  addEventListener('resize', function () { field.resize(); fitPlate(false); }, { passive: true });
+
+  /* ---------- the cycle ----------
+     Each card holds for its own time; the schedule pages stay longest because
+     they carry the most to read. On every change the corridor swells and
+     settles back, on the same smootherstep window as the campus reel. */
+  var EASE_MS = 900, SWELL = 1.45;
+  var idx = 0, t0 = performance.now(), paused = false;
+
+  function goto(i) {
+    idx = (i + CARDS.length) % CARDS.length;
+    show(CARDS[idx]);
+    t0 = performance.now();
+    if (armed && idx === 0) { armed = false; beginTake(pendingStream); pendingStream = null; }
+  }
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (reduced) return;
+    var u = Math.min(1, (now - t0) / EASE_MS);
+    field.speedScale = u < 1 ? 1 + (SWELL - 1) * Math.pow(Math.sin(Math.PI * u), 2) : 1;
+    if (paused) { t0 = now - EASE_MS; return; }
+    if (now - t0 >= CARDS[idx].ms) goto(idx + 1);
+  }
+
+  /* ---------- record ----------
+     A capture of this tab (the plate is DOM, so a canvas capture would miss
+     it). Armed, then started on the next return to the title card, and run for
+     exactly one loop so the file repeats cleanly. */
+  var recBtn = document.getElementById('rec');
+  var armed = false, recorder = null, pendingStream = null;
+  var LOOP = CARDS.reduce(function (a, c) { return a + c.ms; }, 0);
+
+  function mimeType() {
+    return ['video/mp4;codecs=avc1.42E01E', 'video/webm;codecs=vp9',
+            'video/webm;codecs=vp8', 'video/webm']
+      .filter(function (t) { return MediaRecorder.isTypeSupported(t); })[0];
+  }
+  function save(blob, mime) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'upenn-reel.' + (mime.indexOf('mp4') > -1 ? 'mp4' : 'webm');
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 20000);
+  }
+  function beginTake(stream) {
+    var mime = mimeType();
+    recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 16e6 });
+    var chunks = [];
+    recorder.ondataavailable = function (e) { if (e.data.size) chunks.push(e.data); };
+    recorder.onstop = function () {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      recorder = null;
+      recBtn.hidden = false; recBtn.disabled = false; recBtn.textContent = 'Record';
+      save(new Blob(chunks, { type: mime }), mime);
+    };
+    recBtn.hidden = true;
+    recorder.start();
+    setTimeout(function () {
+      if (recorder && recorder.state !== 'inactive') recorder.stop();
+    }, LOOP);
+  }
+  recBtn.addEventListener('click', function () {
+    if (recorder || armed) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      recBtn.textContent = 'Unsupported'; return;
+    }
+    recBtn.disabled = true;
+    recBtn.textContent = 'Pick this tab';
+    navigator.mediaDevices.getDisplayMedia({
+      preferCurrentTab: true, audio: false, video: { frameRate: { ideal: 60 } }
+    }).then(function (stream) {
+      recBtn.textContent = 'Arming';
+      recBtn.hidden = true;   // gone before the take begins, not at it
+      armed = true; pendingStream = stream;
+    }).catch(function () {
+      recBtn.disabled = false; recBtn.textContent = 'Record';
+    });
+  });
+
+  /* R records, space pauses, arrows step through the cards */
+  addEventListener('keydown', function (e) {
+    if (e.key === 'r' || e.key === 'R') recBtn.click();
+    else if (e.key === ' ') { e.preventDefault(); paused = !paused; t0 = performance.now(); }
+    else if (e.key === 'ArrowRight') goto(idx + 1);
+    else if (e.key === 'ArrowLeft') goto(idx - 1);
+  });
+
+  /* the cursor would end up in the take; hide it after a moment of stillness */
+  var idleT;
+  addEventListener('pointermove', function () {
+    document.body.style.cursor = '';
+    clearTimeout(idleT);
+    idleT = setTimeout(function () { document.body.style.cursor = 'none'; }, 1200);
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) field.stop(); else { field.start(); t0 = performance.now(); }
+  });
+
+  field.start();
+  if (reduced) { field.stop(); field.draw(); }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

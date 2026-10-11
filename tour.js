@@ -34,14 +34,14 @@
 
   var STOPS = [
     { slug: 'upenn-air', school: 'University of Pennsylvania', chapter: 'AIR',
-      date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [3, 1],
+      date: 'Oct 18', status: 'set', venue: 'Amy Gutmann Hall Auditorium & Lobby', speakers: [12, 3, 11],
       club: 'PennAiR',
       luma: { tour: 'https://luma.com/249mwrur',
         bentley: 'https://luma.com/4ruup0qh',
         d5: 'https://luma.com/event/evt-tjYAHrossWGwp4h',
         solidworks: 'https://luma.com/jzn18yw6' },
-      exhibitionName: 'Open Practice',
-      exhibitionDescription: 'Projects that show how experimentation can move between design, technology, and culture.',
+      exhibitionName: 'Autonomous Embedded Systems',
+      exhibitionDescription: 'A gallery-style student exhibition of Penn Engineering work, hosted by Penn AiR.',
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
