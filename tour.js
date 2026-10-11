@@ -110,7 +110,7 @@
     { id: 7, name: 'Brey Tucker', role: 'Senior Industry Manager, Project Delivery', company: 'Autodesk',
       /* drawn from the University of Houston alumni spotlight — confirm with Brey */
       bio: 'I trained as an architect and went from practice at HOK into design technology, leading BIM, VR, and digital fabrication work at firms like Perkins+Will and Stantec. Today I help shape the cloud collaboration tools architects and engineers use to deliver projects at Autodesk.',
-      photo: 'photos/real/brey-tucker.jpg' },
+      photo: 'photos/real/brey-tucker.jpg?v=2' },
     { id: 10, name: 'Daniel Min', role: 'Founder & Content Creator (190K+)', company: 'Mints Media',
       /* drawn from Daniel's LinkedIn */
       bio: 'I\u2019m the founder of Mints Media and a content creator with 190K+ followers, and I film vlogs on my YouTube channel, Daniel Mints. I studied at Wharton and am based in New York.',
