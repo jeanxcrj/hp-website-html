@@ -148,6 +148,9 @@
      uses the same people, spelled the same way, as the site. */
   /* The reel shows the speakers' own photographs, not the site's blue riso
      treatment. Anyone without one here falls back to the site's portrait. */
+  /* where each square crop sits on the photo (object-position); centred unless
+     the head would be cut */
+  var FOCUS = { 'Hena Yang': '50% 8%' };
   var REAL = {
     'Jia Chen': 'photos/real/jia-chen.jpg',
     'Hena Yang': 'photos/real/hena-yang.jpg',
@@ -158,7 +161,8 @@
     return {
       name: name.replace(/,.*$/, ''),   // "Kyle Reeder, PE" is just Kyle Reeder here
       role: [p.role, p.company].filter(Boolean).join(', '),
-      photo: REAL[name] || p.photo
+      photo: REAL[name] || p.photo,
+      focus: FOCUS[name] || '50% 50%'
     };
   }
 
@@ -194,7 +198,7 @@
     }
     if (c.kind === 'speaker') {
       return '<p class="kicker"><span>Speaker</span></p>' +
-             '<div class="spk"><img src="' + c.p.photo + '" alt="">' +
+             '<div class="spk"><img src="' + c.p.photo + '" alt="" style="object-position:' + c.p.focus + '">' +
              '<div class="txt"><p class="name">' + c.p.name + '</p>' +
              '<p class="role">' + c.p.role + '</p>' +
              '<p class="slot">' + c.slot + '</p></div></div>';
