@@ -53,20 +53,15 @@
   .plate__in{padding:1.75vw 1.9vw 2vw}
 
   /* the HP lockup, recoloured from the site's white export by masking it */
-  .lockup{display:block;width:10.6vw;aspect-ratio:553/140;background:var(--hp);
+  .lockup{display:block;width:8.5vw;aspect-ratio:553/140;background:var(--hp);
     -webkit-mask:url(hp-lockup.svg) left center/contain no-repeat;
             mask:url(hp-lockup.svg) left center/contain no-repeat}
 
   /* HP lockup x the host club's mark, centred on one line. The X is the mono
      face in a pale grey so it joins the two without competing with either. */
-  .brand{display:flex;align-items:center;gap:.8vw}
-  .brand .x{font-size:1.6vw;line-height:1;color:#dfe3ea}
-  .brand .host{display:block;height:3.35vw;width:auto}
-  /* The host mark is on the title card only. It fades rather than leaving the
-     layout, so the row keeps the bird's height and the plate does not jump. */
-  .brand .x,.brand .host{transition:opacity 260ms linear}
-  .plate:not([data-kind="title"]) .brand .x,
-  .plate:not([data-kind="title"]) .brand .host{opacity:0}
+  .brand{display:flex;align-items:center;gap:.65vw}
+  .brand .x{font-size:1.3vw;line-height:1;color:#dfe3ea}
+  .brand .host{display:block;height:2.7vw;width:auto}
 
   /* ---------- card content ---------- */
   .card{transition:transform 300ms var(--ease),opacity 220ms linear}
