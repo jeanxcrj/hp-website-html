@@ -108,6 +108,9 @@
   .rows .w{font-size:1.7vw;line-height:1.05;text-transform:uppercase;letter-spacing:-.005em}
   .rows .who{font-family:"hp-forma",system-ui,sans-serif;font-weight:400;font-size:1.15vw;
     text-align:right}
+  /* the power speakers' names pick up HP blue, so the people stand out from the
+     companies running keynotes and workshops */
+  .rows .who.spkr{color:var(--hp)}
   /* rows arrive one after another rather than as a block */
   .card.is-pre .rows li{transform:translateY(1vw);opacity:0;transition:none}
   .rows li:nth-child(2){transition-delay:50ms}
@@ -207,7 +210,7 @@
     return '<p class="kicker"><span>Schedule | Sunday 10.18</span></p>' +
            '<ul class="rows">' + c.rows.map(function (r) {
              return '<li><span class="t">' + r[0] + '</span><span class="w">' + r[1] +
-                    '</span><span class="who">' + r[2] + '</span></li>';
+                    '</span><span class="who' + (r[1] === 'Power speaker' ? ' spkr' : '') + '">' + r[2] + '</span></li>';
            }).join('') + '</ul>';
   }
 
