@@ -62,6 +62,11 @@
   .brand{display:flex;align-items:center;gap:.8vw}
   .brand .x{font-size:1.6vw;line-height:1;color:#dfe3ea}
   .brand .host{display:block;height:3.35vw;width:auto}
+  /* The host mark is on the title card only. It fades rather than leaving the
+     layout, so the row keeps the bird's height and the plate does not jump. */
+  .brand .x,.brand .host{transition:opacity 260ms linear}
+  .plate:not([data-kind="title"]) .brand .x,
+  .plate:not([data-kind="title"]) .brand .host{opacity:0}
 
   /* ---------- card content ---------- */
   .card{transition:transform 300ms var(--ease),opacity 220ms linear}
@@ -258,10 +263,10 @@
   }
 
   function show(c, first) {
-    if (first || reduced) { card.dataset.kind = c.kind; card.innerHTML = html(c); fitPlate(false); return; }
+    if (first || reduced) { card.dataset.kind = plate.dataset.kind = c.kind; card.innerHTML = html(c); fitPlate(false); return; }
     card.classList.add('is-out');
     setTimeout(function () {
-      card.dataset.kind = c.kind;
+      card.dataset.kind = plate.dataset.kind = c.kind;
       card.innerHTML = html(c);
       card.classList.remove('is-out');
       card.classList.add('is-pre');
