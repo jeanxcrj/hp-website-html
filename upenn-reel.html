@@ -72,22 +72,20 @@
   /* The title card is as tall as a speaker card's body, with the title and its
      date line sitting on the bottom: whatever the lockup leaves above them is
      the gap, so the plate barely changes height between the two. */
-  .card[data-kind="title"]{min-height:15.3vw;display:flex;flex-direction:column;justify-content:flex-end}
+  .card[data-kind="title"]{min-height:14.8vw;display:flex;flex-direction:column;justify-content:flex-end}
   .title{margin:1.2vw 0 0;font-size:4.15vw;line-height:.98;letter-spacing:-.01em;
     text-transform:uppercase;font-weight:500}
   .meta{margin:.6vw 0 0;font-size:1.05vw;line-height:1.45;letter-spacing:.02em;
     text-transform:uppercase;color:var(--second)}
 
   /* speaker: portrait on the left, the words on the right, both on the top line */
-  /* Three columns, per the Figma layout: the Speaker caption in a narrow
-     column of its own under the lockup, then the portrait, then the words.
-     Caption, portrait and name all hang from the same top line. */
-  .spk{display:grid;grid-template-columns:5.3vw 10.5vw 1fr;gap:0 1.1vw;margin-top:2.2vw;align-items:stretch}
-  .spk .kicker{margin:0;display:block}
+  /* Speaker caption on top, then portrait and words side by side, the caption
+     sitting close over the portrait it labels */
+  .spk{display:grid;grid-template-columns:11.2vw 1fr;gap:1.1vw;margin-top:.6vw;align-items:stretch}
   /* the words run the photo's full height: name and role on its top edge, the
      session line on its bottom edge, whatever is left between them */
   .spk .txt{display:flex;flex-direction:column}
-  .spk img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover}
+  .spk img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
   /* cap height on the photo's top edge: the negative margin takes out the
      line box's leading above the capitals */
   .spk .name{margin:-.05em 0 0;font-size:3.2vw;line-height:1;text-transform:uppercase;letter-spacing:-.01em}
@@ -199,7 +197,8 @@
              '<p class="meta">' + c.meta.join('<br>') + '</p>';
     }
     if (c.kind === 'speaker') {
-      return '<div class="spk"><p class="kicker">Speaker</p><img src="' + c.p.photo + '" alt="" style="object-position:' + c.p.focus + '">' +
+      return '<p class="kicker"><span>Speaker</span></p>' +
+             '<div class="spk"><img src="' + c.p.photo + '" alt="" style="object-position:' + c.p.focus + '">' +
              '<div class="txt"><p class="name">' + c.p.name + '</p>' +
              '<p class="role">' + c.p.role + '</p>' +
              '<p class="slot">' + c.slot + '</p></div></div>';
