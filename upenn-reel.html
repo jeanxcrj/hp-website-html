@@ -63,6 +63,14 @@
   .brand .x{font-size:1.3vw;line-height:1;color:#dfe3ea}
   .brand .host{display:block;height:2.7vw;width:auto}
 
+  /* The Luma QR sits in the top-right corner, its caption set beside it in
+     the secondary blue and top-aligned with the code. */
+  .head{display:flex;justify-content:space-between;align-items:flex-start;gap:1vw}
+  .qr{display:flex;align-items:flex-start;gap:.8vw}
+  .qr__cap{font-size:.78vw;line-height:1.25;letter-spacing:.04em;text-transform:uppercase;
+    text-align:right;color:var(--second);margin-top:-.15em}
+  .qr img{display:block;width:4.6vw;height:4.6vw}
+
   /* ---------- card content ---------- */
   .card{transition:transform 300ms var(--ease),opacity 220ms linear}
   .card.is-out{transform:translateY(-1.6vw);opacity:0;
@@ -138,10 +146,16 @@
 <canvas id="field" aria-hidden="true"></canvas>
 
 <div class="plate" id="plate"><div class="plate__in">
-  <div class="brand">
-    <span class="lockup" role="img" aria-label="HP USA College Tour 2026"></span>
-    <span class="x" aria-hidden="true">X</span>
-    <img class="host" src="logos/penn-air.png" alt="Penn AiR">
+  <div class="head">
+    <div class="brand">
+      <span class="lockup" role="img" aria-label="HP USA College Tour 2026"></span>
+      <span class="x" aria-hidden="true">X</span>
+      <img class="host" src="logos/penn-air.png" alt="Penn AiR">
+    </div>
+    <div class="qr">
+      <span class="qr__cap">Scan to<br>register<br>on Luma</span>
+      <img src="qr-luma.svg" alt="Register on Luma">
+    </div>
   </div>
   <div class="card" id="card"></div>
 </div></div>
