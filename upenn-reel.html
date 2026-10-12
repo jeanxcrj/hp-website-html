@@ -57,6 +57,12 @@
     -webkit-mask:url(hp-lockup.svg) left center/contain no-repeat;
             mask:url(hp-lockup.svg) left center/contain no-repeat}
 
+  /* HP lockup x the host club's mark, centred on one line. The X is the mono
+     face in a pale grey so it joins the two without competing with either. */
+  .brand{display:flex;align-items:center;gap:1.5vw}
+  .brand .x{font-size:2.5vw;line-height:1;color:#dfe3ea}
+  .brand .host{display:block;height:3.35vw;width:auto}
+
   /* ---------- card content ---------- */
   .card{transition:transform 300ms var(--ease),opacity 220ms linear}
   .card.is-out{transform:translateY(-1.6vw);opacity:0;
@@ -132,7 +138,11 @@
 <canvas id="field" aria-hidden="true"></canvas>
 
 <div class="plate" id="plate"><div class="plate__in">
-  <span class="lockup" role="img" aria-label="HP USA College Tour 2026"></span>
+  <div class="brand">
+    <span class="lockup" role="img" aria-label="HP USA College Tour 2026"></span>
+    <span class="x" aria-hidden="true">X</span>
+    <img class="host" src="logos/penn-air.png" alt="Penn AiR">
+  </div>
   <div class="card" id="card"></div>
 </div></div>
 
