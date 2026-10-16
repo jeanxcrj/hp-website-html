@@ -45,7 +45,7 @@
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
-      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [7, 8],
+      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [],
       club: 'Pratt AIAS',
       luma: { tour: 'https://luma.com/i8k6mpgv',
         bentley: 'https://luma.com/j9i2u203',
@@ -107,10 +107,6 @@
     { id: 1, name: 'Andreas Palfinger', role: 'Artist, Architect', company: 'ZHA',
       bio: 'Andreas is an artist and works as an architectural designer at ZHA (formerly Zaha Hadid Architects), based in London and New York. The talk follows Andreas\u2019 journey through multiple disciplines and continents: from graphic design to painting, animation film, sculpture and architecture; from the Austrian alps to New York, Beijing, Mumbai and London.',
       photo: 'photos/real/andreas-palfinger.jpg' },
-    { id: 7, name: 'Brey Tucker', role: 'Senior Industry Manager, Project Delivery', company: 'Autodesk',
-      /* drawn from the University of Houston alumni spotlight — confirm with Brey */
-      bio: 'I trained as an architect and went from practice at HOK into design technology, leading BIM, VR, and digital fabrication work at firms like Perkins+Will and Stantec. Today I help shape the cloud collaboration tools architects and engineers use to deliver projects at Autodesk.',
-      photo: 'photos/real/brey-tucker.jpg?v=2' },
     { id: 10, name: 'Daniel Min', role: 'Founder & Content Creator (190K+)', company: 'Mints Media',
       /* drawn from Daniel's LinkedIn */
       bio: 'I\u2019m the founder of Mints Media and a content creator with 190K+ followers, and I film vlogs on my YouTube channel, Daniel Mints. I studied at Wharton and am based in New York.',
@@ -132,13 +128,8 @@
     { id: 12, name: 'Jia Chen', role: 'Co-founder & CEO', company: 'Jam',
       bio: 'I’ll be talking about going from engineering student to building larger projects.',
       photo: 'photos/real/jia-chen.jpg' },
-    { id: 8, name: 'Kenton Grant', role: 'Director of Technology', company: 'Olson Kundig',
-      /* drawn from the Olson Kundig profile — confirm with Kenton */
-      bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
-      photo: 'photos/real/kenton-grant.jpg' },
-    /* stand-in copy drawn from Kyle's LinkedIn — swap for his own when it arrives */
-    { id: 11, name: 'Kyle Reeder, PE', role: 'Civil Engineer', company: 'Bentley Systems',
-      bio: 'I\u2019m a licensed civil engineer who moved from designing infrastructure into helping teams adopt the tools behind it at Bentley Systems. My work sits between engineering, project delivery, and automation, from sewer and roadway design to building on the iTwin platform.',
+    { id: 11, name: 'Kyle Reeder, PE', role: 'Manager, Solution Execution', company: 'Bentley Systems',
+      bio: 'I\u2019m a licensed civil engineer, who moved from designing infrastructure (AECOM, WSP, & startups) into helping teams experience emerging tools for infrastructure design and project delivery at Bentley Systems. My work sits between engineering, project delivery, and automation. I enjoy building custom applications and innovative system architecture.',
       photo: 'photos/real/kyle-reeder.jpg' },
     { id: 5, name: 'Nino Ferrari-Mathis', role: 'Creator', company: 'NinosBuildings',
       bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/real/nino-ferrari-mathis.jpg' }
