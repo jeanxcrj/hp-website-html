@@ -112,7 +112,9 @@
       bio: 'I\u2019m the founder of Mints Media and a content creator with 190K+ followers, and I film vlogs on my YouTube channel, Daniel Mints. I studied at Wharton and am based in New York.',
       photo: 'photos/real/daniel-min.jpg' },
     { id: 13, name: 'David Mans', role: 'Director of AECtech', company: 'Thornton Tomasetti',
-      bio: null, photo: null },
+      /* stand-in copy, drawn from David's Pratt faculty page — swap for his own when it arrives */
+      bio: 'I lead AECtech at Thornton Tomasetti, building on my work in CORE studio on public-facing applications and computational geometry. Before that I was Senior Computational Designer at Grimshaw Architects NYC and lead designer on the central canopy of the Dubai Expo 2020 Sustainability Pavilion. I have taught computation at Pratt for over ten years, and write open-source plugins for Grasshopper that have been downloaded more than 75,000 times.',
+      photo: null },
     { id: 9, name: 'Duke Pan', role: '350K+ YouTuber, YC Founder', company: 'SWE @ Meta, Tesla AI, Coinbase',
       bio: 'Duke Pan, known online as Frying Pan, is a content creator, software engineer, and Y Combinator-backed founder. He\u2019ll share his unconventional path from a low-income upbringing in Canada to acting in China, studying computer science, YouTube, and big tech, graduating during the 2022 layoffs, and life as a founder. Drawing on his work building AI agents, he\u2019ll also discuss how students can create their own opportunities as AI changes engineering and work.',
       photo: 'photos/real/duke-pan.jpg' },
@@ -128,7 +130,9 @@
       bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
       photo: 'photos/real/jangho-yun.jpg' },
     { id: 14, name: 'Jeffrey Anderson', role: 'Immersive Technologies Lead', company: 'Mancini Duffy',
-      bio: null, photo: null },
+      /* stand-in copy, drawn from Jeffrey's Pratt faculty page — swap for his own when it arrives */
+      bio: 'I\u2019m an architectural designer, educator, and AR/VR developer. At Mancini Duffy I lead immersive technologies, building visualization and mixed reality tools for design research, and I teach at Pratt and Penn. My work looks at how interaction, sensing, and mixed reality can create new relationships between people, architecture, and its context.',
+      photo: 'photos/real/jeffrey-anderson.jpg' },
     { id: 12, name: 'Jia Chen', role: 'Co-founder & CEO', company: 'Jam',
       bio: 'I’ll be talking about going from engineering student to building larger projects.',
       photo: 'photos/real/jia-chen.jpg' },
