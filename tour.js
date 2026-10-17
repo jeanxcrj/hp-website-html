@@ -173,7 +173,6 @@
         'Think you\u2019re fast in SOLIDWORKS? Prove it. Get hands-on practice with a real-world design challenge and put your SOLIDWORKS skills to the test.',
         'After some basic training, you\u2019ll model a preselected component and race to complete your design. Then we\u2019ll look at what\u2019s coming next: emerging AI-powered tools that can help designers and engineers explore more possibilities, iterate faster, and push their designs even further.'
       ],
-      note: 'The workshop is designed for students with prior experience in parametric CAD modeling.',
       speakers: [] }
   ];
 
