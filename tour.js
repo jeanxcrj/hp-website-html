@@ -114,7 +114,7 @@
     { id: 13, name: 'David Mans', role: 'Director of AECtech', company: 'Thornton Tomasetti',
       /* stand-in copy, drawn from David's Pratt faculty page — swap for his own when it arrives */
       bio: 'I lead AECtech at Thornton Tomasetti, building on my work in CORE studio on public-facing applications and computational geometry. Before that I was Senior Computational Designer at Grimshaw Architects NYC and lead designer on the central canopy of the Dubai Expo 2020 Sustainability Pavilion. I have taught computation at Pratt for over ten years, and write open-source plugins for Grasshopper that have been downloaded more than 75,000 times.',
-      photo: null },
+      photo: 'photos/real/david-mans.jpg' },
     { id: 9, name: 'Duke Pan', role: '350K+ YouTuber, YC Founder', company: 'SWE @ Meta, Tesla AI, Coinbase',
       bio: 'Duke Pan, known online as Frying Pan, is a content creator, software engineer, and Y Combinator-backed founder. He\u2019ll share his unconventional path from a low-income upbringing in Canada to acting in China, studying computer science, YouTube, and big tech, graduating during the 2022 layoffs, and life as a founder. Drawing on his work building AI agents, he\u2019ll also discuss how students can create their own opportunities as AI changes engineering and work.',
       photo: 'photos/real/duke-pan.jpg' },
