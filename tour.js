@@ -45,7 +45,7 @@
       note: 'Confirmed for the Sunday.' },
 
     { slug: 'pratt-aias', school: 'Pratt Institute', chapter: 'AIAS',
-      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [7, 8],
+      date: 'Oct 23–24', status: 'set', venue: 'Higgins Hall Pit & Lecture Hall', speakers: [],
       club: 'Pratt AIAS',
       luma: { tour: 'https://luma.com/i8k6mpgv',
         bentley: 'https://luma.com/j9i2u203',
@@ -107,14 +107,14 @@
     { id: 1, name: 'Andreas Palfinger', role: 'Artist, Architect', company: 'ZHA',
       bio: 'Andreas is an artist and works as an architectural designer at ZHA (formerly Zaha Hadid Architects), based in London and New York. The talk follows Andreas\u2019 journey through multiple disciplines and continents: from graphic design to painting, animation film, sculpture and architecture; from the Austrian alps to New York, Beijing, Mumbai and London.',
       photo: 'photos/real/andreas-palfinger.jpg' },
-    { id: 7, name: 'Brey Tucker', role: 'Senior Industry Manager, Project Delivery', company: 'Autodesk',
-      /* drawn from the University of Houston alumni spotlight — confirm with Brey */
-      bio: 'I trained as an architect and went from practice at HOK into design technology, leading BIM, VR, and digital fabrication work at firms like Perkins+Will and Stantec. Today I help shape the cloud collaboration tools architects and engineers use to deliver projects at Autodesk.',
-      photo: 'photos/real/brey-tucker.jpg?v=2' },
     { id: 10, name: 'Daniel Min', role: 'Founder & Content Creator (190K+)', company: 'Mints Media',
       /* drawn from Daniel's LinkedIn */
       bio: 'I\u2019m the founder of Mints Media and a content creator with 190K+ followers, and I film vlogs on my YouTube channel, Daniel Mints. I studied at Wharton and am based in New York.',
       photo: 'photos/real/daniel-min.jpg' },
+    { id: 13, name: 'David Mans', role: 'Director of AECtech', company: 'Thornton Tomasetti',
+      /* stand-in copy, drawn from David's Pratt faculty page — swap for his own when it arrives */
+      bio: 'I lead AECtech at Thornton Tomasetti, building on my work in CORE studio on public-facing applications and computational geometry. Before that I was Senior Computational Designer at Grimshaw Architects NYC and lead designer on the central canopy of the Dubai Expo 2020 Sustainability Pavilion. I have taught computation at Pratt for over ten years, and write open-source plugins for Grasshopper that have been downloaded more than 75,000 times.',
+      photo: 'photos/real/david-mans.jpg' },
     { id: 9, name: 'Duke Pan', role: '350K+ YouTuber, YC Founder', company: 'SWE @ Meta, Tesla AI, Coinbase',
       bio: 'Duke Pan, known online as Frying Pan, is a content creator, software engineer, and Y Combinator-backed founder. He\u2019ll share his unconventional path from a low-income upbringing in Canada to acting in China, studying computer science, YouTube, and big tech, graduating during the 2022 layoffs, and life as a founder. Drawing on his work building AI agents, he\u2019ll also discuss how students can create their own opportunities as AI changes engineering and work.',
       photo: 'photos/real/duke-pan.jpg' },
@@ -129,16 +129,15 @@
     { id: 4, name: 'Jangho Yun', role: 'Head of Marketing', company: 'Cluely',
       bio: 'I\u2019ve spent the past year and a half working at early-stage startups and currently do marketing at Cluely. I\u2019ll talk about how I got to where I am, what I\u2019ve learned about breaking through early-stage growth roles, and what working inside a fast-moving startup actually looks like.',
       photo: 'photos/real/jangho-yun.jpg' },
+    { id: 14, name: 'Jeffrey Anderson', role: 'Immersive Technologies Lead', company: 'Mancini Duffy',
+      /* stand-in copy, drawn from Jeffrey's Pratt faculty page — swap for his own when it arrives */
+      bio: 'I\u2019m an architectural designer, educator, and AR/VR developer. At Mancini Duffy I lead immersive technologies, building visualization and mixed reality tools for design research, and I teach at Pratt and Penn. My work looks at how interaction, sensing, and mixed reality can create new relationships between people, architecture, and its context.',
+      photo: 'photos/real/jeffrey-anderson.jpg' },
     { id: 12, name: 'Jia Chen', role: 'Co-founder & CEO', company: 'Jam',
       bio: 'I’ll be talking about going from engineering student to building larger projects.',
       photo: 'photos/real/jia-chen.jpg' },
-    { id: 8, name: 'Kenton Grant', role: 'Director of Technology', company: 'Olson Kundig',
-      /* drawn from the Olson Kundig profile — confirm with Kenton */
-      bio: 'I lead design and information technology across Olson Kundig\u2019s offices, after two decades in architecture and engineering, including design technology at Gensler and work for a Fortune 500 defense contractor.',
-      photo: 'photos/real/kenton-grant.jpg' },
-    /* stand-in copy drawn from Kyle's LinkedIn — swap for his own when it arrives */
-    { id: 11, name: 'Kyle Reeder, PE', role: 'Civil Engineer', company: 'Bentley Systems',
-      bio: 'I\u2019m a licensed civil engineer who moved from designing infrastructure into helping teams adopt the tools behind it at Bentley Systems. My work sits between engineering, project delivery, and automation, from sewer and roadway design to building on the iTwin platform.',
+    { id: 11, name: 'Kyle Reeder, PE', role: 'Solution Execution Manager', company: 'Bentley Systems',
+      bio: 'I\u2019m a licensed civil engineer, who moved from designing infrastructure (AECOM, WSP, & startups) into helping teams experience emerging tools for infrastructure design and project delivery at Bentley Systems. My work sits between engineering, project delivery, and automation. I enjoy building custom applications and innovative system architecture.',
       photo: 'photos/real/kyle-reeder.jpg' },
     { id: 5, name: 'Nino Ferrari-Mathis', role: 'Creator', company: 'NinosBuildings',
       bio: 'I will be talking about my experience as an architecture student who went into digital storytelling, tying in my multi-cultural background and experience in inter-disciplinary creative work.', photo: 'photos/real/nino-ferrari-mathis.jpg' }
