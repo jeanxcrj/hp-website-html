@@ -161,10 +161,10 @@
     { key: 'd5', company: 'D5 Render', logo: 'logos/d5.png',
       name: 'Minutes, Not Days: The AI-Powered D5 Rendering Workflow',
       description: [
-        'Forget overnight render queues. This session shows what AI-powered rendering actually feels like: a Rhino model turns into a cinematic image in minutes, live on stage - one that communicates not just what a space looks like, but how it feels.',
-        'D5\u2019s AI understands your scene, builds the atmosphere and context around it, and refines the result to presentation quality, so you spend your studio hours designing, not tweaking sliders.',
-        'You\u2019ll see the full workflow demonstrated end to end, then try it yourself.',
-        'No rendering experience required: this is simply how the next generation of architects will work.'
+        'Forget overnight render queues. This session demonstrates the real experience of AI-powered rendering: watch a Rhino model transform into a cinematic image live on stage in minutes \u2014 one that captures not only the appearance of a space, but its atmosphere and feeling.',
+        'D5\u2019s AI interprets your scene, builds out its surrounding atmosphere and context, and polishes outputs to presentation-ready quality. This frees up studio teams to spend time on design decisions, rather than endless parameter tweaking.',
+        'Led by Neo Huang, Co-founder & GM of D5 North America, this talk explores the direction AI is taking architectural visualization \u2014 a transition already happening at the firms where you will intern and build your career. This is not about replacing design judgement; it eliminates the waiting gap between an idea and its visualisation. A short live demo will bring the workflow to life, followed by an open Q&A.',
+        'Whether working to tight studio deadlines or building your portfolio, you will walk away with insights into how the next generation of architects operate \u2014 and how you can adopt this workflow today.'
       ],
       speakers: ['Jessie Huang'] },
     { key: 'solidworks', company: 'SOLIDWORKS', logo: 'logos/solidworks.png',
